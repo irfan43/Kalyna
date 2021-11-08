@@ -37,7 +37,24 @@ public class KalynaRoundFunction {
         MDSMultiply(input, DECRYPTION_MODE);
     }
 
-    private static void MDSMultiply(byte[][] input, boolean decryptionMode) {
+    /**
+     *
+     * @param input
+     * @param mode
+     * @return the
+     */
+    private static byte[][] MDSMultiply(byte[][] input, boolean mode) {
+        byte[][] output = new byte[input.length][input[0].length];
+        int m = mode ? 0 : 4;
+        byte[] mdsRow = Arrays.copyOf(KalynaUtil.MDSCircularVector[m], KalynaUtil.MDSCircularVector[m].length);
+
+        // Matrix-Column Multiply
+        for(int col =0; col < input.length; col++){
+            for(int row = 0; row < input[0].length; row ++)
+                output[col][row] ^= KalynaUtil.GFLookUp[ Byte.toUnsignedInt(mdsRow[row]) ][ Byte.toUnsignedInt(input[col][row])];
+            circularRotate(mdsRow,1);
+        }
+        return output;
     }
 
     /**
