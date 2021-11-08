@@ -25,6 +25,7 @@ public class KalynaRoundFunction {
     /**
      * Performs the Mix Columns operation
      * @param input the input state matrix
+     * @return the state matrix after the operation was performed
      */
     public static void mixColumns(byte[][] input){
         MDSMultiply(input, ENCRYPTION_MODE);
@@ -32,9 +33,10 @@ public class KalynaRoundFunction {
     /**
      * Performs the Inverse Mix Columns operation
      * @param input the input state matrix
+     * @return the state matrix after the operation was performed
      */
-    public static void invMixColumns(byte[][] input){
-        MDSMultiply(input, DECRYPTION_MODE);
+    public static byte[][] invMixColumns(byte[][] input){
+        return MDSMultiply(input, DECRYPTION_MODE);
     }
 
     /**
@@ -61,8 +63,10 @@ public class KalynaRoundFunction {
      * Adds the Substitution box over the give state matrix
      * @param input the input state matrix
      * @param mode either <code>ENCRYPTION_MODE</code> or <code>DECRYPTION_MODE</code> depending on if u want inverse
+     * @return the state matrix after the operation was perform
      */
     private static byte[][] substituteState(byte[][] input,boolean mode){
+        byte[][] output = new byte[input.length][input[0].length];
         int offset = mode ? 0 : 4;
         for( int col = 0; col < input.length; col++){
             for(int row = 0; row < 8; row++)
@@ -87,7 +91,7 @@ public class KalynaRoundFunction {
             //Finding Shift Amount
             int shift = input.length * row / 8;
 
-            // Storing each column's row value into a temporory row
+            // Storing each column's row value into a temporary row
             for(int col = 0; col < input.length; col++)
                 tempRow[col] = input[col][row];
 
@@ -97,7 +101,7 @@ public class KalynaRoundFunction {
             //Storing back into that Input State
             for(int col = 0; col < input.length; col++)
                 output[col][row] = tempRow[col];
-            
+
         }
 
         return output;
