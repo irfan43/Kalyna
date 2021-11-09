@@ -22,14 +22,16 @@ public class KalynaRoundFunction {
     public static byte[][] invSBox(byte[][] input){
         return substituteState(input,DECRYPTION_MODE);
     }
+
     /**
      * Performs the Mix Columns operation
      * @param input the input state matrix
      * @return the state matrix after the operation was performed
      */
-    public static void mixColumns(byte[][] input){
-        MDSMultiply(input, ENCRYPTION_MODE);
+    public static byte[][] mixColumns(byte[][] input){
+        return MDSMultiply(input, ENCRYPTION_MODE);
     }
+
     /**
      * Performs the Inverse Mix Columns operation
      * @param input the input state matrix
@@ -70,9 +72,9 @@ public class KalynaRoundFunction {
         int offset = mode ? 0 : 4;
         for( int col = 0; col < input.length; col++){
             for(int row = 0; row < 8; row++)
-                input[col][row] = KalynaUtil.SBox[offset + (row % 4)][Byte.toUnsignedInt(input[col][row])];
+                output[col][row] = KalynaUtil.SBox[offset + (row % 4)][Byte.toUnsignedInt(input[col][row])];
         }
-        return input;
+        return output;
     }
 
 
