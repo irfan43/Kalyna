@@ -8,6 +8,7 @@ public class KalynaRoundFunction {
     public static final boolean ENCRYPTION_MODE = true;
     public static final boolean DECRYPTION_MODE = false;
 
+
     /**
      * Performs SBox operation on the give state matrix
      * @param input the input state matrix
@@ -125,12 +126,7 @@ public class KalynaRoundFunction {
         return output;
     }
 
-    private static String byteArrayToHex(byte[] input) {
-        StringBuilder hexString = new StringBuilder(input.length * 2);
-        for (byte b : input)
-            hexString.append(String.format("%02x", b));
-        return hexString.toString();
-    }
+
 
     private static byte[][] addRoundKey(byte[][] input,byte[][] roundKey) {
         byte[][] output = new byte[input.length][input[0].length];
@@ -145,8 +141,8 @@ public class KalynaRoundFunction {
     private static byte[][] roundKeyMod(byte[][] input, byte[][] roundKey, boolean mode){
         byte[][] output = new byte[input.length][input[0].length];
         for (int col = 0; col < input.length; col++){
-            String inputColumnHex = "00" + byteArrayToHex(input[col]);
-            String roundKeyColumnHex =  "00" + byteArrayToHex(roundKey[col]);
+            String inputColumnHex = "00" + KalynaUtil.byteArrayToHex(input[col]);
+            String roundKeyColumnHex =  "00" + KalynaUtil.byteArrayToHex(roundKey[col]);
             BigInteger tempColumn = (new BigInteger(inputColumnHex, 16));
             if(mode)
                 tempColumn.add(new BigInteger(roundKeyColumnHex,16));
