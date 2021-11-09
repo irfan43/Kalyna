@@ -43,9 +43,9 @@ public class KalynaRoundFunction {
     }
 
     /**
-     *
-     * @param input
-     * @param mode
+     * performs the MDS mutiply
+     * @param input bhla
+     * @param mode bla
      * @return the
      */
     private static byte[][] MDSMultiply(byte[][] input, boolean mode) {
@@ -125,6 +125,13 @@ public class KalynaRoundFunction {
         return output;
     }
 
+    private static String byteArrayToHex(byte[] input) {
+        StringBuilder hexString = new StringBuilder(input.length * 2);
+        for (byte b : input)
+            hexString.append(String.format("%02x", b));
+        return hexString.toString();
+    }
+
     private static byte[][] addRoundKey(byte[][] input,byte[][] roundKey) {
         byte[][] output = new byte[input.length][input[0].length];
         for (int i = 0; i < input.length; i++) {
@@ -134,26 +141,19 @@ public class KalynaRoundFunction {
         }
         return output;
     }
-    private static byte[][] addRoundKeyMod(byte[][] input,byte[][] roundKey, boolean mode) {
-        byte[][] output = new byte[input.length][input[0].length];
-        for (int col = 0; col < input.length; col++) {
-            byte carry = 0;
-            for (int row = 0; row < input[col].length; row++) {
-                output[col][row] = (byte) (input[col][row] + roundKey[col][row] + carry);
-                carry = (byte) ((input[col][row] + roundKey[col][row]) - output[col][row]);
-            }
 
+    private static byte[][] roundKeyMod(byte[][] input, byte[][] roundKey, boolean mode){
+        byte[][] output = new byte[input.length][input[0].length];
+        for (int col = 0; col < input.length; col++){
+            String inputColumnHex = "00" + byteArrayToHex(input[col]);
+            String roundKeyColumnHex =  "00" + byteArrayToHex(roundKey[col]);
+            BigInteger tempColumn = (new BigInteger(inputColumnHex, 16));
+            if(mode)
+                tempColumn.add(new BigInteger(roundKeyColumnHex,16));
+            else
+                tempColumn.subtract(new BigInteger(roundKeyColumnHex,16));
+            System.arraycopy(tempColumn.toByteArray(),0,output[col],0,output[col].length);
         }
         return output;
     }
-
-//    private static BigInteger getLongValue(byte[] input){
-//
-//
-//        for (int i = input.length - 1; i >= 0; i--) {
-//            output = output.add(BigInteger.valu);
-//            output = output.shiftLeft(8);
-//        }
-//        return output;
-//    }
 }
