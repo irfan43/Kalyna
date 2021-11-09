@@ -1,5 +1,6 @@
 package com.ok.kalyna;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 
 public class KalynaRoundFunction {
@@ -124,4 +125,35 @@ public class KalynaRoundFunction {
         return output;
     }
 
+    private static byte[][] addRoundKey(byte[][] input,byte[][] roundKey) {
+        byte[][] output = new byte[input.length][input[0].length];
+        for (int i = 0; i < input.length; i++) {
+            for (int j = 0; j < input[0].length; j++) {
+                output[i][j] = (byte) (input[i][j] ^ roundKey[i][j]);
+            }
+        }
+        return output;
+    }
+    private static byte[][] addRoundKeyMod(byte[][] input,byte[][] roundKey, boolean mode) {
+        byte[][] output = new byte[input.length][input[0].length];
+        for (int col = 0; col < input.length; col++) {
+            byte carry = 0;
+            for (int row = 0; row < input[col].length; row++) {
+                output[col][row] = (byte) (input[col][row] + roundKey[col][row] + carry);
+                carry = (byte) ((input[col][row] + roundKey[col][row]) - output[col][row]);
+            }
+
+        }
+        return output;
+    }
+
+//    private static BigInteger getLongValue(byte[] input){
+//
+//
+//        for (int i = input.length - 1; i >= 0; i--) {
+//            output = output.add(BigInteger.valu);
+//            output = output.shiftLeft(8);
+//        }
+//        return output;
+//    }
 }
