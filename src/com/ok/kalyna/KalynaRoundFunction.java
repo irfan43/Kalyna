@@ -1,5 +1,5 @@
 package com.ok.kalyna;
-
+import java.math.BigInteger;
 import java.util.Arrays;
 
 public class KalynaRoundFunction {
@@ -122,4 +122,40 @@ public class KalynaRoundFunction {
         return output;
     }
 
+    private static String byteArrayToHex(byte[] input) {
+        StringBuilder hexString = new StringBuilder(input.length * 2);
+        for (byte b : input)
+            hexString.append(String.format("%02x", b));
+        return hexString.toString();
+    }
+
+    private static byte[][] addRoundKey(byte[][] input,byte[][] roundKey) {
+        byte[][] output = new byte[input.length][input[0].length];
+        for (int i = 0; i < input.length; i++) {
+            for (int j = 0; j < input[0].length; j++) {
+                output[i][j] = (byte) (input[i][j] ^ roundKey[i][j]);
+            }
+        }
+        return output;
+    }
+
+    private static byte[][] roundKeyMod(byte[][] input, byte[][] roundKey, boolean mode){
+        byte[][] output = new byte[input.length][input[0].length];
+        for (int col = 0; col < input.length; col++){
+            String inputColumnHex = "00" + byteArrayToHex(input[col]);
+            String roundKeyColumnHex =  "00" + byteArrayToHex(roundKey[col]);
+            BigInteger tempColumn = (new BigInteger(inputColumnHex, 16));
+            if(mode)
+                tempColumn.add(new BigInteger(roundKeyColumnHex,16));
+            else
+                tempColumn.subtract(new BigInteger(roundKeyColumnHex,16));
+            //String out = tempColumn.toString(16).substring(16);
+            System.arraycopy(tempColumn.toByteArray(),0,output[col],0,output[col].length);
+        }
+        return output;
+    }
+
+    
+
 }
+
