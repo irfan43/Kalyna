@@ -8,6 +8,7 @@ public class KalynaRoundFunction {
     public static final boolean ENCRYPTION_MODE = true;
     public static final boolean DECRYPTION_MODE = false;
 
+
     /**
      * Performs SBox operation on the give state matrix
      * @param input the input state matrix
