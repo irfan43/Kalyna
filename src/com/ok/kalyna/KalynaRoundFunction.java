@@ -43,9 +43,35 @@ public class KalynaRoundFunction {
         return MDSMultiply(input, DECRYPTION_MODE);
     }
 
+    /**
+     * Performs the XOR Round key addition
+     * @param input the input state matrix
+     * @param roundKey the round key to add
+     * @return the resultant matrix
+     */
     public static byte[][] xorRoundKey(byte[][] input, byte[][] roundKey){
-        return XORstate(input,roundKey);
+        return XORState(input,roundKey);
     }
+
+    /**
+     * Performs the Round Key addition on the given state matrix with mod <code>2^64</code>
+     * @param input input state matrix
+     * @param roundKey the round key to add
+     * @return the resultant matrix
+     */
+    public static byte[][] addRoundKey(byte[][] input,byte[][] roundKey){
+        return roundKeyMod(input,roundKey, ENCRYPTION_MODE);
+    }
+    /**
+     * Performs the Round Key subtraction on the given state matrix with mod <code>2^64</code>
+     * @param input input state matrix
+     * @param roundKey the round key to subtract
+     * @return the resultant matrix
+     */
+    public static byte[][] subRoundKey(byte[][] input,byte[][] roundKey){
+        return roundKeyMod(input,roundKey, DECRYPTION_MODE);
+    }
+
     /**
      * performs the MDS mutiply
      * @param input bhla
@@ -120,7 +146,7 @@ public class KalynaRoundFunction {
     }
 
 
-    private static byte[][] XORstate(byte[][] input,byte[][] roundKey) {
+    private static byte[][] XORState(byte[][] input, byte[][] roundKey) {
         byte[][] output = new byte[input.length][input[0].length];
         for (int i = 0; i < input.length; i++) {
             for (int j = 0; j < input[0].length; j++) {
@@ -137,9 +163,9 @@ public class KalynaRoundFunction {
             String roundKeyColumnHex =  "00" + KalynaUtil.byteArrayToHex(roundKey[col]);
             BigInteger tempColumn = (new BigInteger(inputColumnHex, 16));
             if(mode)
-                tempColumn.add(new BigInteger(roundKeyColumnHex,16));
+                tempColumn = tempColumn.add(new BigInteger(roundKeyColumnHex,16));
             else
-                tempColumn.subtract(new BigInteger(roundKeyColumnHex,16));
+                tempColumn = tempColumn.subtract(new BigInteger(roundKeyColumnHex,16));
             System.arraycopy(tempColumn.toByteArray(),0,output[col],0,output[col].length);
         }
         return output;
