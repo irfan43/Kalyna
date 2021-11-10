@@ -87,18 +87,20 @@ class KalynaRoundFunctionTest {
     };
 
     private final String[] addRoundKeyInput = {
+            "202122232425262728292A2B2C2D2E2F",
             "101112131415161718191A1B1C1D1E1F",
     };
 
     private final String[] addRoundKeyInputKey = {
-            "16505E6B9B3AB1E6865B77DCE082A0F4"
+            "57C816EB3F7E12DEED2C6B56E6B5BE1A",
+            "16505E6B9B3AB1E6865B77DCE082A0F4",
     };
 
 
     private final String[] addRoundKeyExpectedOutput = {
-            "2661707EAF4FC7FD9E7491F7FC9FBE13"
+            "77E9380E64A338051556958112E3EC49",
+            "2661707EAF4FC7FD9E7491F7FC9FBE13",
     };
-
 
 
 
@@ -233,6 +235,7 @@ class KalynaRoundFunctionTest {
     void addRoundKey(){
         assertEquals(addRoundKeyInput.length,addRoundKeyInputKey.length );
         assertEquals(addRoundKeyInput.length,addRoundKeyExpectedOutput.length );
+        boolean pass = true;
         for (int i = 0; i < addRoundKeyInput.length; i++) {
             byte[][] input = KalynaUtil.stringToState(addRoundKeyInput[i]);
             byte[][] key = KalynaUtil.stringToState(addRoundKeyInputKey[i]);
@@ -240,13 +243,15 @@ class KalynaRoundFunctionTest {
 
             byte[][] actualOutput = KalynaRoundFunction.addRoundKey(input,key);
 
-
-            boolean pass = true;
             for (int j = 0; j < actualOutput.length; j++) {
-                pass = pass && Arrays.equals(actualOutput[i],expectedOutput[i]);
+                pass = pass && Arrays.equals(actualOutput[j],expectedOutput[j]);
+                String e = KalynaUtil.byteArrayToHex(expectedOutput[j]).toUpperCase();
+                String a = KalynaUtil.byteArrayToHex(actualOutput[j]).toUpperCase();
+
+
             }
-            assertTrue(pass);
         }
+        assertTrue(pass);
     }
 
     @Test
@@ -261,7 +266,7 @@ class KalynaRoundFunctionTest {
 
             boolean pass = true;
             for (int j = 0; j < inputState.length; j++) {
-                pass = pass && Arrays.equals(outputState[i], expectedOutputState[i]);
+                pass = pass && Arrays.equals(outputState[j], expectedOutputState[j]);
             }
             assertTrue(pass);
         }

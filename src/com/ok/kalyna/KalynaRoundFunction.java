@@ -159,15 +159,14 @@ public class KalynaRoundFunction {
     private static byte[][] roundKeyMod(byte[][] input, byte[][] roundKey, boolean mode){
         byte[][] output = new byte[input.length][input[0].length];
         for (int col = 0; col < input.length; col++){
-            String inputColumnHex = "00" + KalynaUtil.byteArrayToHex(input[col]);
-            String roundKeyColumnHex =  "00" + KalynaUtil.byteArrayToHex(roundKey[col]);
-            BigInteger tempColumn = (new BigInteger(inputColumnHex, 16));
-            if(mode)
-                tempColumn = tempColumn.add(new BigInteger(roundKeyColumnHex,16));
-            else
-                tempColumn = tempColumn.subtract(new BigInteger(roundKeyColumnHex,16));
-            System.arraycopy(tempColumn.toByteArray(),0,output[col],0,output[col].length);
+            int carry = 0;
+            for (int row = 0; row < input[col].length; row++) {
+                int ans = Byte.toUnsignedInt( input[col][row]) + Byte.toUnsignedInt(roundKey[col][row]) + carry;
+                output[col][row] = (byte) ( ans & 0xFF );
+                carry = ans>>8;
+            }
         }
         return output;
+
     }
 }
