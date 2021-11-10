@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KalynaRoundFunctionTest {
 
-    private String[] SBoxTestCaseInput = {
+    private final String[] SBoxTestCaseInput = {
             "050102030405060708090A0B0C0D0E0F",
             "62C87E6D6EBA4734E5583BDD28CACF8D",
             "53E95E9206C5D09BBF6097DCA8989844",
@@ -25,7 +25,7 @@ class KalynaRoundFunctionTest {
             "6FB7EECBBB801113A89B457208F86167033DB442B3D3EAEAC8A9BD381D7E4F9B31F536F66C313D325192ED0BFE1F6728C211D77A93DAA3964ECBBFAA3E8922C9"
     };
 
-    private String[] SBoxTestCaseOutput = {
+    private final String[] SBoxTestCaseOutput = {
             "75BB9A4D6BCB452A713ADFB31790511F",
             "FC4F5E9CC3232E40D98141FC1FD382BF",
             "5A04E6B66C846B1D26E724A5C50B28E5",
@@ -40,7 +40,7 @@ class KalynaRoundFunctionTest {
             "1EA846AF992A173DC56A0062712181AA06101A6EBD74E7E3FB4096564B83351D72EDB74C3826DEF3E71B06B3568DE2F2E81563DB3ADE1FEB048543E4BBD5C0A3"
     };
 
-    private String[] xorRoundKeyInput = {
+    private final String[] xorRoundKeyInput = {
             "16CEDEE8D9990F9E25B506F042D3B305",
             "32F172C7E2D2E1C93B4D13958FBCE28D",
             "044E672502E945D313F24197773D4547",
@@ -55,7 +55,7 @@ class KalynaRoundFunctionTest {
             "37964F89469782089A1E93875C5E6D0E5BECAA7102AC77B67462D4ECB6E3AD7BE8A1DA0524AE10EC322668E508CBC57960AC28C55AF76813503CFEA1DC4C19EC"
     };
 
-    private String[] xorRoundKeyInputKey = {
+    private final String[] xorRoundKeyInputKey = {
             "E6865B77DCE082A0F416505E6B9B3AB1",
             "7E70876EAE4984768AAAA00A7C93EC42",
             "768AAAA00A7C93EC427E70876EAE4984",
@@ -71,7 +71,7 @@ class KalynaRoundFunctionTest {
     };
 
 
-    private String[] xorRoundKeyExpectedOutput =  {
+    private final String[] xorRoundKeyExpectedOutput =  {
             "F048859F05798D3ED1A356AE294889B4",
             "4C81F5A94C9B65BFB1E7B39FF32F0ECF",
             "72C4CD850895D63F518C311019930CC3",
@@ -84,9 +84,25 @@ class KalynaRoundFunctionTest {
             "B0AA801428C79FBF00C392E2EF2062A5472DAAFDE5C3EE9AC86C323AE0863B4454362963BFB98BA7D26B6CAB0D2BD0C0668B2DD3F6263137DF3FD2BCAF532597",
             "6FB7EECBBB801113A89B457208F86167033DB442B3D3EAEAC8A9BD381D7E4F9B31F536F66C313D325192ED0BFE1F6728C211D77A93DAA3964ECBBFAA3E8922C9",
             "8F4976EEEFEB09F5C6537F6B0D3683BA5002FC5C82750D607DFAB1707BEBE0262B959BF524116A16DCCD8CD4F1A6A2A7C04C729EA50FD8B9CA043724A6DDF3CF"
-    };      
+    };
 
-    public String[] mixColumnsInput = {
+    private final String[] addRoundKeyInput = {
+            "101112131415161718191A1B1C1D1E1F",
+    };
+
+    private final String[] addRoundKeyInputKey = {
+            "16505E6B9B3AB1E6865B77DCE082A0F4"
+    };
+
+
+    private final String[] addRoundKeyExpectedOutput = {
+            "2661707EAF4FC7FD9E7491F7FC9FBE13"
+    };
+
+
+
+
+    public final String[] mixColumnsInput = {
             "9A2B1EAC7C98DD3D914ACF1776EE891B",
             "81D13FB2BFD1F76FEA4B55427562EDE1",
             "8FDA8633ED4D5139BEA63AB28F6A9C7A",
@@ -101,7 +117,7 @@ class KalynaRoundFunctionTest {
             "1E8563B33883E7AAC5A843DB562635E3066A46E43A8DDE1DFB1000AFBBDEE2F372401A6299D51FF2E7ED966E712AC0EBE81BB756BD2117A30415064C4B74813D"
     };
 
-    public String[] mixColumnsExpectedOutput = {
+    public final String[] mixColumnsExpectedOutput = {
             "16CEDEE8D9990F9E25B506F042D3B305",
             "32F172C7E2D2E1C93B4D13958FBCE28D",
             "044E672502E945D313F24197773D4547",
@@ -213,5 +229,41 @@ class KalynaRoundFunctionTest {
 
     }
 
+    @Test
+    void addRoundKey(){
+        assertEquals(addRoundKeyInput.length,addRoundKeyInputKey.length );
+        assertEquals(addRoundKeyInput.length,addRoundKeyExpectedOutput.length );
+        for (int i = 0; i < addRoundKeyInput.length; i++) {
+            byte[][] input = KalynaUtil.stringToState(addRoundKeyInput[i]);
+            byte[][] key = KalynaUtil.stringToState(addRoundKeyInputKey[i]);
+            byte[][] expectedOutput = KalynaUtil.stringToState(addRoundKeyExpectedOutput[i]);
 
+            byte[][] actualOutput = KalynaRoundFunction.addRoundKey(input,key);
+
+
+            boolean pass = true;
+            for (int j = 0; j < actualOutput.length; j++) {
+                pass = pass && Arrays.equals(actualOutput[i],expectedOutput[i]);
+            }
+            assertTrue(pass);
+        }
+    }
+
+    @Test
+    void subRoundKey() {
+        assertEquals(addRoundKeyInputKey.length, addRoundKeyExpectedOutput.length);
+        assertEquals(addRoundKeyInputKey.length, addRoundKeyInput.length);
+        for (int i = 0; i < addRoundKeyInput.length; i++) {
+            byte[][] inputState = KalynaUtil.stringToState(addRoundKeyExpectedOutput[i]);
+            byte[][] keyState = KalynaUtil.stringToState(addRoundKeyInputKey[i]);
+            byte[][] expectedOutputState = KalynaUtil.stringToState(addRoundKeyInput[i]);
+            byte[][] outputState = KalynaRoundFunction.subRoundKey(inputState, keyState);
+
+            boolean pass = true;
+            for (int j = 0; j < inputState.length; j++) {
+                pass = pass && Arrays.equals(outputState[i], expectedOutputState[i]);
+            }
+            assertTrue(pass);
+        }
+    }
 }
