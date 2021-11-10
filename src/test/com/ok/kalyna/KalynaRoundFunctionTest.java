@@ -79,6 +79,36 @@ class KalynaRoundFunctionTest {
     void invMixColumns() {
     }
 
+    @Test
+    void addRoundKey(){
+        String[] inputState = {
+            "16CEDEE8D9990F9E25B506F042D3B305"
+        };
+        String[] inputKey = {
+            //"000102030405060708090A0B0C0D0E0F",
+            "E6865B77DCE082A0F416505E6B9B3AB1"
+        };
+        String[] expectedOutput =  {
+            "F048859F05798D3ED1A356AE294889B4"
+        };
+
+        assertEquals(inputState.length,expectedOutput.length);
+        assertEquals(inputState.length,inputKey.length);
+        for (int i = 0; i < inputState.length; i++) {
+            byte[][] inputStateBin = KalynaUtil.stringToState(inputState[i]);
+            byte[][] val = KalynaUtil.stringToState(expectedOutput[i]);
+            byte[][] out = KalynaRoundFunction.invSBox(inputStateBin);
+
+            boolean pass = true;
+            for (int j = 0; j < val.length; j++)
+                pass = pass && Arrays.equals(val[j],out[j]);
+
+            assertTrue(pass);
+        }
+
+
+
+    }
 
 
 }
