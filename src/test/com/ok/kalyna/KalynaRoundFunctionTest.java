@@ -243,22 +243,10 @@ class KalynaRoundFunctionTest {
 
             byte[][] actualOutput = KalynaRoundFunction.addRoundKey(input,key);
 
-            System.out.println("TESTCASE");
             for (int j = 0; j < actualOutput.length; j++) {
                 pass = pass && Arrays.equals(actualOutput[j],expectedOutput[j]);
                 String e = KalynaUtil.byteArrayToHex(expectedOutput[j]).toUpperCase();
                 String a = KalynaUtil.byteArrayToHex(actualOutput[j]).toUpperCase();
-
-                System.out.println(" e:- " + e);
-                System.out.print(  " dif ");
-                for (int k = 0; k < a.length(); k++) {
-                    if(e.charAt(k) == a.charAt(k))
-                        System.out.print(" ");
-                    else
-                        System.out.print("-");
-                }
-                System.out.println();
-                System.out.println(" a:- " + a);
 
 
             }
