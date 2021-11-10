@@ -43,7 +43,7 @@ public class KalynaRoundFunction {
         return MDSMultiply(input, DECRYPTION_MODE);
     }
 
-    public static byte[][] addRoundKey(byte[][] input,byte[][] roundKey){
+    public static byte[][] xorRoundKey(byte[][] input, byte[][] roundKey){
         return XORstate(input,roundKey);
     }
     /**
@@ -54,14 +54,19 @@ public class KalynaRoundFunction {
      */
     private static byte[][] MDSMultiply(byte[][] input, boolean mode) {
         byte[][] output = new byte[input.length][input[0].length];
-        int m = mode ? 0 : 4;
+        //Mix or Inverse Mix
+        int m = mode ? 0 : 1;
         byte[] mdsRow = Arrays.copyOf(KalynaUtil.MDSCircularVector[m], KalynaUtil.MDSCircularVector[m].length);
 
         // Matrix-Column Multiply
-        for(int col =0; col < input.length; col++){
-            for(int row = 0; row < input[0].length; row ++)
-                output[col][row] ^= KalynaUtil.GFLookUp[ Byte.toUnsignedInt(mdsRow[row]) ][ Byte.toUnsignedInt(input[col][row])];
-            circularRotate(mdsRow,1);
+        for(int col = 0; col < input.length; col++){
+            for(int row = 0; row < input[0].length; row ++){
+                for (int row1 = 0; row1 <  input[0].length ; row1++)
+                    output[col][row] ^= KalynaUtil.GFLookUp[ mdsRow[row1] ][ Byte.toUnsignedInt(input[col][row1]) ];
+
+                // Right Circular Rotating MDS Vector
+                mdsRow = KalynaUtil.circularRotate(mdsRow,-1);
+            }
         }
         return output;
     }
@@ -103,7 +108,7 @@ public class KalynaRoundFunction {
                 tempRow[col] = input[col][row];
 
             // Shifting
-            tempRow = circularRotate(tempRow, mode? shift : -1 * shift) ;
+            tempRow = KalynaUtil.circularRotate(tempRow, mode? shift : -1 * shift) ;
 
             //Storing back into that Input State
             for(int col = 0; col < input.length; col++)
@@ -113,22 +118,6 @@ public class KalynaRoundFunction {
 
         return output;
     }
-
-    /**
-     * Rotates right the given byte array number <code>shift</code> times
-     * @param input the given byte array
-     * @param shift the amount to right shift
-     * @return the shifted array
-     */
-    private static byte[] circularRotate(byte[] input, int shift){
-        shift = shift % input.length;
-        byte[] output = Arrays.copyOf(input,input.length);
-
-        System.arraycopy(input, 0, output, input.length - shift, shift);
-        System.arraycopy(input, shift, output, 0, input.length - shift);
-        return output;
-    }
-
 
 
     private static byte[][] XORstate(byte[][] input,byte[][] roundKey) {
