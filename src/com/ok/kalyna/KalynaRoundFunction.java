@@ -8,12 +8,28 @@ public class KalynaRoundFunction {
     public static final boolean ENCRYPTION_MODE = true;
     public static final boolean DECRYPTION_MODE = false;
 
-
     /**
-     * Performs SBox operation on the give state matrix
+     * Performs the Shift rows operation on the given state matrix
      * @param input the input state matrix
+     * @return the shifted matrix
      */
-    public static byte[][] sBox(byte[][] input){
+    public static byte[][] shiftRows(byte[][] input){
+        return shiftRows(input,ENCRYPTION_MODE);
+    }
+    /**
+     * Performs the Inverse Shift rows operation on the given state matrix
+     * @param input the input state matrix
+     * @return the inverse shifted matrix
+     */
+    public static byte[][] invShiftRows(byte[][] input){
+        return shiftRows(input,DECRYPTION_MODE);
+    }
+    /**
+     * Performs SBox operation on the given state matrix
+     * @param input the input state matrix
+     * @return the substituted matrix
+     */
+    public static byte[][] SBox(byte[][] input){
         return substituteState(input,ENCRYPTION_MODE);
     }
 
@@ -72,13 +88,17 @@ public class KalynaRoundFunction {
         return roundKeyMod(input,roundKey, DECRYPTION_MODE);
     }
 
+
+
+
     /**
-     * performs the MDS mutiply
-     * @param input bhla
-     * @param mode bla
-     * @return the
+     * performs the MDS multiply on the given input state matrix
+     * @param input The state matrix
+     * @param mode decryption or encryption Matrix to be used
+     * @return the input matrix multiplied by MDS matrix
      */
     private static byte[][] MDSMultiply(byte[][] input, boolean mode) {
+
         byte[][] output = new byte[input.length][input[0].length];
         //Mix or Inverse Mix
         int m = mode ? 0 : 1;
@@ -145,7 +165,12 @@ public class KalynaRoundFunction {
         return output;
     }
 
-
+    /**
+     * XORs the given key over the input matrix and returns the same
+     * @param input the input matrix
+     * @param roundKey round key
+     * @return the resulting matrix
+     */
     private static byte[][] XORState(byte[][] input, byte[][] roundKey) {
         byte[][] output = new byte[input.length][input[0].length];
         for (int i = 0; i < input.length; i++) {
@@ -156,12 +181,23 @@ public class KalynaRoundFunction {
         return output;
     }
 
+    /**
+     * Adds each column of the input matrix with the round key matrix with mod 2^64
+     * @param input the input matrix
+     * @param roundKey given round key
+     * @param mode mode of operation
+     * @return the resulting matrix
+     */
     private static byte[][] roundKeyMod(byte[][] input, byte[][] roundKey, boolean mode){
         byte[][] output = new byte[input.length][input[0].length];
         for (int col = 0; col < input.length; col++){
             int carry = 0;
             for (int row = 0; row < input[col].length; row++) {
-                int ans = Byte.toUnsignedInt( input[col][row]) + Byte.toUnsignedInt(roundKey[col][row]) + carry;
+                int ans;
+                //negate the round key val if we are decrypting
+                int roundKeyVal = Byte.toUnsignedInt(roundKey[col][row]) * (mode ? 1: -1);
+
+                ans = Byte.toUnsignedInt( input[col][row]) + roundKeyVal + carry;
                 output[col][row] = (byte) ( ans & 0xFF );
                 carry = ans>>8;
             }
