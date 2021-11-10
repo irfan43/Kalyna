@@ -43,6 +43,9 @@ public class KalynaRoundFunction {
         return MDSMultiply(input, DECRYPTION_MODE);
     }
 
+    public static byte[][] addRoundKey(byte[][] input,byte[][] roundKey){
+        return XORstate(input,roundKey);
+    }
     /**
      * performs the MDS mutiply
      * @param input bhla
@@ -128,7 +131,7 @@ public class KalynaRoundFunction {
 
 
 
-    private static byte[][] addRoundKey(byte[][] input,byte[][] roundKey) {
+    private static byte[][] XORstate(byte[][] input,byte[][] roundKey) {
         byte[][] output = new byte[input.length][input[0].length];
         for (int i = 0; i < input.length; i++) {
             for (int j = 0; j < input[0].length; j++) {
