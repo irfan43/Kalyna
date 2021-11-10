@@ -17,6 +17,14 @@ public class KalynaRoundFunction {
         return shiftRows(input,ENCRYPTION_MODE);
     }
     /**
+     * Performs the Inverse Shift rows operation on the given state matrix
+     * @param input the input state matrix
+     * @return the inverse shifted matrix
+     */
+    public static byte[][] invShiftRows(byte[][] input){
+        return shiftRows(input,DECRYPTION_MODE);
+    }
+    /**
      * Performs SBox operation on the given state matrix
      * @param input the input state matrix
      * @return the substituted matrix
@@ -157,7 +165,12 @@ public class KalynaRoundFunction {
         return output;
     }
 
-
+    /**
+     * XORs the given key over the input matrix and returns the same
+     * @param input the input matrix
+     * @param roundKey round key
+     * @return the resulting matrix
+     */
     private static byte[][] XORState(byte[][] input, byte[][] roundKey) {
         byte[][] output = new byte[input.length][input[0].length];
         for (int i = 0; i < input.length; i++) {
@@ -168,6 +181,13 @@ public class KalynaRoundFunction {
         return output;
     }
 
+    /**
+     * Adds each column of the input matrix with the round key matrix with mod 2^64
+     * @param input the input matrix
+     * @param roundKey given round key
+     * @param mode mode of operation
+     * @return the resulting matrix
+     */
     private static byte[][] roundKeyMod(byte[][] input, byte[][] roundKey, boolean mode){
         byte[][] output = new byte[input.length][input[0].length];
         for (int col = 0; col < input.length; col++){
