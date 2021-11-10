@@ -152,7 +152,7 @@ class KalynaRoundFunctionTest {
             byte[][] inputState = KalynaUtil.stringToState(input[i]);
             byte[][] val = KalynaUtil.stringToState(expectedOutput[i]);
 
-            byte[][] out = KalynaRoundFunction.sBox(inputState);
+            byte[][] out = KalynaRoundFunction.SBox(inputState);
             boolean pass = true;
             for (int j = 0; j < val.length; j++)
                 pass = pass && Arrays.equals(val[j],out[j]);
@@ -245,10 +245,6 @@ class KalynaRoundFunctionTest {
 
             for (int j = 0; j < actualOutput.length; j++) {
                 pass = pass && Arrays.equals(actualOutput[j],expectedOutput[j]);
-                String e = KalynaUtil.byteArrayToHex(expectedOutput[j]).toUpperCase();
-                String a = KalynaUtil.byteArrayToHex(actualOutput[j]).toUpperCase();
-
-
             }
         }
         assertTrue(pass);
@@ -262,6 +258,7 @@ class KalynaRoundFunctionTest {
             byte[][] inputState = KalynaUtil.stringToState(addRoundKeyExpectedOutput[i]);
             byte[][] keyState = KalynaUtil.stringToState(addRoundKeyInputKey[i]);
             byte[][] expectedOutputState = KalynaUtil.stringToState(addRoundKeyInput[i]);
+
             byte[][] outputState = KalynaRoundFunction.subRoundKey(inputState, keyState);
 
             boolean pass = true;

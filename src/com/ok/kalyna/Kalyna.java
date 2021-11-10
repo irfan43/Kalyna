@@ -1,7 +1,6 @@
 package com.ok.kalyna;
 
 import java.util.Arrays;
-import java.util.Scanner;
 
 public class Kalyna {
 
@@ -39,7 +38,7 @@ public class Kalyna {
         }
         byte[] tmp = {(byte)0x00,(byte) 0xFF};
         byte[][] org = Arrays.copyOf(tst,tst.length);
-        KalynaRoundFunction.sBox(tst);
+        KalynaRoundFunction.SBox(tst);
         System.out.println(tst);
         KalynaRoundFunction.invSBox(tst);
         System.out.println(tst);
