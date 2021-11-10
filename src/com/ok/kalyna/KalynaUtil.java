@@ -4,6 +4,9 @@ import java.util.Arrays;
 
 public class KalynaUtil {
 
+    public static int[] roundCount = {
+            10,14,18
+    };
     public static byte[][] SBox = {
         {
             (byte) 0xA8, (byte) 0x43, (byte) 0x5F, (byte) 0x06, (byte) 0x6B, (byte) 0x75, (byte) 0x6C, (byte) 0x59, (byte) 0x71, (byte) 0xDF, (byte) 0x87, (byte) 0x95, (byte) 0x17, (byte) 0xF0, (byte) 0xD8, (byte) 0x09,
