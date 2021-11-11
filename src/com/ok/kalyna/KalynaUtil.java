@@ -191,16 +191,26 @@ public class KalynaUtil {
         StringBuilder hexString = new StringBuilder(input.length * 2);
         for (byte b : input)
             hexString.append(String.format("%02x", b));
-        return hexString.toString();
+        return hexString.toString().toUpperCase();
     }
-    
-    
+
+
+    public static String byteArrayToHex(byte[][] input) {
+        StringBuilder hexString = new StringBuilder(input.length * 2);
+        for (byte[] clm : input) {
+            for (byte b : clm)
+                hexString.append(String.format("%02x", b));
+            hexString.append("\n");
+        }
+        return hexString.toString().toUpperCase();
+    }
+
     public static byte[][] stringToState(String input){
         byte[][] state = new byte[input.length()/16][8];
         for (int i = 0; i < input.length()/16; i++) {
             for(int j = 0;j < 8;j++) {
                 int index = (i*8 + j) * 2;
-                // Converts Hex to 1 Byte 
+                // Converts Hex to 1 Byte
                 state[i][j] = (byte) Integer.parseInt(input.substring(index, index + 2), 16);
             }
         }
