@@ -212,8 +212,16 @@ public class KalynaUtil {
         }
         return hexString.toString().toUpperCase();
     }
+    public static byte[] hexToByteArray(String input){
+        byte[] output = new byte[input.length()/2];
+        for (int i = 0; i < output.length; i++) {
+                // Converts Hex to 1 Byte
+            output[i] = (byte) Integer.parseInt(input.substring(i, i + 2), 16);
 
-    public static byte[][] stringToState(String input){
+        }
+        return output;
+    }
+    public static byte[][] hexToState(String input){
         byte[][] state = new byte[input.length()/16][8];
         for (int i = 0; i < input.length()/16; i++) {
             for(int j = 0;j < 8;j++) {
@@ -225,6 +233,45 @@ public class KalynaUtil {
         return state;
     }
 
+    public static byte[][] getState(byte[] input){
+        if(input.length%8 != 0)
+            throw new IllegalArgumentException("invalid size of input array");
+        byte[][] output = new byte[input.length/8][8];
+
+        for (int i = 0; i < output.length; i++)
+            System.arraycopy(input,i*8,output[i],0,8);
+
+        return output;
+    }
+    public static byte[] expandState(byte[][] input){
+        byte[] output = new byte[input.length*8];
+        for (int i = 0; i < input.length; i++) {
+            System.arraycopy(input[i],0,output,i*8,8);
+        }
+        return output;
+    }
+    public static byte[] shiftLeft(byte[] input,int shift){
+        return shiftRight(input,input.length*8 - shift);
+    }
+    public static byte[] shiftRight(byte[] input,int shift){
+        int byteShift = shift/8;
+        shift = shift%8;
+        byte[] tmp = circularRotate(input,byteShift);
+        byte[] output = new byte[tmp.length];
+        byte carry = 0x00;
+        for (int i = 0; i < tmp.length; i++) {
+            byte b = tmp[i];
+            carry = (byte) ((tmp[i]>>(8 - shift))&0xFF);
+
+        }
+
+        return tmp;
+    }
+    public static byte[][] circularRotate(byte[][] input, int shift){
+        byte[] tmp = expandState(input);
+        tmp = circularRotate(tmp,shift);
+        return getState(tmp);
+    }
     /**
      * Rotates right the given byte array number <code>shift</code> times
      * @param input the given byte array

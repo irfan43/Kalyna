@@ -24,20 +24,44 @@ public class KalynaKeyScheduler {
 
         state = scheduleRound(state,genkey);
         System.out.println("got kt - \n" + KalynaUtil.byteArrayToHex(state));
-        byte[][] kt = KalynaUtil.copyOf(state);
         byte[][] id = KalynaUtil.copyOf(key);
+        byte[][] kt ;//= KalynaUtil.copyOf(key);
+        for (int i = 0; i < nRounds; i+=2) {
+            System.out.println("ROUND " + i );
+            state = scheduleRoundN(tmv,state,id);
+            keySchedule[i] = KalynaUtil.copyOf(state);
+            id = KalynaUtil.circularRotate(id,8);
+            System.out.println("got id - \n" + KalynaUtil.byteArrayToHex(id));
+            for (int j = 0; j < tmv.length; j++) {
+                for (int k = 0; k < tmv[j].length; k++) {
+                    tmv[j][k] = (byte) ((tmv[j][k]<<1)&0xFF);
+                }
+            }
+            System.out.println("got tmv - \n" + KalynaUtil.byteArrayToHex(tmv));
+
+        }
+        return keySchedule;
+    }
+    private static byte[][] scheduleRoundN(byte[][] tmv,byte[][] state,byte[][] id){
+        byte[][] kt ;//= KalynaUtil.copyOf(key);
 
         state = KalynaRoundFunction.addRoundKey(state,tmv);
         System.out.println("add tmv :- \n" + KalynaUtil.byteArrayToHex(state));
+        kt = KalynaUtil.copyOf(state);
         state = KalynaRoundFunction.addRoundKey(state,id);
         System.out.println("add kt :- \n" + KalynaUtil.byteArrayToHex(state));
         state = SRMTransform(state);
         System.out.println("add SRM :- \n" + KalynaUtil.byteArrayToHex(state));
-        state = KalynaRoundFunction.xorRoundKey(state,id);
+        state = KalynaRoundFunction.xorRoundKey(state,kt);
+        //kt = KalynaUtil.copyOf(state);
         System.out.println("add XOR :- \n" + KalynaUtil.byteArrayToHex(state));
 
-
-        return keySchedule;
+        state = SRMTransform(state);
+        System.out.println("add SRM :- \n" + KalynaUtil.byteArrayToHex(state));
+        state = KalynaRoundFunction.addRoundKey(state,kt);
+        System.out.println("add kt :- \n" + KalynaUtil.byteArrayToHex(state));
+        
+        return state;
     }
     private static byte[][] scheduleRound(byte[][] input,byte[][][] key){
         byte[][] state = KalynaUtil.copyOf(input);

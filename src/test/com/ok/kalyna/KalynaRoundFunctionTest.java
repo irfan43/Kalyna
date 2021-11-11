@@ -27,8 +27,8 @@ class KalynaRoundFunctionTest {
 
         assertEquals(input.length,expectedOutput.length);
         for (int i = 0; i < input.length; i++) {
-            byte[][] inputState = KalynaUtil.stringToState(input[i]);
-            byte[][] val = KalynaUtil.stringToState(expectedOutput[i]);
+            byte[][] inputState = KalynaUtil.hexToState(input[i]);
+            byte[][] val = KalynaUtil.hexToState(expectedOutput[i]);
 
             byte[][] out = KalynaRoundFunction.SBox(inputState);
             boolean pass = true;
@@ -46,8 +46,8 @@ class KalynaRoundFunctionTest {
 
         assertEquals(input.length,expectedOutput.length);
         for (int i = 0; i < input.length; i++) {
-            byte[][] inputState = KalynaUtil.stringToState(input[i]);
-            byte[][] val = KalynaUtil.stringToState(expectedOutput[i]);
+            byte[][] inputState = KalynaUtil.hexToState(input[i]);
+            byte[][] val = KalynaUtil.hexToState(expectedOutput[i]);
 
             byte[][] out = KalynaRoundFunction.invSBox(inputState);
             boolean pass = true;
@@ -62,8 +62,8 @@ class KalynaRoundFunctionTest {
     void mixColumns() {
         assertEquals(TestVectors.mixColumnsInput.length, TestVectors.mixColumnsExpectedOutput.length);
         for (int state = 0; state < TestVectors.mixColumnsInput.length; state++) {
-            byte[][] inputState = KalynaUtil.stringToState(TestVectors.mixColumnsInput[state]);
-            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.mixColumnsExpectedOutput[state]);
+            byte[][] inputState = KalynaUtil.hexToState(TestVectors.mixColumnsInput[state]);
+            byte[][] expectedOutputState = KalynaUtil.hexToState(TestVectors.mixColumnsExpectedOutput[state]);
             byte[][] outputState = KalynaRoundFunction.mixColumns(inputState);
 
             boolean pass = true;
@@ -78,8 +78,8 @@ class KalynaRoundFunctionTest {
     void invMixColumns() {
         assertEquals(TestVectors.mixColumnsInput.length, TestVectors.mixColumnsExpectedOutput.length);
         for (int state = 0; state < TestVectors.mixColumnsInput.length; state++) {
-            byte[][] inputState = KalynaUtil.stringToState(TestVectors.mixColumnsExpectedOutput[state]);
-            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.mixColumnsInput[state]);
+            byte[][] inputState = KalynaUtil.hexToState(TestVectors.mixColumnsExpectedOutput[state]);
+            byte[][] expectedOutputState = KalynaUtil.hexToState(TestVectors.mixColumnsInput[state]);
             byte[][] outputState = KalynaRoundFunction.invMixColumns(inputState);
 
             boolean pass = true;
@@ -94,8 +94,8 @@ class KalynaRoundFunctionTest {
     void shiftRows() {
         assertEquals(TestVectors.shiftRowsInput.length, TestVectors.shiftRowsExpectedOutput.length);
         for (int state = 0; state < TestVectors.shiftRowsInput.length; state++) {
-            byte[][] inputState = KalynaUtil.stringToState(TestVectors.shiftRowsInput[state]);
-            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.shiftRowsExpectedOutput[state]);
+            byte[][] inputState = KalynaUtil.hexToState(TestVectors.shiftRowsInput[state]);
+            byte[][] expectedOutputState = KalynaUtil.hexToState(TestVectors.shiftRowsExpectedOutput[state]);
             byte[][] outputState = KalynaRoundFunction.shiftRows(inputState);
 
             boolean pass = true;
@@ -110,8 +110,8 @@ class KalynaRoundFunctionTest {
     void invShiftRows() {
         assertEquals(TestVectors.shiftRowsInput.length, TestVectors.shiftRowsExpectedOutput.length);
         for (int state = 0; state < TestVectors.shiftRowsInput.length; state++) {
-            byte[][] inputState = KalynaUtil.stringToState(TestVectors.shiftRowsExpectedOutput[state]);
-            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.shiftRowsInput[state]);
+            byte[][] inputState = KalynaUtil.hexToState(TestVectors.shiftRowsExpectedOutput[state]);
+            byte[][] expectedOutputState = KalynaUtil.hexToState(TestVectors.shiftRowsInput[state]);
             byte[][] outputState = KalynaRoundFunction.invShiftRows(inputState);
 
             boolean pass = true;
@@ -127,9 +127,9 @@ class KalynaRoundFunctionTest {
         assertEquals(TestVectors.xorRoundKeyInput.length, TestVectors.xorRoundKeyExpectedOutput.length);
         assertEquals(TestVectors.xorRoundKeyInput.length, TestVectors.xorRoundKeyInputKey.length);
         for (int state = 0; state < TestVectors.xorRoundKeyInput.length; state++) {
-            byte[][] inputState = KalynaUtil.stringToState(TestVectors.xorRoundKeyInput[state]);
-            byte[][] roundKeyState = KalynaUtil.stringToState(TestVectors.xorRoundKeyInputKey[state]);
-            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.xorRoundKeyExpectedOutput[state]);
+            byte[][] inputState = KalynaUtil.hexToState(TestVectors.xorRoundKeyInput[state]);
+            byte[][] roundKeyState = KalynaUtil.hexToState(TestVectors.xorRoundKeyInputKey[state]);
+            byte[][] expectedOutputState = KalynaUtil.hexToState(TestVectors.xorRoundKeyExpectedOutput[state]);
             byte[][] outputState = KalynaRoundFunction.xorRoundKey(inputState, roundKeyState);
 
             boolean pass = true;
@@ -147,9 +147,9 @@ class KalynaRoundFunctionTest {
         assertEquals(TestVectors.addRoundKeyInput.length, TestVectors.addRoundKeyExpectedOutput.length );
         boolean pass = true;
         for (int i = 0; i < TestVectors.addRoundKeyInput.length; i++) {
-            byte[][] input = KalynaUtil.stringToState(TestVectors.addRoundKeyInput[i]);
-            byte[][] key = KalynaUtil.stringToState(TestVectors.addRoundKeyInputKey[i]);
-            byte[][] expectedOutput = KalynaUtil.stringToState(TestVectors.addRoundKeyExpectedOutput[i]);
+            byte[][] input = KalynaUtil.hexToState(TestVectors.addRoundKeyInput[i]);
+            byte[][] key = KalynaUtil.hexToState(TestVectors.addRoundKeyInputKey[i]);
+            byte[][] expectedOutput = KalynaUtil.hexToState(TestVectors.addRoundKeyExpectedOutput[i]);
 
             byte[][] actualOutput = KalynaRoundFunction.addRoundKey(input,key);
 
@@ -165,9 +165,9 @@ class KalynaRoundFunctionTest {
         assertEquals(TestVectors.addRoundKeyInputKey.length, TestVectors.addRoundKeyExpectedOutput.length);
         assertEquals(TestVectors.addRoundKeyInputKey.length, TestVectors.addRoundKeyInput.length);
         for (int i = 0; i < TestVectors.addRoundKeyInput.length; i++) {
-            byte[][] inputState = KalynaUtil.stringToState(TestVectors.addRoundKeyExpectedOutput[i]);
-            byte[][] keyState = KalynaUtil.stringToState(TestVectors.addRoundKeyInputKey[i]);
-            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.addRoundKeyInput[i]);
+            byte[][] inputState = KalynaUtil.hexToState(TestVectors.addRoundKeyExpectedOutput[i]);
+            byte[][] keyState = KalynaUtil.hexToState(TestVectors.addRoundKeyInputKey[i]);
+            byte[][] expectedOutputState = KalynaUtil.hexToState(TestVectors.addRoundKeyInput[i]);
 
             byte[][] outputState = KalynaRoundFunction.subRoundKey(inputState, keyState);
 
