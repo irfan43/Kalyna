@@ -12,44 +12,47 @@ public class KalynaKeyScheduler {
 
         byte[][] state = getNonce(blockNClm,key.length);
 
-        byte[][] K0 = new byte[key.length][];
-        byte[][] K1 = new byte[key.length][];
+        byte[][] KA = KalynaUtil.copyOf(key);
+        byte[][] KW = KalynaUtil.copyOf(key);
         byte[][] tmv = new byte[key.length][8];
-//        byte[][] state = new byte[key.length][8];
         for (int i = 0; i < key.length; i++) {
-            K0[i] = Arrays.copyOf(key[i],key[i].length);
-            K1[i] = Arrays.copyOf(key[i],key[i].length);
-//            state[i] = Arrays.copyOf(nonce[i],nonce[i].length);
             for (int j = 0; j < 8; j+=2)
                 tmv[i][j] = 0x01;
         }
-        System.out.println("got state - \n" + KalynaUtil.byteArrayToHex(state));
-        System.out.println("got k0 - \n" + KalynaUtil.byteArrayToHex(K0));
-        System.out.println("got k1 - \n" + KalynaUtil.byteArrayToHex(K1));
+        byte[][][] genkey = new byte[3][][];
+        genkey[0] = KalynaUtil.copyOf(KA);
+        genkey[1] = KalynaUtil.copyOf(KW);
+        genkey[2] = KalynaUtil.copyOf(KA);
+
+
+        state = scheduleRound(state,genkey);
+        System.out.println("got kt - \n" + KalynaUtil.byteArrayToHex(state));
+
+
+
+        return keySchedule;
+    }
+    private static byte[][] scheduleRound(byte[][] input,byte[][][] key){
+        byte[][] state = KalynaUtil.copyOf(input);
 
         for (int i = 0; i < 3; i++) {
 
             if(i != 1) {
-                state = KalynaRoundFunction.addRoundKey(state,key);
+                state = KalynaRoundFunction.addRoundKey(state,key[i]);
             } else {
-                state = KalynaRoundFunction.xorRoundKey(state,key);
+                state = KalynaRoundFunction.xorRoundKey(state,key[i]);
             }
-            System.out.println("Add RK - \n" + KalynaUtil.byteArrayToHex(state));
-
-            state = KalynaRoundFunction.SBox(state);
-            System.out.println("Add SBox - \n" + KalynaUtil.byteArrayToHex(state));
-
-            state = KalynaRoundFunction.shiftRows(state);
-            System.out.println("Add SRows - \n" + KalynaUtil.byteArrayToHex(state));
-
-            state = KalynaRoundFunction.mixColumns(state);
-            System.out.println("Add MC - \n" + KalynaUtil.byteArrayToHex(state));
-
+            state = SRMTransform(state);
         }
-        System.out.println("got kt - \n" + KalynaUtil.byteArrayToHex(state));
-        return keySchedule;
+        return state;
     }
-
+    private static byte[][] SRMTransform(byte[][] input){
+        byte[][] state;
+        state = KalynaRoundFunction.SBox(input);
+        state = KalynaRoundFunction.shiftRows(state);
+        state = KalynaRoundFunction.mixColumns(state);
+        return state;
+    }
 
     /**
      * Generates the nonce for the first state of the Key Scheduler
