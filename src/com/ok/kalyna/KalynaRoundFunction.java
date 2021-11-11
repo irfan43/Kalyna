@@ -144,7 +144,7 @@ public class KalynaRoundFunction {
         byte[][] output = new byte[input.length][input[0].length];
 
         for(int row = 0; row < 8; row++){
-            byte[] tempRow = new byte[8];
+            byte[] tempRow = new byte[input.length];
             
             //Finding Shift Amount
             int shift = input.length * row / 8;
@@ -154,7 +154,7 @@ public class KalynaRoundFunction {
                 tempRow[col] = input[col][row];
 
             // Shifting
-            tempRow = KalynaUtil.circularRotate(tempRow, mode? shift : -1 * shift) ;
+            tempRow = KalynaUtil.circularRotate(tempRow, mode? -1 * shift :shift ) ;
 
             //Storing back into that Input State
             for(int col = 0; col < input.length; col++)

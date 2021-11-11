@@ -91,6 +91,38 @@ class KalynaRoundFunctionTest {
     }
 
     @Test
+    void shiftRows() {
+        assertEquals(TestVectors.shiftRowsInput.length, TestVectors.shiftRowsExpectedOutput.length);
+        for (int state = 0; state < TestVectors.shiftRowsInput.length; state++) {
+            byte[][] inputState = KalynaUtil.stringToState(TestVectors.shiftRowsInput[state]);
+            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.shiftRowsExpectedOutput[state]);
+            byte[][] outputState = KalynaRoundFunction.shiftRows(inputState);
+
+            boolean pass = true;
+            for (int col = 0; col < expectedOutputState.length; col++)
+                pass = pass && Arrays.equals(expectedOutputState[col], outputState[col]);
+
+            assertTrue(pass);
+        }
+    }
+
+    @Test
+    void invShiftRows() {
+        assertEquals(TestVectors.shiftRowsInput.length, TestVectors.shiftRowsExpectedOutput.length);
+        for (int state = 0; state < TestVectors.shiftRowsInput.length; state++) {
+            byte[][] inputState = KalynaUtil.stringToState(TestVectors.shiftRowsExpectedOutput[state]);
+            byte[][] expectedOutputState = KalynaUtil.stringToState(TestVectors.shiftRowsInput[state]);
+            byte[][] outputState = KalynaRoundFunction.invShiftRows(inputState);
+
+            boolean pass = true;
+            for (int col = 0; col < expectedOutputState.length; col++)
+                pass = pass && Arrays.equals(expectedOutputState[col], outputState[col]);
+
+            assertTrue(pass);
+        }
+    }
+
+    @Test
     void xorRoundKey(){
         assertEquals(TestVectors.xorRoundKeyInput.length, TestVectors.xorRoundKeyExpectedOutput.length);
         assertEquals(TestVectors.xorRoundKeyInput.length, TestVectors.xorRoundKeyInputKey.length);
