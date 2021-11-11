@@ -1,17 +1,14 @@
 package com.ok.kalyna;
 
-import java.util.Arrays;
-
 public class KalynaKeyScheduler {
 
-    public static byte[][][] getNextRoundKey(byte[][] key,int blockNClm){
-
-
+    public static byte[][][] GenerateRoundKeys(byte[][] key, int blockNClm){
         int nRounds = getNRounds(key.length);
         byte[][][] keySchedule = new byte[nRounds][key.length][8];
 
-        byte[][] state = getNonce(blockNClm,key.length);
+        byte[][] state = getStartingState(blockNClm,key.length);
 
+        //TODO update for miss matched keys
         byte[][] KA = KalynaUtil.copyOf(key);
         byte[][] KW = KalynaUtil.copyOf(key);
         byte[][] tmv = new byte[key.length][8];
@@ -27,7 +24,17 @@ public class KalynaKeyScheduler {
 
         state = scheduleRound(state,genkey);
         System.out.println("got kt - \n" + KalynaUtil.byteArrayToHex(state));
+        byte[][] kt = KalynaUtil.copyOf(state);
+        byte[][] id = KalynaUtil.copyOf(key);
 
+        state = KalynaRoundFunction.addRoundKey(state,tmv);
+        System.out.println("add tmv :- \n" + KalynaUtil.byteArrayToHex(state));
+        state = KalynaRoundFunction.addRoundKey(state,id);
+        System.out.println("add kt :- \n" + KalynaUtil.byteArrayToHex(state));
+        state = SRMTransform(state);
+        System.out.println("add SRM :- \n" + KalynaUtil.byteArrayToHex(state));
+        state = KalynaRoundFunction.xorRoundKey(state,id);
+        System.out.println("add XOR :- \n" + KalynaUtil.byteArrayToHex(state));
 
 
         return keySchedule;
@@ -55,12 +62,12 @@ public class KalynaKeyScheduler {
     }
 
     /**
-     * Generates the nonce for the first state of the Key Scheduler
+     * Generates the state for the first state of the Key Scheduler
      * @param blockNClm Number of columns in the Block state
      * @param keyNClm Number of columns in the key state
-     * @return the starting nonce
+     * @return the starting state
      */
-    private static byte[][] getNonce(int blockNClm,int keyNClm){
+    private static byte[][] getStartingState(int blockNClm, int keyNClm){
         byte[][] output = new byte[keyNClm][8];
         output[0][0] = (byte) ((blockNClm + keyNClm + 1) & 0xFF);
         return output;
