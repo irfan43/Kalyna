@@ -2,16 +2,32 @@ package com.ok.kalyna;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 class KalynaKeySchedulerTest {
-
     @Test
-    void getNextRoundKey() {
+    void roundKeys() {
+        String[] input = TestVectors.keyExpansionInput;
+        String[][] expectedOutput = TestVectors.keyExpansionExpectedOutput;
+        assertEquals(input.length,expectedOutput.length);
 
-        byte[][] key = KalynaUtil.hexToState("000102030405060708090A0B0C0D0E0F");
-        byte[][][] k = KalynaKeyScheduler.GenerateRoundKeys(key,2);
-        for (int i = 0; i < k.length; i+=2) {
-            System.out.println("key " + i + ":-");
-            System.out.println(KalynaUtil.byteArrayToHex(k[i]));
+        int[] numColBlocks = {2,2,4,4,8};
+        for (int state = 0; state < input.length; state++) {
+            byte[][] masterKeyState = KalynaUtil.hexStringToState(input[state]);
+            byte[][][] outputStates = KalynaKeyScheduler.generateRoundKeys(masterKeyState, numColBlocks[state]);
+            assertEquals(outputStates.length, expectedOutput[state].length);
+
+            for (int round = 0; round < outputStates.length; round++) {
+                byte[][] expectedOutputState = KalynaUtil.hexStringToState(expectedOutput[state][round]);
+                boolean pass = true;
+                for (int col = 0; col < expectedOutputState.length; col++) {
+                    pass = pass && Arrays.equals(expectedOutputState[col],outputStates[round][col]);
+                }
+                assertTrue(pass);
+            }
         }
     }
 }

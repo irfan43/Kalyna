@@ -1,84 +1,112 @@
 package com.ok.kalyna;
 
+import java.util.Arrays;
+
 public class KalynaKeyScheduler {
+    public static byte[][][] generateRoundKeys(byte[][] masterKey, int numColBlock){
+        int totalRounds = getNRounds(masterKey.length);
+        byte[][] intermediateKey = generateIntermediateKey(masterKey, numColBlock);
+        byte[][][] roundKeys = new byte[totalRounds][numColBlock][8];
 
-    public static byte[][][] GenerateRoundKeys(byte[][] key, int blockNClm){
-        int nRounds = getNRounds(key.length) + 1;
-        byte[][][] keySchedule = new byte[nRounds][key.length][8];
+        for(int round = 0; round <= totalRounds / 2; round ++){
+            //Even Round Key Generation
+            roundKeys[2 * round] = generateInitialRoundKeyState(masterKey, numColBlock, round);
+            byte[][] roundConstantTMV = generateRoundConstantTMV(round, numColBlock);
+            byte[][] intermediateConstantSum = KalynaRoundFunction.addRoundKey(roundConstantTMV, intermediateKey);
 
-        byte[][] state = getStartingState(blockNClm,key.length);
+            for (int i = 0; i < 2; i++) {
+                if(i ==0)
+                    roundKeys[2 * round] = KalynaRoundFunction.addRoundKey(roundKeys[2 * round], intermediateConstantSum);
 
-        //TODO update for miss matched keys
-        byte[][] KA = KalynaUtil.copyOf(key);
-        byte[][] KW = KalynaUtil.copyOf(key);
-        byte[][] tmv = new byte[key.length][8];
-        for (int i = 0; i < key.length; i++) {
-            for (int j = 0; j < 8; j+=2)
-                tmv[i][j] = 0x01;
-        }
-        byte[][][] genkey = new byte[3][][];
-        genkey[0] = KalynaUtil.copyOf(KA);
-        genkey[1] = KalynaUtil.copyOf(KW);
-        genkey[2] = KalynaUtil.copyOf(KA);
+                else
+                    roundKeys[2 * round] = KalynaRoundFunction.xorRoundKey(roundKeys[2 * round], intermediateConstantSum);
 
+                roundKeys[2 * round] = subShiftMixTransform(roundKeys[2 * round]);
+               }
+            roundKeys[2 * round] = KalynaRoundFunction.addRoundKey(roundKeys[2 * round], intermediateConstantSum);
+            System.out.println("ROUND " + (2 * round) + "\n" + KalynaUtil.stateToHexString(roundKeys[2 * round]));
 
-        state = scheduleRound(state,genkey);
-//        System.out.println("got kt - \n" + KalynaUtil.byteArrayToHex(state));
-        byte[][] id = KalynaUtil.copyOf(key);
-        byte[][] kt = KalynaUtil.copyOf(state);
-        for (int i = 0; i < nRounds; i+=2) {
-            System.out.println("ROUND " + i + " == == == == ");
-            state = KalynaUtil.copyOf(kt);
-            state = scheduleRoundN(tmv,state,id);
-            keySchedule[i] = KalynaUtil.copyOf(state);
-            id = KalynaUtil.circularRotate(id,8);
-//            System.out.println("got id - \n" + KalynaUtil.byteArrayToHex(id));
-            for (int j = 0; j < tmv.length; j++) {
-                for (int k = 0; k < tmv[j].length; k++) {
-                    tmv[j][k] = (byte) ((tmv[j][k]<<1)&0xFF);
-                }
+            //Odd Round Key Generation
+            if(round < totalRounds / 2){
+                roundKeys[2 * round + 1] = KalynaUtil.circularRotateState(roundKeys[2 * round], 2 * numColBlock + 3);
+                System.out.println("ROUND " + (2 * round + 1) + "\n" + KalynaUtil.stateToHexString(roundKeys[2 * round + 1]));
             }
-//            System.out.println("got tmv - \n" + KalynaUtil.byteArrayToHex(tmv));
-
         }
-        return keySchedule;
+        return roundKeys;
     }
-    private static byte[][] scheduleRoundN(byte[][] tmv,byte[][] state,byte[][] id){
-        byte[][] kt ;//= KalynaUtil.copyOf(key);
 
-        state = KalynaRoundFunction.addRoundKey(state,tmv);
-//        System.out.println("add tmv :- \n" + KalynaUtil.byteArrayToHex(state));
-        kt = KalynaUtil.copyOf(state);
-        state = KalynaRoundFunction.addRoundKey(state,id);
-//        System.out.println("add kt :- \n" + KalynaUtil.byteArrayToHex(state));
-        state = SRMTransform(state);
-//        System.out.println("add SRM :- \n" + KalynaUtil.byteArrayToHex(state));
-        state = KalynaRoundFunction.xorRoundKey(state,kt);
-        //kt = KalynaUtil.copyOf(state);
-//        System.out.println("add XOR :- \n" + KalynaUtil.byteArrayToHex(state));
+    private static byte[][] generateIntermediateKey(byte[][] masterKey, int numColBlock){
+        //Finding the Intermediate Constant to Add to the Key
+        byte[][] intermediateKey = new byte[numColBlock][8];
+        intermediateKey[0][0] = (byte) ((numColBlock + masterKey.length + 1) & 0xFF);
+        byte[][] keyA;
+        byte[][] keyW;
 
-        state = SRMTransform(state);
-//        System.out.println("add SRM :- \n" + KalynaUtil.byteArrayToHex(state));
-        state = KalynaRoundFunction.addRoundKey(state,kt);
-//        System.out.println("add kt :- \n" + KalynaUtil.byteArrayToHex(state));
-        
-        return state;
-    }
-    private static byte[][] scheduleRound(byte[][] input,byte[][][] key){
-        byte[][] state = KalynaUtil.copyOf(input);
+        //Generating Alpha and Omega Partial Keys from Master Key
+        if(numColBlock != masterKey.length){
+            keyA = new byte[masterKey.length/2][8];
+            keyW = new byte[masterKey.length/2][8];
+            for (int col = 0; col < masterKey.length/2; col++) {
+                keyA[col] = Arrays.copyOf(masterKey[col] , masterKey[col].length);
+                keyW[col] = Arrays.copyOf(masterKey[masterKey.length/2 + col] , masterKey[masterKey.length/2 + col].length);
+            }
+        }
+        else{
+            keyA = KalynaUtil.copyState(masterKey);
+            keyW = KalynaUtil.copyState(masterKey);
+        }
 
+        //Generating Intermediate Key
         for (int i = 0; i < 3; i++) {
-
             if(i != 1) {
-                state = KalynaRoundFunction.addRoundKey(state,key[i]);
+                intermediateKey = KalynaRoundFunction.addRoundKey(intermediateKey,keyA);
             } else {
-                state = KalynaRoundFunction.xorRoundKey(state,key[i]);
+                intermediateKey = KalynaRoundFunction.xorRoundKey(intermediateKey,keyW);
             }
-            state = SRMTransform(state);
+            intermediateKey = subShiftMixTransform(intermediateKey);
         }
-        return state;
+
+        return intermediateKey;
     }
-    private static byte[][] SRMTransform(byte[][] input){
+
+    private static byte[][] generateInitialRoundKeyState(byte[][] masterKey, int numColBlock, int round){
+        byte [][] initialKeyState;
+        // Same Length
+        if(masterKey.length == numColBlock)
+            initialKeyState = KalynaUtil.circularRotateState(masterKey, 8 * round);
+
+            // Different Length
+        else{
+            initialKeyState = new byte[numColBlock][8];
+            // Right Circular Rotate Master Key
+            byte[][] rotatedKeyState = KalynaUtil.circularRotateState(masterKey, 8 * (round / 2));
+
+            int offset = round % 2 == 0 ? 0 : numColBlock;
+            //Initialize the Initial key State
+            for (int col = 0; col < numColBlock; col++)
+                System.arraycopy(rotatedKeyState[offset + col],0,initialKeyState[col],0, rotatedKeyState[col].length);
+        }
+        return initialKeyState;
+    }
+
+    //TODO - Find a better way for shifting after Round 16. At the moment its Hardcoded
+    private static byte[][] generateRoundConstantTMV(int round, int numColRoundKey){
+        // Generating Round Constant TMV value
+        byte[][] roundConstantTMV = new byte[numColRoundKey][8];
+        for (int col = 0; col < numColRoundKey; col++) {
+            if(round < 8){
+                for (int row = 0; row < 8; row += 2)
+                    roundConstantTMV[col][row] = (byte) (0x01 << round);
+            }
+            else{
+                for (int row = 1; row < 8; row += 2)
+                    roundConstantTMV[col][row] = (byte) (0x01 << (round % 8));
+            }
+        }
+        return roundConstantTMV;
+    }
+
+    private static byte[][] subShiftMixTransform(byte[][] input){
         byte[][] state;
         state = KalynaRoundFunction.SBox(input);
         state = KalynaRoundFunction.shiftRows(state);
@@ -86,17 +114,6 @@ public class KalynaKeyScheduler {
         return state;
     }
 
-    /**
-     * Generates the state for the first state of the Key Scheduler
-     * @param blockNClm Number of columns in the Block state
-     * @param keyNClm Number of columns in the key state
-     * @return the starting state
-     */
-    private static byte[][] getStartingState(int blockNClm, int keyNClm){
-        byte[][] output = new byte[keyNClm][8];
-        output[0][0] = (byte) ((blockNClm + keyNClm + 1) & 0xFF);
-        return output;
-    }
     /**
      * Generates the number of rounds present
      * @param keyNClm Number of columns in the key state
@@ -106,6 +123,6 @@ public class KalynaKeyScheduler {
     private static int getNRounds(int keyNClm) throws IllegalArgumentException{
         if(keyNClm != 2 && keyNClm != 4 && keyNClm != 8)
             throw new IllegalArgumentException("Invalid size for key matrix");
-        return KalynaUtil.roundCount[ keyNClm/4 ];
+        return KalynaUtil.roundCount[ keyNClm / 4 ];
     }
 }
