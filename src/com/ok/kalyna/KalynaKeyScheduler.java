@@ -16,20 +16,19 @@ public class KalynaKeyScheduler {
             byte[][] intermediateConstantSum = KalynaRoundFunction.addRoundKey(roundConstantTMV, intermediateKey);
 
             for (int i = 0; i < 2; i++) {
-                if(i ==0)
+                if(i == 0)
                     roundKeys[2 * round] = KalynaRoundFunction.addRoundKey(roundKeys[2 * round], intermediateConstantSum);
                 else
                     roundKeys[2 * round] = KalynaRoundFunction.xorRoundKey(roundKeys[2 * round], intermediateConstantSum);
 
                 roundKeys[2 * round] = subShiftMixTransform(roundKeys[2 * round]);
-               }
+            }
             roundKeys[2 * round] = KalynaRoundFunction.addRoundKey(roundKeys[2 * round], intermediateConstantSum);
-            System.out.println("ROUND " + (2 * round) + "\n" + KalynaUtil.stateToHexString(roundKeys[2 * round]));
 
             //Odd Round Key Generation
             if(round < totalRounds / 2){
+
                 roundKeys[2 * round + 1] = KalynaUtil.circularRotateState(roundKeys[2 * round], 2 * numColBlock + 3);
-                System.out.println("ROUND " + (2 * round + 1) + "\n" + KalynaUtil.stateToHexString(roundKeys[2 * round + 1]));
             }
         }
         return roundKeys;
@@ -79,7 +78,7 @@ public class KalynaKeyScheduler {
         else{
             initialKeyState = new byte[numColBlock][8];
             // Right Circular Rotate Master Key
-            byte[][] rotatedKeyState = KalynaUtil.circularRotateState(masterKey, 8 * (round / 2));
+            byte[][] rotatedKeyState = KalynaUtil.circularRotateState(masterKey, 8 * (round/2 ));
 
             int offset = round % 2 == 0 ? 0 : numColBlock;
             //Initialize the Initial key State
@@ -97,8 +96,7 @@ public class KalynaKeyScheduler {
             if(round < 8){
                 for (int row = 0; row < 8; row += 2)
                     roundConstantTMV[col][row] = (byte) (0x01 << round);
-            }
-            else{
+            }else{
                 for (int row = 1; row < 8; row += 2)
                     roundConstantTMV[col][row] = (byte) (0x01 << (round % 8));
             }
@@ -106,6 +104,12 @@ public class KalynaKeyScheduler {
         return roundConstantTMV;
     }
 
+    /**
+     * Performs a S-Box, Shift Rows, Mix Columns operation on the input state matrix in that order
+     * and returns the resulting state matrix
+     * @param input The Input state matrix on which to perform the transformation
+     * @return the resulting state matrix
+     */
     private static byte[][] subShiftMixTransform(byte[][] input){
         byte[][] state;
         state = KalynaRoundFunction.SBox(input);
