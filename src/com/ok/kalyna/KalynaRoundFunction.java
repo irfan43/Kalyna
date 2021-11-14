@@ -88,6 +88,25 @@ public class KalynaRoundFunction {
         return roundKeyMod(input,roundKey, DECRYPTION_MODE);
     }
 
+    /**
+     * Performs a S-Box, Shift Rows, Mix Columns operation on the input state matrix in that order
+     * and returns the resulting state matrix
+     * @param input The Input state matrix on which to perform the transformation
+     * @return the resulting state matrix
+     */
+    public static byte[][] subShiftMixTransform(byte[][] input){
+        return mixColumns(shiftRows(SBox(input)));
+    }
+    /**
+     * Performs a S-Box, Shift Rows, Mix Columns operation on the input state matrix in that order
+     * and returns the resulting state matrix
+     * @param input The Input state matrix on which to perform the transformation
+     * @return the resulting state matrix
+     */
+    public static byte[][] invSubShiftMixTransform(byte[][] input){
+        return invSBox(invShiftRows(invMixColumns(input)));
+    }
+
 
 
 
@@ -145,7 +164,7 @@ public class KalynaRoundFunction {
 
         for(int row = 0; row < 8; row++){
             byte[] tempRow = new byte[input.length];
-            
+
             //Finding Shift Amount
             int shift = input.length * row / 8;
 

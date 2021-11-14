@@ -37,7 +37,7 @@ public class KalynaKeyScheduler {
                 input = KalynaRoundFunction.addRoundKey(input, key);
             else
                 input = KalynaRoundFunction.xorRoundKey(input, key);
-            input = subShiftMixTransform(input);
+            input = KalynaRoundFunction.subShiftMixTransform(input);
         }
         input = KalynaRoundFunction.addRoundKey(input , key);
         return input;
@@ -76,7 +76,7 @@ public class KalynaKeyScheduler {
             } else {
                 intermediateKey = KalynaRoundFunction.xorRoundKey(intermediateKey,keyAW[1]);
             }
-            intermediateKey = subShiftMixTransform(intermediateKey);
+            intermediateKey = KalynaRoundFunction.subShiftMixTransform(intermediateKey);
         }
         return intermediateKey;
     }
@@ -110,20 +110,6 @@ public class KalynaKeyScheduler {
         return KalynaUtil.getState(
                     KalynaUtil.circularRotate( roundConstantTMV ,( -1 ) * ( round / 8 ) )
                 );
-    }
-
-    /**
-     * Performs a S-Box, Shift Rows, Mix Columns operation on the input state matrix in that order
-     * and returns the resulting state matrix
-     * @param input The Input state matrix on which to perform the transformation
-     * @return the resulting state matrix
-     */
-    private static byte[][] subShiftMixTransform(byte[][] input){
-        byte[][] state;
-        state = KalynaRoundFunction.SBox(input);
-        state = KalynaRoundFunction.shiftRows(state);
-        state = KalynaRoundFunction.mixColumns(state);
-        return state;
     }
 
     /**
