@@ -286,7 +286,7 @@ public class KalynaUtil {
         byte[] temp = new byte[input.length * input[0].length];
         byte[][] output = new byte[input.length][input[0].length];
 
-        for(int col = 0; col < output.length; col++)
+        for(int col = 0; col < input.length; col++)
             System.arraycopy(input[col],0, temp, col * input[col].length,  input[col].length);
 
         temp = circularRotate(temp, shift);

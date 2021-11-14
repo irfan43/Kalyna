@@ -17,29 +17,32 @@ public class KalynaKeyScheduler {
                     );
 
             //Odd Round Key Generation
-            if(round < totalRounds / 2){
+            if(round < totalRounds / 2)
                 roundKeys[2 * round + 1] = KalynaUtil.circularRotateState(roundKeys[2 * round], 2 * numColBlock + 3);
-            }
+
         }
         return roundKeys;
     }
-    private static byte[][] generateIntermediateConstant(int round,int numColBlock, byte[][] interKey){
+
+    private static byte[][] generateIntermediateConstant(int round,int numColBlock, byte[][] intermediateKey){
         return KalynaRoundFunction.addRoundKey(
                 generateRoundConstantTMV(round, numColBlock),
-                interKey
+                intermediateKey
         );
     }
-    private static byte[][] schedulerRound(byte[][] input, byte[][] intermediateConst){
+
+    private static byte[][] schedulerRound(byte[][] input, byte[][] key){
         for (int i = 0; i < 2; i++) {
             if(i == 0)
-                input = KalynaRoundFunction.addRoundKey(input, intermediateConst);
+                input = KalynaRoundFunction.addRoundKey(input, key);
             else
-                input = KalynaRoundFunction.xorRoundKey(input, intermediateConst);
+                input = KalynaRoundFunction.xorRoundKey(input, key);
             input = subShiftMixTransform(input);
         }
-        input = KalynaRoundFunction.addRoundKey(input , intermediateConst);
+        input = KalynaRoundFunction.addRoundKey(input , key);
         return input;
     }
+
     private static byte[][][] generateKeyAW(byte[][] masterKey, int numColBlock){
         byte[][][] out = new byte[2][masterKey.length/2][8];
 
@@ -66,16 +69,16 @@ public class KalynaKeyScheduler {
             );
     }
 
-    private static byte[][] intermediateKeyRound(byte[][] interConst, byte[][][] keyAW){
+    private static byte[][] intermediateKeyRound(byte[][] intermediateKey, byte[][][] keyAW){
         for (int i = 0; i < 3; i++) {
             if(i != 1) {
-                interConst = KalynaRoundFunction.addRoundKey(interConst,keyAW[0]);
+                intermediateKey = KalynaRoundFunction.addRoundKey(intermediateKey,keyAW[0]);
             } else {
-                interConst = KalynaRoundFunction.xorRoundKey(interConst,keyAW[1]);
+                intermediateKey = KalynaRoundFunction.xorRoundKey(intermediateKey,keyAW[1]);
             }
-            interConst = subShiftMixTransform(interConst);
+            intermediateKey = subShiftMixTransform(intermediateKey);
         }
-        return interConst;
+        return intermediateKey;
     }
 
     private static byte[][] generateInitialRoundKeyState(byte[][] masterKey, int numColBlock, int round){
@@ -84,7 +87,7 @@ public class KalynaKeyScheduler {
         if(masterKey.length == numColBlock)
             initialKeyState = KalynaUtil.circularRotateState(masterKey, 8 * round);
 
-            // Different Length
+        // Different Length
         else{
             initialKeyState = new byte[numColBlock][8];
             // Right Circular Rotate Master Key
