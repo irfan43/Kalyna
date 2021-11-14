@@ -41,11 +41,8 @@ public class KalynaKeyScheduler {
         return input;
     }
     private static byte[][][] generateKeyAW(byte[][] masterKey, int numColBlock){
-        byte[][][] out = new byte[2][][];
+        byte[][][] out = new byte[2][masterKey.length/2][8];
 
-        //Generating Alpha and Omega Partial Keys from Master Key
-        out[0] = new byte[masterKey.length/2][8];
-        out[1] = new byte[masterKey.length/2][8];
         if(numColBlock != masterKey.length){
             for (int col = 0; col < masterKey.length/2; col++) {
                 out[0][col] = Arrays.copyOf(masterKey[col] , masterKey[col].length);
