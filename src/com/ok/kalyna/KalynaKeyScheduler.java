@@ -24,51 +24,61 @@ public class KalynaKeyScheduler {
         return roundKeys;
     }
     private static byte[][] generateIntermediateConstant(int round,int numColBlock, byte[][] interKey){
-        return KalynaRoundFunction.addRoundKey(generateRoundConstantTMV(round, numColBlock), interKey);
+        return KalynaRoundFunction.addRoundKey(
+                generateRoundConstantTMV(round, numColBlock),
+                interKey
+        );
     }
-    private static byte[][] schedulerRound(byte[][] roundKey, byte[][] intermediateConst){
-        byte[][] output = KalynaUtil.copyState(roundKey);
+    private static byte[][] schedulerRound(byte[][] input, byte[][] intermediateConst){
         for (int i = 0; i < 2; i++) {
             if(i == 0)
-                output = KalynaRoundFunction.addRoundKey(output, intermediateConst);
+                input = KalynaRoundFunction.addRoundKey(input, intermediateConst);
             else
-                output = KalynaRoundFunction.xorRoundKey(output, intermediateConst);
-            output = subShiftMixTransform(output);
+                input = KalynaRoundFunction.xorRoundKey(input, intermediateConst);
+            input = subShiftMixTransform(input);
         }
-        output = KalynaRoundFunction.addRoundKey(output , intermediateConst);
-        return output;
+        input = KalynaRoundFunction.addRoundKey(input , intermediateConst);
+        return input;
+    }
+    private static byte[][][] generateKeyAW(byte[][] masterKey, int numColBlock){
+        byte[][][] out = new byte[2][][];
+
+        //Generating Alpha and Omega Partial Keys from Master Key
+        out[0] = new byte[masterKey.length/2][8];
+        out[1] = new byte[masterKey.length/2][8];
+        if(numColBlock != masterKey.length){
+            for (int col = 0; col < masterKey.length/2; col++) {
+                out[0][col] = Arrays.copyOf(masterKey[col] , masterKey[col].length);
+                out[1][col] = Arrays.copyOf(masterKey[masterKey.length/2 + col] , masterKey[masterKey.length/2 + col].length);
+            }
+        }else{
+            out[0] = KalynaUtil.copyState(masterKey);
+            out[1] = KalynaUtil.copyState(masterKey);
+        }
+
+        return out;
     }
     private static byte[][] generateIntermediateKey(byte[][] masterKey, int numColBlock){
         //Finding the Intermediate Constant to Add to the Key
         byte[][] intermediateKey = new byte[numColBlock][8];
         intermediateKey[0][0] = (byte) ((numColBlock + masterKey.length + 1) & 0xFF);
-        byte[][] keyA;
-        byte[][] keyW;
 
-        //Generating Alpha and Omega Partial Keys from Master Key
-        if(numColBlock != masterKey.length){
-            keyA = new byte[masterKey.length/2][8];
-            keyW = new byte[masterKey.length/2][8];
-            for (int col = 0; col < masterKey.length/2; col++) {
-                keyA[col] = Arrays.copyOf(masterKey[col] , masterKey[col].length);
-                keyW[col] = Arrays.copyOf(masterKey[masterKey.length/2 + col] , masterKey[masterKey.length/2 + col].length);
-            }
-        }else{
-            keyA = KalynaUtil.copyState(masterKey);
-            keyW = KalynaUtil.copyState(masterKey);
-        }
+        return intermediateKeyRound(
+                intermediateKey,
+                generateKeyAW(masterKey,numColBlock)
+            );
+    }
 
-        //Generating Intermediate Key
+    private static byte[][] intermediateKeyRound(byte[][] interConst, byte[][][] keyAW){
         for (int i = 0; i < 3; i++) {
             if(i != 1) {
-                intermediateKey = KalynaRoundFunction.addRoundKey(intermediateKey,keyA);
+                interConst = KalynaRoundFunction.addRoundKey(interConst,keyAW[0]);
             } else {
-                intermediateKey = KalynaRoundFunction.xorRoundKey(intermediateKey,keyW);
+                interConst = KalynaRoundFunction.xorRoundKey(interConst,keyAW[1]);
             }
-            intermediateKey = subShiftMixTransform(intermediateKey);
+            interConst = subShiftMixTransform(interConst);
         }
-
-        return intermediateKey;
+        return interConst;
     }
 
     private static byte[][] generateInitialRoundKeyState(byte[][] masterKey, int numColBlock, int round){
