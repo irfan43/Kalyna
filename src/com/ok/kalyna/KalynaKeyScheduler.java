@@ -3,6 +3,7 @@ package com.ok.kalyna;
 import java.util.Arrays;
 
 public class KalynaKeyScheduler {
+
     public static byte[][][] generateRoundKeys(byte[][] masterKey, int numColBlock){
         int totalRounds = getNRounds(masterKey.length);
         byte[][] intermediateKey = generateIntermediateKey(masterKey, numColBlock);
@@ -17,7 +18,6 @@ public class KalynaKeyScheduler {
             for (int i = 0; i < 2; i++) {
                 if(i ==0)
                     roundKeys[2 * round] = KalynaRoundFunction.addRoundKey(roundKeys[2 * round], intermediateConstantSum);
-
                 else
                     roundKeys[2 * round] = KalynaRoundFunction.xorRoundKey(roundKeys[2 * round], intermediateConstantSum);
 

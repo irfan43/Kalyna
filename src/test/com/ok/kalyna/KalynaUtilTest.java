@@ -16,9 +16,7 @@ class KalynaUtilTest {
 
     @Test
     void shiftLeft() {
-        String in = "00000000010000000001";
-        byte[] out = KalynaUtil.shiftLeft(KalynaUtil.hexToByteArray(in) , 1);
-        System.out.println("got :-\n" + KalynaUtil.byteArrayToHex(out));
+
     }
 
     @Test

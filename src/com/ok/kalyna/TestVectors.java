@@ -164,7 +164,7 @@ public class TestVectors {
             "1E8563B33883E7AAC5A843DB562635E3066A46E43A8DDE1DFB1000AFBBDEE2F372401A6299D51FF2E7ED966E712AC0EBE81BB756BD2117A30415064C4B74813D"
     };
     
-    public static  final String[] keyExpansionInput = {
+    public static final String[] keyExpansionInput = {
             //128-128
             "000102030405060708090A0B0C0D0E0F",
             //128-256
