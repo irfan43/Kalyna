@@ -18,7 +18,7 @@ class KalynaCipherTest {
             byte[] input = KalynaUtil.reduceState(KalynaUtil.hexStringToState(TestVectors.BlockEncryptionInput[state]));
             byte[] expectedOutput =  KalynaUtil.reduceState(KalynaUtil.hexStringToState(TestVectors.BlockEncryptionOutput[state]));
             byte[] key = KalynaUtil.reduceState(KalynaUtil.hexStringToState(TestVectors.BlockEncryptionKey[state]));
-            byte[] output = new KalynaCipher(key, KalynaCipher.getMode(input.length, key.length)).EncryptBlock(input);
+            byte[] output = new KalynaCipher(key, Kalyna.getMode(input.length, key.length)).EncryptBlock(input);
 
             pass = pass && Arrays.equals(expectedOutput, output);
 
@@ -36,7 +36,7 @@ class KalynaCipherTest {
             byte[] input = KalynaUtil.reduceState(KalynaUtil.hexStringToState(TestVectors.BlockEncryptionOutput[state]));
             byte[] expectedOutput =  KalynaUtil.reduceState(KalynaUtil.hexStringToState(TestVectors.BlockEncryptionInput[state]));
             byte[] key = KalynaUtil.reduceState(KalynaUtil.hexStringToState(TestVectors.BlockEncryptionKey[state]));
-            byte[] output = new KalynaCipher(key, KalynaCipher.getMode(input.length, key.length)).DecryptBlock(input);
+            byte[] output = new KalynaCipher(key, Kalyna.getMode(input.length, key.length)).DecryptBlock(input);
 
             pass = pass && Arrays.equals(expectedOutput, output);
 

@@ -1,53 +1,109 @@
 package com.ok.kalyna;
 
-import java.util.Arrays;
+
+import java.security.PublicKey;
 
 public class Kalyna {
 
 
-    public static byte[] sbox(byte[] input){
-        byte[] output;
+    public static final int KALYNA_128KEY_128BLOCK = 256;
+    public static final int KALYNA_256KEY_128BLOCK = 512;
+    public static final int KALYNA_256KEY_256BLOCK = 1024;
+    public static final int KALYNA_512KEY_256BLOCK = 2048;
+    public static final int KALYNA_512KEY_512BLOCK = 4096;
 
-        return null;
+    /**
+     * returns the mode for the given key size and block size
+     * @param BlockSize the block size in bytes
+     * @param KeySize the key size in bytes
+     * @return the mode of the cipher
+     */
+    public static int getMode(int BlockSize,int KeySize){
+        if(BlockSize != 64 && BlockSize != 32 && BlockSize != 16)
+            throw new IllegalArgumentException("Invalid Block Size");
+        if(KeySize != 64 && KeySize != 32 && KeySize != 16)
+            throw new IllegalArgumentException("Invalid Key Size");
+
+        if( (KeySize != BlockSize) && (2 * BlockSize != KeySize) )
+            throw new IllegalArgumentException("Invalid Match of Key and Block Size");
+
+        return KeySize*BlockSize;
     }
-    public static byte[] invSbox() {
-        return null;
-    }
 
-    public static byte[] mixColumns(){
-        return null;
-    }
-    public static byte[] invMixColumns(){
-        return null;
-    }
-
-    public static void encryptedBlock(){
-
-    }
-    public static void decryptBlock(){
-
-    }
-
-    public static void main(String[] args){
-        byte[][] tst = new byte[8][8];
-
-        for (int i = 0; i <8; i++) {
-            for (int j = 0; j < 8; j++) {
-                tst[i][j] = (byte) (120 + i*j);
-            }
+    /**
+     * Gives the Key Size in bytes
+     * @param mode the mode in which Kalyna is running
+     * @return the Key Size in bytes
+     * @throws IllegalArgumentException if invalid mode is given
+     */
+    public static int getKeySize(int mode) throws IllegalArgumentException{
+        int ColumnsInKey;
+        switch (mode){
+            case Kalyna.KALYNA_128KEY_128BLOCK:
+                ColumnsInKey = 2;
+                break;
+            case Kalyna.KALYNA_256KEY_128BLOCK:
+            case Kalyna.KALYNA_256KEY_256BLOCK:
+                ColumnsInKey = 4;
+                break;
+            case Kalyna.KALYNA_512KEY_256BLOCK:
+            case Kalyna.KALYNA_512KEY_512BLOCK:
+                ColumnsInKey = 8;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Mode for the Kalyna Cipher");
         }
-        byte[] tmp = {(byte)0x00,(byte) 0xFF};
-        byte[][] org = Arrays.copyOf(tst,tst.length);
-        KalynaRoundFunction.SBox(tst);
-        System.out.println(tst);
-        KalynaRoundFunction.invSBox(tst);
-        System.out.println(tst);
-        if(Arrays.equals(org,tst)){
-            System.out.println("PASSED");
-        }else {
-            System.out.println("FAILED");
-        }
+        return ColumnsInKey*8;
     }
-
+    /**
+     * Gives the block Size in bytes
+     * @param mode the mode in which Kalyna is running
+     * @return the Key Size in bytes
+     * @throws IllegalArgumentException if invalid mode is given
+     */
+    public static int getBlockSize(int mode) throws IllegalArgumentException{
+        int ColumnsInPT;
+        switch (mode){
+            case Kalyna.KALYNA_128KEY_128BLOCK:
+            case Kalyna.KALYNA_256KEY_128BLOCK:
+                ColumnsInPT = 2;
+                break;
+            case Kalyna.KALYNA_256KEY_256BLOCK:
+            case Kalyna.KALYNA_512KEY_256BLOCK:
+                ColumnsInPT = 4;
+                break;
+            case Kalyna.KALYNA_512KEY_512BLOCK:
+                ColumnsInPT = 8;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Mode for the Kalyna Cipher");
+        }
+        return ColumnsInPT*8;
+    }
+    /**
+     * Gives the number of rounds for a given mode
+     * @param mode the mode in which Kalyna is running
+     * @return the number of rounds
+     * @throws IllegalArgumentException if invalid mode is given
+     */
+    public static int getNumberRounds(int mode) throws IllegalArgumentException{
+        int NumberOfRounds;
+        switch (mode){
+            case Kalyna.KALYNA_128KEY_128BLOCK:
+                NumberOfRounds = 10;
+                break;
+            case Kalyna.KALYNA_256KEY_128BLOCK:
+            case Kalyna.KALYNA_256KEY_256BLOCK:
+                NumberOfRounds = 14;
+                break;
+            case Kalyna.KALYNA_512KEY_256BLOCK:
+            case Kalyna.KALYNA_512KEY_512BLOCK:
+                NumberOfRounds = 18;
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid Mode for the Kalyna Cipher");
+        }
+        return NumberOfRounds;
+    }
 }
 
