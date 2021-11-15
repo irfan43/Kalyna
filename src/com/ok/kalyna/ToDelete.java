@@ -1,11 +1,12 @@
 package com.ok.kalyna;
 
+import java.util.Random;
+
 public class ToDelete {
 
     public static void main(String[] args) {
-        System.out.println("epoch" + System.currentTimeMillis());
-        long ans = System.currentTimeMillis();
-        System.out.println( " got " + Long.toHexString(ans) );
+        int len = 200 + (new Random()).nextInt(500);
+        System.out.println( " got " + len );
 
     }
 }
