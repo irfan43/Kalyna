@@ -20,6 +20,10 @@ public class KalynaCFB {
 
     //TODO make a MAC implementation
     public KalynaCFB(byte[] key,int mode,byte[] iv, byte[] salt){
+        if(salt.length != Kalyna.getKeySize(mode))
+            throw new IllegalArgumentException("Invalid Size of salt given");
+        if( iv.length != Kalyna.getBlockSize(mode))
+            throw new IllegalArgumentException("Invalid size of iv given");
         encryption = false;
         SALT = Arrays.copyOf(salt,salt.length);
         IV = Arrays.copyOf(iv,iv.length);
