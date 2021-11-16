@@ -84,7 +84,10 @@ public class FileEncryption {
     }
 
     private static void printMan() {
-        System.out.println("MANUAL");
-        //TODO make a manual
+        System.out.println("Encryption");
+        System.out.println("-e input_file output_file password");
+        System.out.println("Decryption");
+        System.out.println("-d input_file output_file password");
+        //TODO add mode option later
     }
 }
