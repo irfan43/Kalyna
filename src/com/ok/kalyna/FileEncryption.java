@@ -35,8 +35,8 @@ public class FileEncryption {
 
     public static void FileEncrypt(byte[] key,Path input, Path output,int bufferSize,boolean encryption,int mode){
         try(
-                BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(input));
-                BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(output))
+                BufferedInputStream     bis = new BufferedInputStream(Files.newInputStream(input));
+                BufferedOutputStream    bos = new BufferedOutputStream(Files.newOutputStream(output))
         ){
 
             KalynaCFB kalynaCFB;
@@ -46,36 +46,29 @@ public class FileEncryption {
                 bos.write(kalynaCFB.getSALT());
             }else {
                 //TODO maybe store mode here too
-                byte[] iv = readBytes( bis,Kalyna.getBlockSize(mode));
-                byte[] salt = readBytes( bis,Kalyna.getKeySize(mode));
-                kalynaCFB = new KalynaCFB(key,mode,iv,salt);
+                byte[] iv       = readBytes( bis,Kalyna.getBlockSize(mode));
+                byte[] salt     = readBytes( bis,Kalyna.getKeySize(mode));
+                kalynaCFB       = new KalynaCFB(key,mode,iv,salt);
             }
 
             while (bis.available() != 0) {
-                int len = bufferSize;
-                if (len < bis.available())
-                    len = bis.available();
-                byte[] buf = new byte[len];
-                len = bis.read(buf);
-                buf = kalynaCFB.Update(Arrays.copyOf(buf, len));
+                byte[] buf  = new byte[Math.min(bufferSize,bis.available())];
+                int len     = bis.read(buf);
+                buf         = kalynaCFB.Update(Arrays.copyOf(buf, len));
+
                 bos.write(buf);
             }
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private static byte[] readBytes(InputStream is, int n) throws IOException {
-        byte[] out = new byte[n];
-        int pos = 0;
+        byte[] out  = new byte[n];
+        int pos     = 0;
         while (pos < n){
-            int len = is.available();
-            if(len > (n - pos))
-                len = (n - pos);
-
-            byte[] tmp = new byte[len];
-            len = is.read(tmp);
+            byte[] tmp  = new byte[Math.min((n - pos),is.available())];
+            int len     = is.read(tmp);
 
             System.arraycopy(tmp,0,out,pos,len);
             pos += len;

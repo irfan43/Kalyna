@@ -29,9 +29,9 @@ public class KalynaCipher{
      * @throws IllegalArgumentException if invalid <code>mode</code> is given ie <code>mode > 4 || mode < 0</code>
      */
     private void setupCipherState(int mode) throws IllegalArgumentException {
-        ColumnsInKey = Kalyna.getKeySize(mode)/8;
-        ColumnsInPT = Kalyna.getBlockSize(mode)/8;
-        NumberOfRounds = Kalyna.getNumberRounds(mode);
+        ColumnsInKey    = Kalyna.getKeySize(mode)/8;
+        ColumnsInPT     = Kalyna.getBlockSize(mode)/8;
+        NumberOfRounds  = Kalyna.getNumberRounds(mode);
 
 
     }

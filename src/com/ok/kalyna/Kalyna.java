@@ -19,12 +19,22 @@ public class Kalyna {
      * @return the mode of the cipher
      */
     public static int getMode(int BlockSize,int KeySize){
-        //todo add error for invalid block size and key size
-        if(BlockSize != 64 && BlockSize != 32 && BlockSize != 16)
-            throw new IllegalArgumentException("Invalid Block Size");
-        if(KeySize != 64 && KeySize != 32 && KeySize != 16)
-            throw new IllegalArgumentException("Invalid Key Size");
-
+        if(
+                (BlockSize  != 64 && BlockSize  != 32 && BlockSize  != 16) ||
+                (KeySize    != 64 && KeySize    != 32 && KeySize    != 16)
+        ) {
+            if(
+                    (BlockSize  != 64 && BlockSize  != 32 && BlockSize  != 16) &&
+                    (KeySize    != 64 && KeySize    != 32 && KeySize    != 16)
+            ) {
+                throw new IllegalArgumentException("Invalid Block Size and Key Size");
+            }
+            if (BlockSize != 64 && BlockSize != 32 && BlockSize != 16) {
+                throw new IllegalArgumentException("Invalid Block Size");
+            }else{
+                throw new IllegalArgumentException("Invalid Key Size");
+            }
+        }
         if( (KeySize != BlockSize) && (2 * BlockSize != KeySize) )
             throw new IllegalArgumentException("Invalid Match of Key and Block Size");
 
