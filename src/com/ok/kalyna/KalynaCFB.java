@@ -1,5 +1,6 @@
 package com.ok.kalyna;
 
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -24,11 +25,14 @@ public class KalynaCFB {
             throw new IllegalArgumentException("Invalid Size of salt given");
         if( iv.length != Kalyna.getBlockSize(mode))
             throw new IllegalArgumentException("Invalid size of iv given");
-        encryption = false;
-        SALT = Arrays.copyOf(salt,salt.length);
-        IV = Arrays.copyOf(iv,iv.length);
-        Mode = mode;
+
+        encryption  = false;
+        SALT        = Arrays.copyOf(salt,salt.length);
+        IV          = Arrays.copyOf(iv,iv.length);
+        Mode        = mode;
+
         setupConstants();
+
         kalynaCipher = new KalynaCipher(generateSaltedKey(key),mode);
         getNextStreamBlock();
     }
@@ -41,15 +45,12 @@ public class KalynaCFB {
     }
 
     public byte[] Update(byte[] data){
-        int pos = 0;
-        byte[] output = new byte[data.length];
-        while (data.length > pos){
-            int len = xorStream.length - StreamPos;
-            if(len > data.length - pos) {
-                len = data.length - pos;
-            }
+        int pos         = 0;
+        byte[] output   = new byte[data.length];
 
-            byte[] tmp = updateBlock( Arrays.copyOfRange(data,pos,pos + len) );
+        while (data.length > pos){
+            int len     = Math.min(( xorStream.length - StreamPos),(data.length - pos));
+            byte[] tmp  = updateBlock( Arrays.copyOfRange(data,pos,pos + len) );
 
             System.arraycopy(tmp,0,output,pos,len);
             pos += len;
@@ -72,8 +73,8 @@ public class KalynaCFB {
         if(!encryption)
             System.arraycopy(input,0,LastState,StreamPos,input.length);
 
-        byte[] xor = Arrays.copyOfRange(xorStream,StreamPos,StreamPos + input.length);
-        byte[] output = XOR(input,xor);
+        byte[] xor      = Arrays.copyOfRange(xorStream,StreamPos,StreamPos + input.length);
+        byte[] output   = XOR(input,xor);
 
         if(encryption)
             System.arraycopy(output,0,LastState,StreamPos,output.length);
@@ -88,13 +89,14 @@ public class KalynaCFB {
         StreamPos = 0;
     }
     private void setupConstants(){
-        blockSize = Kalyna.getBlockSize(Mode);
-        keySize = Kalyna.getKeySize(Mode);
+        blockSize   = Kalyna.getBlockSize(Mode);
+        keySize     = Kalyna.getKeySize(Mode);
+
         if(encryption) {
             generateIV();
             generateSALT();
         }
-        LastState = Arrays.copyOf(IV,IV.length);
+        LastState   = Arrays.copyOf(IV,IV.length);
 
     }
     private byte[] generateSaltedKey(byte[] key){
@@ -118,10 +120,11 @@ public class KalynaCFB {
         (new SecureRandom()).nextBytes(SALT);
     }
 
-    //TODO update so first 64 bits are EPOCH to help prevent IV reuse
     private void generateIV() {
         IV = new byte[blockSize];
         (new SecureRandom()).nextBytes(IV);
+        byte[] epoch = ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+        System.arraycopy(epoch,0,IV,0,8);
     }
 
 }

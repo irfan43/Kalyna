@@ -5,9 +5,9 @@ import java.util.Arrays;
 public class KalynaKeyScheduler {
 
     public static byte[][][] generateRoundKeys(byte[][] masterKey, int numColBlock){
-        int totalRounds = getNRounds(masterKey.length);
-        byte[][] intermediateKey = generateIntermediateKey(masterKey, numColBlock);
-        byte[][][] roundKeys = new byte[totalRounds][numColBlock][8];
+        int totalRounds             = getNRounds(masterKey.length);
+        byte[][] intermediateKey    = generateIntermediateKey(masterKey, numColBlock);
+        byte[][][] roundKeys        = new byte[totalRounds][numColBlock][8];
 
         for(int round = 0; round <= totalRounds / 2; round ++){
             //Even Round Key Generation
@@ -60,8 +60,8 @@ public class KalynaKeyScheduler {
     }
     private static byte[][] generateIntermediateKey(byte[][] masterKey, int numColBlock){
         //Finding the Intermediate Constant to Add to the Key
-        byte[][] intermediateKey = new byte[numColBlock][8];
-        intermediateKey[0][0] = (byte) ((numColBlock + masterKey.length + 1) & 0xFF);
+        byte[][] intermediateKey    = new byte[numColBlock][8];
+        intermediateKey[0][0]       = (byte) ((numColBlock + masterKey.length + 1) & 0xFF);
 
         return intermediateKeyRound(
                 intermediateKey,

@@ -168,13 +168,15 @@ public class KalynaRoundFunction {
             //Finding Shift Amount
             int shift = input.length * row / 8;
 
-            // Storing each column's row value into a temporary row
+            //todo update to use kalyna util
+            //Storing each column's row value into a temporary row
             for(int col = 0; col < input.length; col++)
                 tempRow[col] = input[col][row];
 
             // Shifting
             tempRow = KalynaUtil.circularRotate(tempRow, mode? -1 * shift :shift ) ;
 
+            //todo update to use kalyna util
             //Storing back into that Input State
             for(int col = 0; col < input.length; col++)
                 output[col][row] = tempRow[col];
