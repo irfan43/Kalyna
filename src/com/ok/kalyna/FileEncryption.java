@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -12,25 +13,27 @@ public class FileEncryption {
 
 
     public static void main(String[] args) {
+        int mode = Kalyna.KALYNA_512KEY_512BLOCK;
         if(args.length != 4 ) {
             printMan();
         }else if(!(args[0].equals("-e") || args[0].equals("-d"))){
             printMan();
         }else {
-           FileEncrypt(getKey(args[3]),Path.of(args[1]),Path.of(args[2]),4096,args[0].equals("-e"),Kalyna.KALYNA_512KEY_512BLOCK);
+           FileEncrypt(
+                   getKey(args[3],Kalyna.getKeySize(mode)),
+                   Path.of(args[1]),
+                   Path.of(args[2]),
+                   4096,args[0].equals("-e"),
+                   mode
+           );
         }
     }
 
-    private static byte[] getKey(String arg) {
-        byte[] tmp = new byte[64];
-        for (int i = 0; i < 64; i++)
-            tmp[i] = (byte) i;
-
-        return tmp;
+    private static byte[] getKey(String arg,int size) {
+        return KalynaHash.Hash(arg.getBytes(StandardCharsets.UTF_8),size);
     }
 
     public static void FileEncrypt(byte[] key,Path input, Path output,int bufferSize,boolean encryption,int mode){
-
         try(
                 BufferedInputStream bis = new BufferedInputStream(Files.newInputStream(input));
                 BufferedOutputStream bos = new BufferedOutputStream(Files.newOutputStream(output))
