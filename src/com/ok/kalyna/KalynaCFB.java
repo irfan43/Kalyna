@@ -1,5 +1,6 @@
 package com.ok.kalyna;
 
+import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -118,10 +119,11 @@ public class KalynaCFB {
         (new SecureRandom()).nextBytes(SALT);
     }
 
-    //TODO update so first 64 bits are EPOCH to help prevent IV reuse
     private void generateIV() {
         IV = new byte[blockSize];
         (new SecureRandom()).nextBytes(IV);
+        byte[] epoch = ByteBuffer.allocate(8).putLong(System.currentTimeMillis()).array();
+        System.arraycopy(epoch,0,IV,0,8);
     }
 
 }
