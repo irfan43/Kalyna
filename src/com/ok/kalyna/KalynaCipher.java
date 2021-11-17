@@ -53,14 +53,26 @@ public class KalynaCipher{
     }
 
 
-
+    /**
+     * Performs a round encryption of Kalyna
+     * @param input the input state on which to perform the operation
+     * @param roundKey the round key to use in the round
+     * @param doXor if true performs a XOR of input state with round key
+     * @return the resulting state matrix
+     */
     private byte[][] encryptRound(byte[][] input, byte[][] roundKey,boolean doXor){
         input = KalynaRoundFunction.subShiftMixTransform(input);
         if(doXor)
             input = KalynaRoundFunction.xorRoundKey(input, roundKey);
         return input;
     }
-
+    /**
+     * Performs a round decryption of Kalyna
+     * @param input the input state on which to perform the operation
+     * @param roundKey the round key to use in the round
+     * @param doXor if true performs a XOR of input state with round key
+     * @return the resulting state matrix
+     */
     private byte[][] decryptRound(byte[][] input, byte[][] roundKey,boolean doXor){
         if(doXor)
             input = KalynaRoundFunction.xorRoundKey(input, roundKey);
@@ -68,7 +80,12 @@ public class KalynaCipher{
         return input;
     }
 
-
+    /**
+     * Encrypts a block using the Kalyna cipher
+     * @param block the input block to encrypt
+     * @return the encrypted block
+     * @throws IllegalArgumentException if block size is not compatible with given mode
+     */
     public byte[] EncryptBlock(byte [] block) throws IllegalArgumentException{
         if( block.length != ColumnsInPT * 8 )
             throw new IllegalArgumentException("Illegal Block Size");
@@ -89,7 +106,12 @@ public class KalynaCipher{
         return KalynaUtil.reduceState(blockState);
 
     }
-
+    /**
+     * Decrypts a block using the Kalyna cipher
+     * @param block the input block to encrypt
+     * @return the encrypted block
+     * @throws IllegalArgumentException if block size is not compatible with given mode
+     */
     public byte[] DecryptBlock(byte [] block) throws IllegalArgumentException{
         if( block.length != ColumnsInPT * 8 )
             throw new IllegalArgumentException("Illegal Block Size");

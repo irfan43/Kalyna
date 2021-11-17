@@ -29,8 +29,8 @@ public class FileEncryption {
         }
     }
 
-    private static byte[] getKey(String arg,int size) {
-        return KalynaHash.Hash(arg.getBytes(StandardCharsets.UTF_8),size);
+    private static byte[] getKey(String password,int size) {
+        return KalynaHash.Hash(password.getBytes(StandardCharsets.UTF_8),size);
     }
 
     public static void FileEncrypt(byte[] key,Path input, Path output,int bufferSize,boolean encryption,int mode){
