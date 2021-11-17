@@ -4,33 +4,76 @@ import java.util.Arrays;
 
 public class KalynaHash {
 
-    public static byte[] Hash(byte[] input,int size){
-        int mode;
+    private final int     Mode;
+    private final int     Size;
+    private byte[]        Output;
+
+    public KalynaHash(int size){
         switch (size){
             case 64:
             case 32:
             case 16:
-                mode = Kalyna.getMode(size,size);
+                Mode = Kalyna.getMode(size,size);
                 break;
             default:
-                throw new IllegalArgumentException(" Invalid Size of HASH \nMust be 16,32, or 64");
+                throw new IllegalArgumentException(
+                        "Invalid Size of HASH given \"" + size +  "\"\nMust be 16,32, or 64");
         }
-        byte[] output = new byte[Math.max(size, input.length)];
-        System.arraycopy(input,0,output,0,input.length);
-        while (size < output.length){
-            byte[] part         = Arrays.copyOfRange(output,0,size);
-            byte[] remaining    = Arrays.copyOfRange(output,size,output.length);
-
-            byte[] tmp  = Compress(part,mode);
-            output      = new byte[tmp.length + remaining.length];
-
-            System.arraycopy(tmp,0,output,0,tmp.length);
-            System.arraycopy(remaining,0,output,tmp.length,remaining.length);
-        }
-
-        return output;
+        Size = size;
+        Output = new byte[Size];
     }
-    public static byte[] Compress(byte[] input,int mode){
+
+    public void Update(byte[] data){
+        Output = extend(Output,data);
+        compressState();
+    }
+
+    public byte[] Digest(byte[] data){
+        Update(data);
+        return Digest();
+    }
+    public byte[] Digest(){
+        compressState();
+        byte[] digestible = new byte[Size*2];
+        System.arraycopy(Output,0,digestible,0,Output.length);
+        return Compress(digestible,Mode);
+    }
+
+    private void compressState() {
+        while (Output.length >= 2*Size){
+            byte[] remaining = Arrays.copyOfRange(Output, Size*2,Output.length);
+            byte[] partial = Compress(Arrays.copyOf(Output,Size*2),Mode);
+            Output = extend( partial, remaining);
+        }
+    }
+
+    private byte[] extend(byte[] a,byte[] b){
+        byte[] ab = new byte[a.length + b.length];
+        System.arraycopy(a,0,ab,0,a.length);
+        System.arraycopy(b,0,ab,a.length,b.length);
+        return ab;
+    }
+
+
+    /**
+     * Produces a hash of the given input data
+     * @param input the input byte array
+     * @param size the number of bytes in the return array (16, 32, or 64)
+     * @return the hashed byte array
+     * @throws IllegalArgumentException if invalid <code>size</code> is given
+     */
+    public static byte[] Hash(byte[] input,int size) throws IllegalArgumentException{
+        return (new KalynaHash(size)).Digest(input);
+    }
+
+    /**
+     * Compression algorithm used for hash function
+     * @param input input to be compressed
+     * @param mode the mode to be used in the block cipher
+     * @return the compressed output
+     * @throws IllegalArgumentException if input length is larger than the key size + block size
+     */
+    public static byte[] Compress(byte[] input,int mode) throws IllegalArgumentException{
         if( input.length > (Kalyna.getBlockSize(mode) + Kalyna.getKeySize(mode)))
             throw new IllegalArgumentException("invalid input size for given mode");
 
