@@ -120,17 +120,13 @@ public class KalynaRoundFunction {
 
         byte[][] output = new byte[input.length][input[0].length];
         //Mix or Inverse Mix
-        int m = mode ? 0 : 1;
-        byte[] mdsRow = Arrays.copyOf(KalynaUtil.MDSCircularVector[m], KalynaUtil.MDSCircularVector[m].length);
+        int offset = mode ? 0 :8 ;
 
         // Matrix-Column Multiply
         for(int col = 0; col < input.length; col++){
             for(int row = 0; row < input[0].length; row ++){
                 for (int row1 = 0; row1 <  input[0].length ; row1++)
-                    output[col][row] ^= KalynaUtil.GFLookUp[ mdsRow[row1] ][ Byte.toUnsignedInt(input[col][row1]) ];
-
-                // Right Circular Rotating MDS Vector
-                mdsRow = KalynaUtil.circularRotate(mdsRow,-1);
+                    output[col][row] ^= KalynaUtil.GFLookUp[ KalynaUtil.MDSCircularVector[offset + col][row1] ][ Byte.toUnsignedInt(input[col][row1]) ];
             }
         }
         return output;
