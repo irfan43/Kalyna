@@ -20,11 +20,11 @@ public class KalynaHash {
                         "Invalid Size of HASH given \"" + size +  "\"\nMust be 16,32, or 64");
         }
         Size = size;
-        Output = new byte[Size];
+        Output = new byte[0];
     }
 
     public void Update(byte[] data){
-        Output = extend(Output,data);
+        Output = concatenate(Output,data);
         compressState();
     }
 
@@ -34,20 +34,20 @@ public class KalynaHash {
     }
     public byte[] Digest(){
         compressState();
-        byte[] digestible = new byte[Size*2];
-        System.arraycopy(Output,0,digestible,0,Output.length);
-        return Compress(digestible,Mode);
+//        byte[] digestible = new byte[Size*2];
+//        System.arraycopy(Output,0,digestible,0,Output.length);
+        return Compress(Output,Mode);
     }
 
     private void compressState() {
         while (Output.length >= 2*Size){
             byte[] remaining = Arrays.copyOfRange(Output, Size*2,Output.length);
             byte[] partial = Compress(Arrays.copyOf(Output,Size*2),Mode);
-            Output = extend( partial, remaining);
+            Output = concatenate( partial, remaining);
         }
     }
 
-    private byte[] extend(byte[] a,byte[] b){
+    private byte[] concatenate(byte[] a, byte[] b){
         byte[] ab = new byte[a.length + b.length];
         System.arraycopy(a,0,ab,0,a.length);
         System.arraycopy(b,0,ab,a.length,b.length);
@@ -75,7 +75,7 @@ public class KalynaHash {
      */
     public static byte[] Compress(byte[] input,int mode) throws IllegalArgumentException{
         if( input.length > (Kalyna.getBlockSize(mode) + Kalyna.getKeySize(mode)))
-            throw new IllegalArgumentException("invalid input size for given mode");
+            throw new IllegalArgumentException("input size too large for the given mode");
 
         byte[] paddedInput = new byte[Kalyna.getBlockSize(mode) + Kalyna.getKeySize(mode)];
         System.arraycopy(input,0,paddedInput,0,input.length);
@@ -84,6 +84,5 @@ public class KalynaHash {
         byte[] pt   = Arrays.copyOfRange(paddedInput,Kalyna.getKeySize(mode),Kalyna.getKeySize(mode) + Kalyna.getBlockSize(mode));
 
         return (new KalynaCipher(key,mode)).EncryptBlock(pt);
-
     }
 }
