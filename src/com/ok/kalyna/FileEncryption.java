@@ -9,11 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+
 public class FileEncryption {
 
 
     public static void main(String[] args) {
-        int mode = Kalyna.KALYNA_512KEY_512BLOCK;
+        int mode = Kalyna.KALYNA_256KEY_256BLOCK;
         if(args.length != 4 ) {
             printMan();
         }else if(!(args[0].equals("-e") || args[0].equals("-d"))){

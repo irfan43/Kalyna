@@ -9,14 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KalynaCFBTest {
 
-    @Test
-    void timingTest(){
-        int mode = Kalyna.KALYNA_512KEY_512BLOCK;
-        byte[] k = new byte[Kalyna.getKeySize(mode)];
-        KalynaCFB kalynaEnc = new KalynaCFB(k, mode);
-        byte[] PT = new byte[150];
-        byte[] CT = kalynaEnc.Update(PT);
-    }
+
 
     @Test
     void CipherRandomLarge() {
