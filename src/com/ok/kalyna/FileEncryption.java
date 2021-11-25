@@ -9,11 +9,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+
 public class FileEncryption {
 
 
     public static void main(String[] args) {
-        int mode = Kalyna.KALYNA_512KEY_512BLOCK;
+        int mode = Kalyna.KALYNA_256KEY_256BLOCK;
         if(args.length != 4 ) {
             printMan();
         }else if(!(args[0].equals("-e") || args[0].equals("-d"))){
@@ -23,7 +24,7 @@ public class FileEncryption {
                    getKey(args[3],Kalyna.getKeySize(mode)),
                    Path.of(args[1]),
                    Path.of(args[2]),
-                   4096,args[0].equals("-e"),
+                   32000,args[0].equals("-e"),
                    mode
            );
         }
@@ -50,13 +51,27 @@ public class FileEncryption {
                 byte[] salt     = readBytes( bis,Kalyna.getKeySize(mode));
                 kalynaCFB       = new KalynaCFB(key,mode,iv,salt);
             }
-
+            long lastReport = System.currentTimeMillis();
+            int lastPos = bis.available();
             while (bis.available() != 0) {
-                byte[] buf  = new byte[Math.min(bufferSize,bis.available())];
-                int len     = bis.read(buf);
-                buf         = kalynaCFB.Update(Arrays.copyOf(buf, len));
 
-                bos.write(buf);
+                if(System.currentTimeMillis() - lastReport > 2000) {
+
+                    int pos = bis.available();
+                    int speed = (lastPos - pos)/2;
+                    int time = pos/speed;
+                    System.out.println(" remaining " + HumanReadableSize(bis.available()));
+                    System.out.println(" speed     " + HumanReadableSize( speed ) + "/s");
+                    System.out.println(" time      " +  time );
+
+
+                    lastPos = bis.available();
+                    lastReport = System.currentTimeMillis();
+                }
+                byte[] buf  = new byte[Math.min(bufferSize, bis.available())];
+                int len     = bis.read(buf);
+
+                bos.write(kalynaCFB.Update(Arrays.copyOf(buf, len)));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -66,6 +81,7 @@ public class FileEncryption {
     private static byte[] readBytes(InputStream is, int n) throws IOException {
         byte[] out  = new byte[n];
         int pos     = 0;
+
         while (pos < n){
             byte[] tmp  = new byte[Math.min((n - pos),is.available())];
             int len     = is.read(tmp);
@@ -82,5 +98,14 @@ public class FileEncryption {
         System.out.println("Decryption");
         System.out.println("-d input_file output_file password");
         //TODO add mode option later
+    }
+    public static String HumanReadableSize(int bytes){
+        String[] units = {"bytes","KB","MB","GB","TB"};
+        float size = bytes;
+        int index;
+        for (index = 0; index < units.length && size > 1024; index++) {
+            size = size/1024F;
+        }
+        return String.format("%.2f",size) + " " + units[index];
     }
 }

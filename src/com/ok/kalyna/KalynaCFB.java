@@ -1,5 +1,6 @@
 package com.ok.kalyna;
 
+import java.awt.*;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.Arrays;
@@ -56,17 +57,23 @@ public class KalynaCFB {
     public byte[] Update(byte[] data){
         int pos         = 0;
         byte[] output   = new byte[data.length];
+//        long StartOfUpdate;
+//        long StartOfArrayCopy;
+//        long End;
 
         while (data.length > pos){
+//            StartOfUpdate = System.nanoTime();
             int len     = Math.min(
                     ( xorStream.length - StreamPos), //remaining bytes in XOR stream
                     ( data.length - pos )            //remaining bytes of plaintext to encrypt
             );
-
             byte[] partial  = updateBlock( Arrays.copyOfRange(data,pos,pos + len) );
-
+//            StartOfArrayCopy = System.nanoTime();
             System.arraycopy(partial,0,output,pos,len);
             pos += len;
+//            End = System.nanoTime();
+//            System.out.println(" update " +  (StartOfArrayCopy - StartOfUpdate) + "\n" +
+//                                " copy " + ( End  - StartOfArrayCopy ) );
         }
         return output;
     }

@@ -150,9 +150,23 @@ public class KalynaUtil {
     // Right Circular Shift Vector for MDS matrix Multiplication
     public static byte[][] MDSCircularVector = {
             // 0x01, 0x01, 0x05, 0x01, 0x08, 0x06, 0x07, 0x04
-            {(byte)0,  (byte)0,  (byte)2,  (byte)0,  (byte)5,  (byte)3,  (byte)4,  (byte)1},
+            { (byte) 0, (byte) 0, (byte) 2, (byte) 0, (byte) 5, (byte) 3, (byte) 4, (byte) 1 },
+            { (byte) 0, (byte) 2, (byte) 0, (byte) 5, (byte) 3, (byte) 4, (byte) 1, (byte) 0 },
+            { (byte) 2, (byte) 0, (byte) 5, (byte) 3, (byte) 4, (byte) 1, (byte) 0, (byte) 0 },
+            { (byte) 0, (byte) 5, (byte) 3, (byte) 4, (byte) 1, (byte) 0, (byte) 0, (byte) 2 },
+            { (byte) 5, (byte) 3, (byte) 4, (byte) 1, (byte) 0, (byte) 0, (byte) 2, (byte) 0 },
+            { (byte) 3, (byte) 4, (byte) 1, (byte) 0, (byte) 0, (byte) 2, (byte) 0, (byte) 5 },
+            { (byte) 4, (byte) 1, (byte) 0, (byte) 0, (byte) 2, (byte) 0, (byte) 5, (byte) 3 },
+            { (byte) 1, (byte) 0, (byte) 0, (byte) 2, (byte) 0, (byte) 5, (byte) 3, (byte) 4 },
             // 0xAD, 0x95, 0x76, 0xA8, 0x2F, 0x49, 0xD7, 0xCA
-            {(byte)6,  (byte)7,  (byte)8,  (byte)9, (byte)10, (byte)11, (byte)12, (byte)13}
+            { (byte)  6, (byte)  7, (byte)  8, (byte)  9, (byte) 10, (byte) 11, (byte) 12, (byte) 13 },
+            { (byte)  7, (byte)  8, (byte)  9, (byte) 10, (byte) 11, (byte) 12, (byte) 13, (byte)  6 },
+            { (byte)  8, (byte)  9, (byte) 10, (byte) 11, (byte) 12, (byte) 13, (byte)  6, (byte)  7 },
+            { (byte)  9, (byte) 10, (byte) 11, (byte) 12, (byte) 13, (byte)  6, (byte)  7, (byte)  8 },
+            { (byte) 10, (byte) 11, (byte) 12, (byte) 13, (byte)  6, (byte)  7, (byte)  8, (byte)  9 },
+            { (byte) 11, (byte) 12, (byte) 13, (byte)  6, (byte)  7, (byte)  8, (byte)  9, (byte) 10 },
+            { (byte) 12, (byte) 13, (byte)  6, (byte)  7, (byte)  8, (byte)  9, (byte) 10, (byte) 11 },
+            { (byte) 13, (byte)  6, (byte)  7, (byte)  8, (byte)  9, (byte) 10, (byte) 11, (byte) 12 },
     };
 
     // look up table for doing multiplication in the GF(2^8)

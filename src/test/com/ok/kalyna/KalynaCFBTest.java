@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class KalynaCFBTest {
 
+
+
     @Test
     void CipherRandomLarge() {
         for (int mode = 256; mode <= Kalyna.KALYNA_512KEY_512BLOCK; mode = mode * 2){
