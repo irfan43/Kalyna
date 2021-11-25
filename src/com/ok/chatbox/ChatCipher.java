@@ -21,8 +21,6 @@ public class ChatCipher {
 
     public ChatCipher(Path PBKFile) throws IOException {
         loadKeyPair(PBKFile);
-        System.out.println(" pbk " + Base64.getEncoder().encodeToString(publicKey.getEncoded()));
-        System.out.println(" prv " + Base64.getEncoder().encodeToString(privateKey.getEncoded()));
     }
     private void loadKeyPair(Path PBKFile) throws IOException {
         InputStream inputStream = Files.newInputStream(PBKFile);
@@ -43,12 +41,17 @@ public class ChatCipher {
             publicKey = keyFactory.generatePublic(pubKeySpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             e.printStackTrace();
-
         }
-
+    }
+    public PublicKey getPublicKey() {
+        return publicKey;
+    }
+    public Signature getSigning() throws NoSuchAlgorithmException, InvalidKeyException {
+        Signature sgn = Signature.getInstance("SHA256withRSA");
+        sgn.initSign(privateKey);
+        return sgn;
     }
     public static byte[] ReadKey(BufferedReader reader,String start,String end) throws IOException {
-
         StringBuilder sb = new StringBuilder();
         while(!reader.readLine().equals(start));
         do{
@@ -62,7 +65,7 @@ public class ChatCipher {
     }
     public static void GeneratePublicKey(Path PBKFile) throws NoSuchAlgorithmException, IOException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
-        kpg.initialize(512);
+        kpg.initialize(4096);
         KeyPair kp = kpg.generateKeyPair();
 
         PrivateKey pvk = kp.getPrivate();
@@ -83,6 +86,7 @@ public class ChatCipher {
             bw.flush();
         }
     }
+
     public static String softWrap(String input, int wrap){
         StringBuilder sb = new StringBuilder();
 

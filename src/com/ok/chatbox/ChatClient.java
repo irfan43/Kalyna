@@ -1,9 +1,7 @@
 package com.ok.chatbox;
 
-import net.sourceforge.argparse4j.ArgumentParsers;
-import net.sourceforge.argparse4j.inf.ArgumentParser;
-import net.sourceforge.argparse4j.inf.ArgumentParserException;
-import net.sourceforge.argparse4j.inf.Namespace;
+import net.sourceforge.argparse4j.*;
+import net.sourceforge.argparse4j.inf.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -19,13 +17,14 @@ public class ChatClient {
     public static PublicKey publicKey;
     private static PrivateKey privateKey;
 
+    public static ChatCipher chatCipher;
+
 
     public static void main(String[] args) {
         //-ip 192.168.0.1 -port 5555 -uname indus -pbk FileName
         //--generate-pbk FileName
 
 
-        // todo allow only generate pbk argument
         ArgumentParser parser = ArgumentParsers.newFor("Kalyna Chat Client").build()
                 .defaultHelp(true)
                 .description("Client side Kalyna Encrypted Chat Application");
@@ -45,12 +44,22 @@ public class ChatClient {
 
         try {
             Namespace res = parser.parseArgs(args);
-            username = res.get("username");
+            if(res.get("command").equals("key")){
+                ChatCipher.GeneratePublicKey(Path.of(res.get("generate_keys").toString()));
+            }else{
+                username = res.get("username");
+                int port = res.get("port");
+                String ip = res.get("ip").toString();
+                Path keyFile = Path.of( res.get("keys").toString() );
+                chatCipher = new ChatCipher(keyFile);
+                ClientConn conn = new ClientConn(ip,port);
 
-            ClientConn conn = new ClientConn(res.get("ip"),res.get("port"));
+            }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
             System.exit(1);
+        } catch (NoSuchAlgorithmException | IOException e) {
+            e.printStackTrace();
         }
 
 
