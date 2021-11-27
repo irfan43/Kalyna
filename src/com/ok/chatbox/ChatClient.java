@@ -34,12 +34,16 @@ public class ChatClient {
                 .defaultHelp(true)
                 .description("Client side Kalyna Encrypted Chat Application");
         Subparsers subparsers = parser.addSubparsers().dest("command");
-
-        ArgumentParser createAccount = subparsers.addParser("login").description("Account Login")
+        ArgumentParser fileEncryption = subparsers.addParser("file").description("File Encryption/Decryption")
+                .defaultHelp(true).help("File Encryption/Decryption");
+        ArgumentParser login = subparsers.addParser("login").description("Account Login")
                 .defaultHelp(true).help("Account Login");
         ArgumentParser generateKeys = subparsers.addParser("key").description("Key Generation")
                 .defaultHelp(true).help("Key Generation");
-        createAccount.addArgument("-p","--port").metavar("PORT_NUMBER")
+        ArgumentParser server = subparsers.addParser("server").description("Server Mode")
+                .defaultHelp(true).help("Server Mode");
+
+        login.addArgument("-p","--port").metavar("PORT_NUMBER")
                 .type(Integer.class).help("Port Number of Server")
                 .setDefault(5555);
         login.addArgument("-i","--ip").metavar("IP_ADDRESS")
@@ -55,6 +59,22 @@ public class ChatClient {
                 .type(String.class)
                 .help("Generate Public and Private Key and store in the Specified File")
                 .setDefault("keys.key");
+        MutuallyExclusiveGroup encDec = fileEncryption.addMutuallyExclusiveGroup()
+                .required(true);
+        encDec.addArgument("-e","--encrypt").nargs(2)
+                .type(String.class).help("Encrypt the given File into the Output file")
+                .metavar("INPUT_PATH", "OUTPUT_PATH");
+        encDec.addArgument("-d","--decrypt").nargs(2)
+                .type(String.class).help("Decrypt the given File into the Output file")
+                .metavar("INPUT_PATH", "OUTPUT_PATH");
+        fileEncryption.addArgument("-m","--mode").metavar("<KEY_SIZE>_<BLOCK_SIZE>")
+                .type(String.class).help("Mode to set Kalyna Key and block sizes")
+                .choices("128_128","256_128","256_256","512_256","512_512")
+                .setDefault("256_256");
+
+        server.addArgument("-p","--port").metavar("PORT_NUMBER")
+                .type(Integer.class).help("Port the server will listen on")
+                .setDefault(5555);
 
         try {
             Namespace res = parser.parseArgs(args);
