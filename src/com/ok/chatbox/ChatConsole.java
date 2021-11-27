@@ -1,6 +1,9 @@
 package com.ok.chatbox;
 
 import java.io.IOException;
+import java.security.PublicKey;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatConsole implements Runnable{
 
@@ -39,9 +42,17 @@ public class ChatConsole implements Runnable{
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
 
+    public static final String ANSI_CURS_LEFT = "\u001B[1D";
+    public static final String ANSI_CURS_UP = "\u001B[1F";
+    public static final String ANSI_CURS_DOWN = "\u001B[1E";
+    public static final String ANSI_CURS_ERASE = "\u001B[0J";
+
     public static final boolean IsWindows = System.getProperty("os.name").contains("Windows");
+    private List<String> messages;
+    private int messagesDrawn;
     private String Screen = "";
-    private String message;
+//    private String message;
+    public StringBuilder msg;
     public boolean reDraw;
     private final Object lock = new Object();
 
@@ -51,15 +62,19 @@ public class ChatConsole implements Runnable{
 
     public void AddMessage(String message){
         synchronized (lock) {
-            Screen += message + "\n";
+            messages.add(message);
             reDraw = true;
         }
     }
 
     @Override
     public void run() {
-        message = "";
+        msg = new StringBuilder(ChatClient.username + ":- ");
+        messages = new ArrayList<>();
+        messagesDrawn = 0;
+//        message = "";
         reDraw = true;
+        CLS();
         while (true){
             if(reDraw) {
                 Draw();
@@ -75,18 +90,22 @@ public class ChatConsole implements Runnable{
                         break;
                     }else if(keycode >= 32 && keycode <= 126){
                         char t = (char) keycode;
-                        message = message + t;
+                        msg.append(t);
                         System.out.print(t);
                     }else if((keycode == 127 && !IsWindows) ||
                             (keycode == 8 && IsWindows)){
-                        if(message.length() > 0) {
-                            reDraw = true;
-                            message = message.substring(0, message.length() - 1);
+                        if(msg.length() > (ChatClient.username + ":- ").length()) {
+//                            reDraw = true;
+                            System.out.print(ANSI_CURS_LEFT);
+                            System.out.print(" ");
+                            System.out.print(ANSI_CURS_LEFT);
+
+                            msg.delete(msg.length() - 1,msg.length());
                         }
                     }else if( (keycode == 10 && !IsWindows) || (keycode == 13 && IsWindows) ) {
                         reDraw = true;
-                        AddMessage(ChatClient.username + ":-" +message);
-                        message = "";
+                        AddMessage(msg.toString());
+                        msg = new StringBuilder(ChatClient.username + ":- ");
                     }
                 }
             } catch (IOException e) {
@@ -100,11 +119,18 @@ public class ChatConsole implements Runnable{
 
     private void Draw(){
         synchronized (lock) {
-            CLS();
-            System.out.println(ANSI_RESET);
-            System.out.println(Screen);
+//            CLS();
+            System.out.print(ANSI_CURS_UP);
+            System.out.print(ANSI_CURS_ERASE);
+            for (int i = messagesDrawn; i < messages.size(); i++) {
+                String m = messages.get(i);
+                System.out.println(m);
+            }
+            System.out.print(ANSI_CURS_ERASE);
+            System.out.print(ANSI_CURS_DOWN);
+            messagesDrawn = messages.size();
             reDraw = false;
-            System.out.print(ChatClient.username + ":- " + ANSI_GREEN + message);
+            System.out.print( msg.toString());
         }
     }
 
