@@ -13,26 +13,31 @@ import java.util.Arrays;
 public class FileEncryption {
 
 
-    public static void main(String[] args) {
-        int mode = Kalyna.KALYNA_256KEY_256BLOCK;
-        if(args.length != 4 ) {
-            printMan();
-        }else if(!(args[0].equals("-e") || args[0].equals("-d"))){
-            printMan();
-        }else {
-           FileEncrypt(
-                   getKey(args[3],Kalyna.getKeySize(mode)),
-                   Path.of(args[1]),
-                   Path.of(args[2]),
-                   32000,args[0].equals("-e"),
-                   mode
-           );
-        }
+//    public static void main(String[] args) {
+//        int mode = Kalyna.KALYNA_256KEY_256BLOCK;
+//        if(args.length != 4 ) {
+//            printMan();
+//        }else if(!(args[0].equals("-e") || args[0].equals("-d"))){
+//            printMan();
+//        }else {
+//           FileEncrypt(
+//                   getKey(args[3],Kalyna.getKeySize(mode)),
+//                   Path.of(args[1]),
+//                   Path.of(args[2]),
+//                   32000,args[0].equals("-e"),
+//                   mode
+//           );
+//        }
+//    }
+
+    public static byte[] getKey(char[] password,int size) {
+        byte[] bin = new byte[password.length];
+        for (int i = 0; i < bin.length; i++)
+            bin[i] = (byte) password[i];
+
+        return KalynaHash.Hash(bin,size);
     }
 
-    private static byte[] getKey(String password,int size) {
-        return KalynaHash.Hash(password.getBytes(StandardCharsets.UTF_8),size);
-    }
 
     public static void FileEncrypt(byte[] key,Path input, Path output,int bufferSize,boolean encryption,int mode){
         try(

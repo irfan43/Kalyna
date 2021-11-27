@@ -43,6 +43,9 @@ public class ChatCipher {
             e.printStackTrace();
         }
     }
+    public String getPublicKeyBase64() {
+        return Base64.getEncoder().encodeToString( publicKey.getEncoded() );
+    }
     public PublicKey getPublicKey() {
         return publicKey;
     }
