@@ -14,6 +14,8 @@ import java.util.Set;
 public class ChatClient {
 
     public static String username;
+    public static ClientConn rest;
+    public static ClientConn packetReader;
     public static PublicKey publicKey;
     private static PrivateKey privateKey;
 
@@ -23,8 +25,19 @@ public class ChatClient {
     public static void main(String[] args) {
         //-ip 192.168.0.1 -port 5555 -uname indus -pbk FileName
         //--generate-pbk FileName
-
-
+        username = "indus";
+        ChatConsole cc = new ChatConsole();
+        Thread ccThread = new Thread(cc);
+        ccThread.start();
+        for (int i = 0; i < 100; i++) {
+            cc.AddMessage("Maple:-" + "we reached i = " + i);
+            try {
+                Thread.sleep(4000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        System.exit(1);
         ArgumentParser parser = ArgumentParsers.newFor("Kalyna Chat Client").build()
                 .defaultHelp(true)
                 .description("Client side Kalyna Encrypted Chat Application");
@@ -61,8 +74,11 @@ public class ChatClient {
                 String ip = res.get("ip").toString();
                 Path keyFile = Path.of( res.get("keys").toString() );
                 chatCipher = new ChatCipher(keyFile);
-                ClientConn conn = new ClientConn(ip,port);
 
+                packetReader = new ClientConn(ip,port);
+                Thread pr = new Thread(packetReader);
+                pr.start();
+                rest = new ClientConn(ip,port);
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
