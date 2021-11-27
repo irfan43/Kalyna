@@ -27,7 +27,7 @@ public class ClientHandler implements Runnable{
             bw = new BufferedWriter(new OutputStreamWriter(os));
 
             String command = br.readLine();
-
+            System.out.println("got command " + command);
             switch (command){
                 case "LOGIN":
                     login();
@@ -37,6 +37,9 @@ public class ClientHandler implements Runnable{
                     break;
                 case "PBK":
                     getPBK();
+                    break;
+                case "USR":
+                    getUsername();
                     break;
                 default:
                     invalidCommand();
@@ -53,6 +56,19 @@ public class ClientHandler implements Runnable{
                 }
             }
         }
+    }
+
+    private void getUsername() throws IOException{
+        String Base64PublicKey = br.readLine();
+        String username = ChatServer.clientList.getUsername(Base64PublicKey);
+        if(username == null){
+            bw.write("INVALID\n");
+        }else {
+            bw.write("GOT\n");
+            bw.write(username + "\n");
+        }
+        bw.flush();
+        Sock.close();
     }
 
     private void getPBK() throws IOException{
@@ -76,17 +92,23 @@ public class ClientHandler implements Runnable{
 
     private void sendPacket() throws IOException {
         String Base64PublicKey = br.readLine();
+        System.out.println("sending packet ");
         byte[] publicKey;
         try {
             publicKey = Base64.getDecoder().decode(Base64PublicKey);
             int len = Integer.parseInt( br.readLine() );
+            System.out.println(" got len " + len);
             byte[] packetData = ReadNBytes(len);
+            System.out.println(" got packet");
             boolean successes = ChatServer.clientList.SendPacket(packetData,Base64PublicKey);
-            if(successes)
+            if(successes) {
                 bw.write("ok\n");
-            else
+            }
+            else {
                 bw.write("FAIL\n");
+            }
             bw.flush();
+            System.out.println("done sending");
         }catch (IllegalArgumentException e){
             invalidCommand();
         }
