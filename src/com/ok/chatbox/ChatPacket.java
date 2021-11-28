@@ -1,6 +1,7 @@
 package com.ok.chatbox;
 
 import java.io.*;
+import java.util.Base64;
 
 public class ChatPacket {
 
@@ -68,7 +69,6 @@ public class ChatPacket {
         bw.write(Base64.getEncoder().encodeToString(data));
         bw.newLine();
         bw.flush();
-        os.write(data);
 
         return os.toByteArray();
     }
