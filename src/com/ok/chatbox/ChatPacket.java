@@ -54,7 +54,8 @@ public class ChatPacket {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         Type = br.readLine();
         From = br.readLine();
-        return readBytes(is,is.available());
+
+        return  Base64.getDecoder().decode(br.readLine());
     }
     public byte[] getBytes() throws IOException{
         ByteArrayOutputStream os = new ByteArrayOutputStream();
@@ -63,6 +64,8 @@ public class ChatPacket {
         bw.write(Type);
         bw.newLine();
         bw.write(From);
+        bw.newLine();
+        bw.write(Base64.getEncoder().encodeToString(data));
         bw.newLine();
         bw.flush();
         os.write(data);
@@ -78,18 +81,6 @@ public class ChatPacket {
     public byte[] getData(){
         return data;
     }
-    private static byte[] readBytes(InputStream is, int n) throws IOException {
-        byte[] out  = new byte[n];
-        int pos     = 0;
 
-        while (pos < n){
-            byte[] tmp  = new byte[Math.min((n - pos),is.available())];
-            int len     = is.read(tmp);
-
-            System.arraycopy(tmp,0,out,pos,len);
-            pos += len;
-        }
-        return out;
-    }
 
 }
