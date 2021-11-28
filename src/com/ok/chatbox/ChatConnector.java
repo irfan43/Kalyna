@@ -17,16 +17,22 @@ public class ChatConnector {
 
     private static int mode = Kalyna.KALYNA_512KEY_512BLOCK;
     private static String TheirUsername;
+    private static String PrefaceTheirUsername;
+    private static String PrefaceOurUsername;
     private static String Base64PublicKey;
     private static byte[] secret;
     public static ChatConsole cc;
     private static Thread ccThread;
+
+
 
     public static void ChatWith(String username,String base64PublicKey) throws IOException, GeneralSecurityException {
         Base64PublicKey = base64PublicKey;
         TheirUsername = username;
         cc = new ChatConsole();
         ccThread = new Thread(cc);
+
+        BuildPrefaces();
 
         DoExchange();
         ccThread.start();;
@@ -46,6 +52,23 @@ public class ChatConnector {
                 e.printStackTrace();
             }
         }
+    }
+
+    private static void BuildPrefaces() {
+        int len = Math.max(TheirUsername.length(),ChatClient.username.length()) + 2 ;
+        PrefaceTheirUsername = PadString(TheirUsername,len);
+        PrefaceOurUsername = PadString(ChatClient.username,len);
+    }
+
+    private static String PadString(String input, int target){
+        int pad = target - input.length();
+        int padLeft = pad/2;
+        int padRight = pad - padLeft;
+
+        return "[" + " ".repeat(Math.max(0, padLeft)) +
+                input +
+                " ".repeat(Math.max(0, padRight)) +
+                "]: ";
     }
 
     private static void DoExchange() throws GeneralSecurityException, IOException{
@@ -109,11 +132,11 @@ public class ChatConnector {
 
         String str = new String(data);
 
-        cc.AddMessage( "[" + TheirUsername + "] " + str);
+        cc.AddMessage( PrefaceTheirUsername + str);
 
     }
     public static void sendMsg(String msg) throws IOException {
-        cc.AddMessage(  "[" + ChatClient.username + "] " + msg);
+        cc.AddMessage(  PrefaceOurUsername + msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
         KalynaCFB k = new KalynaCFB(secret,mode);
         data = k.Update(data);
