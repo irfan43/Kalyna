@@ -26,7 +26,6 @@ public class ConnectedClient {
     public boolean SendPacket(byte[] Packet) throws IOException {
         if(Sock.isClosed())
             return false;
-        System.out.println("sending packet to client " );
         Writer.write("new\n");
         Writer.write(Base64.getEncoder().encodeToString(Packet) + "\n");
         Writer.flush();

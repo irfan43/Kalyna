@@ -87,7 +87,7 @@ public class ChatConsole implements Runnable{
             }
             messagesDrawn = messages.size();
             reDraw = false;
-            System.out.print( "\n" + ChatClient.username + ":- " + msg.toString());
+            System.out.print( ChatClient.username + ":- " + msg.toString());
         }
     }
 
