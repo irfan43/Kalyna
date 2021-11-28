@@ -32,11 +32,8 @@ public class ClientNetwork implements Runnable {
 
         Writer.write("SEND\n");
         Writer.write(Base64PublicKey + "\n");
-        Writer.write(pack.length + "\n");
-        System.out.println(" len " + pack.length);
+        Writer.write( Base64.getEncoder().encodeToString(pack) + "\n");
         Writer.flush();
-        outputStream.write(pack);
-        outputStream.flush();
         String resp = Reader.readLine();
         Sock.close();
         return resp.equals("ok");
@@ -97,8 +94,7 @@ public class ClientNetwork implements Runnable {
             while (!Sock.isClosed()) {
                 String cmd = Reader.readLine();
                 if (cmd.equals("new")) {
-                    int len = Integer.parseInt(Reader.readLine());
-                    byte[] packet = ReadNBytes(len);
+                    byte[] packet = Base64.getDecoder().decode(Reader.readLine());
                     ChatClient.packetHandler.newPacketReceived(packet);
                 }
             }
@@ -107,17 +103,5 @@ public class ClientNetwork implements Runnable {
         }
 
     }
-    private byte[] ReadNBytes( int n) throws IOException {
-        byte[] out  = new byte[n];
-        int pos     = 0;
 
-        while (pos < n){
-            byte[] tmp  = new byte[Math.min((n - pos),bufferedInputStream.available())];
-            int len     = bufferedInputStream.read(tmp);
-
-            System.arraycopy(tmp,0,out,pos,len);
-            pos += len;
-        }
-        return out;
-    }
 }

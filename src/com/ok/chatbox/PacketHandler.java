@@ -1,8 +1,10 @@
 package com.ok.chatbox;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class PacketHandler {
@@ -53,16 +55,13 @@ public class PacketHandler {
         ChatClient.rest.SendPacket(pack,base64PublicKey);
     }
     public void SendPacketINIT(String base64PublicKey,byte[] pubByte, byte[] sign) throws IOException{
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        os.write(pubByte.length);
-        os.write(pubByte);
-        os.write(sign.length);
-        os.write(sign);
-
+        String pubB64 = Base64.getEncoder().encodeToString(pubByte);
+        String signB64 = Base64.getEncoder().encodeToString(sign);
+        String mst = pubB64 + "\n" + signB64 + "\n";
         ChatPacket cp = new ChatPacket(
                 ChatPacket.TYPE_INITIATOR,
                 ChatClient.chatCipher.getPublicKeyBase64(),
-                os.toByteArray()
+                mst.getBytes(StandardCharsets.UTF_8)
         );
         byte[] pack = cp.getBytes();
         ChatClient.rest.SendPacket(pack,base64PublicKey);
