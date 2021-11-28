@@ -109,11 +109,11 @@ public class ChatConnector {
 
         String str = new String(data);
 
-        cc.AddMessage( "[" +TheirUsername + "] " + str);
+        cc.AddMessage( "[" + TheirUsername + "] " + str);
 
     }
     public static void sendMsg(String msg) throws IOException {
-        cc.AddMessage(  "[" +ChatClient.username + "] " + msg);
+        cc.AddMessage(  "[" + ChatClient.username + "] " + msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
         KalynaCFB k = new KalynaCFB(secret,mode);
         data = k.Update(data);
