@@ -4,6 +4,7 @@ import javax.crypto.KeyAgreement;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -48,16 +49,19 @@ public class ChatConnector {
         ChatPacket cp = null;
         while (cp == null){
             cp = ChatClient.packetHandler.GetINITPacketFrom(Base64PublicKey);
+            System.out.println("waiting");
             try {
-                Thread.sleep(500);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         System.out.println("GOT INIT");
-        ByteArrayInputStream is = new ByteArrayInputStream(cp.getData());
-        byte[] theirPub = readBlock(is);
-        byte[] theirSign = readBlock(is);
+        String master = new String (cp.getData(), StandardCharsets.UTF_8);
+        System.out.println(" got \n" + master);
+        String[] d = master.split("\\r?\\n");
+        byte[] theirPub  = Base64.getDecoder().decode(d[0]);
+        byte[] theirSign  = Base64.getDecoder().decode(d[1]);
         Signature verifySgn = Signature.getInstance("SHA256withRSA");
 
         byte[] theirRSAPBKENC = Base64.getDecoder().decode(Base64PublicKey);
@@ -74,8 +78,9 @@ public class ChatConnector {
 
         KeyAgreement ka = KeyAgreement.getInstance("DH");
         ka.init(pem);
-        Key s = ka.doPhase(theirDH,true);
-        System.out.println( "got " + Base64.getEncoder().encodeToString( s.getEncoded() ) );
+        ka.doPhase(theirDH,true);
+        byte[] s = ka.generateSecret();
+        System.out.println( "got " + Base64.getEncoder().encodeToString( s ) );
         System.exit(0);
     }
 

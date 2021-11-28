@@ -19,7 +19,6 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         try {
-            System.out.println(" got here  ");
 
             is = Sock.getInputStream();
             os = Sock.getOutputStream();
@@ -27,7 +26,6 @@ public class ClientHandler implements Runnable{
             bw = new BufferedWriter(new OutputStreamWriter(os));
 
             String command = br.readLine();
-            System.out.println("got command " + command);
             switch (command){
                 case "LOGIN":
                     login();
@@ -92,14 +90,10 @@ public class ClientHandler implements Runnable{
 
     private void sendPacket() throws IOException {
         String Base64PublicKey = br.readLine();
-        System.out.println("sending packet ");
         byte[] publicKey;
         try {
             publicKey = Base64.getDecoder().decode(Base64PublicKey);
-            int len = Integer.parseInt( br.readLine() );
-            System.out.println(" got len " + len);
-            byte[] packetData = ReadNBytes(len);
-            System.out.println(" got packet");
+            byte[] packetData =  Base64.getDecoder().decode(br.readLine());
             boolean successes = ChatServer.clientList.SendPacket(packetData,Base64PublicKey);
             if(successes) {
                 bw.write("ok\n");
@@ -108,7 +102,6 @@ public class ClientHandler implements Runnable{
                 bw.write("FAIL\n");
             }
             bw.flush();
-            System.out.println("done sending");
         }catch (IllegalArgumentException e){
             invalidCommand();
         }
@@ -123,17 +116,5 @@ public class ClientHandler implements Runnable{
 
     }
 
-    private byte[] ReadNBytes( int n) throws IOException {
-        byte[] out  = new byte[n];
-        int pos     = 0;
 
-        while (pos < n){
-            byte[] tmp  = new byte[Math.min((n - pos),is.available())];
-            int len     = is.read(tmp);
-
-            System.arraycopy(tmp,0,out,pos,len);
-            pos += len;
-        }
-        return out;
-    }
 }
