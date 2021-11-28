@@ -58,7 +58,6 @@ public class PacketHandler {
         String pubB64 = Base64.getEncoder().encodeToString(pubByte);
         String signB64 = Base64.getEncoder().encodeToString(sign);
         String mst = pubB64 + "\n" + signB64 + "\n";
-        System.out.println(" sending \n" + mst);
         ChatPacket cp = new ChatPacket(
                 ChatPacket.TYPE_INITIATOR,
                 ChatClient.chatCipher.getPublicKeyBase64(),

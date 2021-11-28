@@ -27,7 +27,7 @@ public class ChatConsole implements Runnable{
 
     @Override
     public void run() {
-        msg = new StringBuilder(ChatClient.username + ":- ");
+        msg = new StringBuilder();
         messages = new ArrayList<>();
         messagesDrawn = 0;
 //        message = "";
@@ -52,7 +52,7 @@ public class ChatConsole implements Runnable{
                         System.out.print(t);
                     }else if((keycode == 127 && !ConsoleUtil.IsWindows) ||
                             (keycode == 8 && ConsoleUtil.IsWindows)){
-                        if(msg.length() > (ChatClient.username + ":- ").length()) {
+                        if(msg.length() > 0) {
 //                            reDraw = true;
                             System.out.print(ConsoleUtil.ANSI_CURS_LEFT);
                             System.out.print(" ");
@@ -62,8 +62,9 @@ public class ChatConsole implements Runnable{
                         }
                     }else if( (keycode == 10 && !ConsoleUtil.IsWindows) || (keycode == 13 && ConsoleUtil.IsWindows) ) {
                         reDraw = true;
+
                         ChatConnector.sendMsg(msg.toString());
-                        msg = new StringBuilder(ChatClient.username + ":- ");
+                        msg = new StringBuilder();
                     }
                 }
             } catch (IOException e) {
@@ -88,7 +89,7 @@ public class ChatConsole implements Runnable{
             System.out.print(ConsoleUtil.ANSI_CURS_DOWN);
             messagesDrawn = messages.size();
             reDraw = false;
-            System.out.print( msg.toString());
+            System.out.print( ChatClient.username + ":- " + msg.toString());
         }
     }
 
