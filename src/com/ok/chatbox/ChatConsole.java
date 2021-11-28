@@ -62,7 +62,6 @@ public class ChatConsole implements Runnable{
                         }
                     }else if( (keycode == 10 && !ConsoleUtil.IsWindows) || (keycode == 13 && ConsoleUtil.IsWindows) ) {
                         reDraw = true;
-
                         ChatConnector.sendMsg(msg.toString());
                         msg = new StringBuilder();
                     }
@@ -79,17 +78,16 @@ public class ChatConsole implements Runnable{
     private void Draw(){
         synchronized (lock) {
 //            CLS();
-            System.out.print(ConsoleUtil.ANSI_CURS_UP);
+            System.out.print(ConsoleUtil.ANSI_CURS_BEGIN);
             System.out.print(ConsoleUtil.ANSI_CURS_ERASE);
+            System.out.print(ConsoleUtil.ANSI_CURS_BEGIN);
             for (int i = messagesDrawn; i < messages.size(); i++) {
                 String m = messages.get(i);
                 System.out.println(m);
             }
-            System.out.print(ConsoleUtil.ANSI_CURS_ERASE);
-            System.out.print(ConsoleUtil.ANSI_CURS_DOWN);
             messagesDrawn = messages.size();
             reDraw = false;
-            System.out.print( ChatClient.username + ":- " + msg.toString());
+            System.out.print( "\n" + ChatClient.username + ":- " + msg.toString());
         }
     }
 
