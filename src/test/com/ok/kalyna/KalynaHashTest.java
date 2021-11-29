@@ -14,5 +14,7 @@ class KalynaHashTest {
 
         byte[] hash = KalynaHash.Hash(test,16);
         System.out.println( KalynaUtil.byteArrayToHexString(hash) );
+
+
     }
 }
