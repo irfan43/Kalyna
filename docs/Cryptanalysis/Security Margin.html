@@ -1,0 +1,727 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Security Margin</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+}
+
+.simple-table-header {
+	background: rgb(247, 246, 243);
+	color: black;
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(145, 145, 142, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(187, 132, 108, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(215, 129, 58, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 148, 51, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(108, 155, 125, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(91, 151, 189, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(167, 130, 195, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(205, 116, 159, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(225, 111, 100, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(145, 145, 142, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(187, 132, 108, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(215, 129, 58, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 148, 51, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(108, 155, 125, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(91, 151, 189, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(167, 130, 195, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(205, 116, 159, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(225, 111, 100, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="a97c3fce-4537-4eb2-9cc8-59c8ca42cd48" class="page sans"><header><h1 class="page-title">Security Margin</h1><table class="properties"><tbody></tbody></table></header><div class="page-body"><h1 id="299aad68-37ab-4b9f-bbf1-9bf1ca3c5a97" class="">Security Margin</h1><h2 id="cea6fc4b-bf90-499d-8392-5eb651079b20" class="">Encryption/Decryption</h2><ul id="dc7dd6df-08d5-4bc8-810c-7b7262dc5f2c" class="bulleted-list"><li style="list-style-type:disc">The use of such Robust SPN Design allows Kalyna to probide provable security margin for Linear, Integral and Differential cryptanalysis with 6 cycles for 128-bit, 7 cycles for 256-bit and 9 cycles for 512-bit block</li></ul><ul id="164b7586-d8f4-4def-b225-46d8d343475d" class="bulleted-list"><li style="list-style-type:disc">Its extensions over AES although has decreased its software performance to <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>85</mn><mi mathvariant="normal">%</mi></mrow><annotation encoding="application/x-tex">85\%</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.80556em;vertical-align:-0.05556em;"></span><span class="mord">85%</span></span></span></span></span><span>﻿</span></span> it made it well protected against potential vulnerabilities of AES like algebraic analysis , related-key
+cryptanalysis and provided very good security margin, especially for the block length and key size of 512 bits.</li></ul><ul id="07eb0501-68a4-438b-83a2-9a5642a02e36" class="bulleted-list"><li style="list-style-type:disc">Each additional cycle provides an exponential increase in the complexity of cryptanalysis. </li></ul><ul id="09378eaa-ed02-4ee1-931e-20f91ebf118d" class="bulleted-list"><li style="list-style-type:disc">The developers of the Kalyna cipher have increased the number of cycles to 10, 14 and 18 for blocks of 128, 256 and 512 bits to provide a guaranteed margin of safety.</li></ul><p id="f3b51273-e838-4053-bbe1-06df1181486b" class="">
+</p><figure id="dc46d654-aee8-4745-a454-0f9b0d8746d0" class="image"><a href="../Pictures/Encryption.png"><img style="width:480px" src="../Pictures/Encryption.png"/></a><figcaption>Kalyna Encryption Function</figcaption></figure><ul id="e27acc4e-5920-4377-882d-159940dbb5b5" class="bulleted-list"><li style="list-style-type:disc"><strong>Byte Wise Diffusion</strong> in Kalyna is provided by <strong>Mix Columns </strong>and <strong>Shift Rows </strong>and these two operations complement each other</li></ul><ul id="e2888ee0-f8f3-48c8-9530-49df8973f132" class="bulleted-list"><li style="list-style-type:disc"><strong>Bit Wise Diffusion </strong>is provided by <strong>Sub Bytes </strong>in a non-linear way<ul id="4d88b5f4-ef07-4ff6-a18e-60670b3037d4" class="bulleted-list"><li style="list-style-type:circle"><strong>Sub Bytes</strong> works as a <strong>8-bit S-box</strong>. Thus if one bit change, the <strong>8 bits of the byte</strong> are likely to change as it would map to different number now. With this step, each bit of a byte depend of each other.</li></ul></li></ul><ul id="f26421f8-6261-4551-a73a-d18880677251" class="bulleted-list"><li style="list-style-type:disc">Together the <strong>Shift Rows</strong> and <strong>Mix Columns</strong> operations help to ensure that the number of what are termed <strong>active S-boxes</strong> is either large to begin with, or becomes large very soon. </li></ul><ul id="e56af099-c5e2-4d5d-a073-1ad2b53f124f" class="bulleted-list"><li style="list-style-type:disc">This forms the basis for the very sound security offered by the Kalyna against <strong>differential</strong> and <strong>linear cryptanalysis</strong>.</li></ul><h3 id="0f63279b-f9f4-4097-87ec-233ca80dcf97" class=""><strong>Shift Row</strong></h3><ul id="d80a6f45-69de-46a4-ba48-1bacfeb83093" class="bulleted-list"><li style="list-style-type:disc">Any pattern or relationship between elements within the same column is disrupted</li></ul><ul id="253c6faf-b058-464b-bab9-60591817bddc" class="bulleted-list"><li style="list-style-type:disc">Fairly easy way of creating diffusion</li></ul><h3 id="ff0bbf90-03f0-422a-b166-66ba2c0ee4f6" class=""><strong>Mix Columns</strong></h3><ul id="68128540-dd22-496b-b254-0835ec421a44" class="bulleted-list"><li style="list-style-type:disc">The relationships within a column are difficult to track, elements in the same row will be modiﬁed differently.</li></ul><ul id="3fb25818-01f5-47ea-acb9-d8a980a72007" class="bulleted-list"><li style="list-style-type:disc">The Mix Column matrix is derived from the <strong>parity-check matrix</strong> of a <strong>Maximally</strong> <strong>Distance</strong> <strong>Separable (MDS)</strong> code</li></ul><ul id="50001612-922f-4285-a798-4c8989e95537" class="bulleted-list"><li style="list-style-type:disc">Thus, if two inputs to the Mix Columns layer have similar <strong>Input Differences,</strong> the outputs will still be very different and this should help to amplify even a small amount of “change” or “difference” over successive rounds of the cipher.</li></ul><ul id="10d28a6a-6b2e-4e44-8a14-d6e79069cf85" class="bulleted-list"><li style="list-style-type:disc">Increased size of MDS matrix when compared to AES provides even better propagation properties, so the strength to the most of cryptanalytical methods.</li></ul><h3 id="ec885d6a-e3b2-4d3c-98c4-fd52d45abe75" class="">Modulo Addition</h3><ul id="da5f549a-8cff-486d-a1e7-762f93ce177e" class="bulleted-list"><li style="list-style-type:disc">Modulo <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mn>64</mn></msup></mrow><annotation encoding="application/x-tex">2^{64} </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">64</span></span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> round key addition improves strength of the cipher to DC, LC etc. and gives additional protection from algebraic analysis  <ul id="c88f14e3-e0a7-418d-91ee-74eed5d861d9" class="bulleted-list"><li style="list-style-type:circle">It is non-linear in <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>G</mi><mi>F</mi><mo stretchy="false">(</mo><mn>2</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">GF(2)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">GF</span><span class="mopen">(</span><span class="mord">2</span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> and adds new variables to the system, which significantly complicates solution of the system even on 2 round (very reduced) version of the cipher.</li></ul></li></ul><hr id="c95aec4a-7782-432f-b79c-c587df6ba5cc"/><h2 id="7556532b-0f68-4c77-95c5-d07150bc3c06" class="">Key Scheduling</h2><figure id="a902be68-a48e-4315-a176-3e112fcda63f" class="image"><a href="../Pictures/Key%20Scheduling.png"><img style="width:384px" src="../Pictures/Key%20Scheduling.png"/></a><figcaption>Kalyna Key Scheduling</figcaption></figure><h3 id="a6ca8f9a-0dda-4e00-b40b-3bf071e0dde5" class="">Key Invertibility</h3><ul id="26c51a44-ba62-478c-8ddc-d0e41921acca" class="bulleted-list"><li style="list-style-type:disc">The key schedule algorithm of Kalyna is designed in a way that does not allow recovery of all subkeys or the master key from one subkey only unlike AES, it is not completely invertible</li></ul><ul id="aea7854f-dd4d-46be-a6b3-ea552a15a5be" class="bulleted-list"><li style="list-style-type:disc">However, it allows recovery of odd-round keys from even-round keys and vice-versa.</li></ul><h3 id="c1c8698e-6c3d-4a00-9ffa-1ae7555b963e" class="">Unique Keys</h3><ul id="84261546-a256-481c-be31-574826fc97eb" class="bulleted-list"><li style="list-style-type:disc">Having good key agility and simple implementation (both in software and hardware) with protection from additional attacks, this key schedule allows potential collisions in round keys (different encryption keys might generate the same sequence of round keys).</li></ul><ul id="03e53cea-827f-4909-baa7-d936e71e3af7" class="bulleted-list"><li style="list-style-type:disc">We can estimate the probability of such event by application of differential cryptanalysis methods.  </li></ul><ul id="8237656c-06bc-4fd7-8143-25ea36ba730f" class="bulleted-list"><li style="list-style-type:disc">The collision probability <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext>collison</mtext></msub></mrow><annotation encoding="application/x-tex">p_{\text{collison}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">collison</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> of getting all the round key states equal is upper bounded the  following way<div id="ec86efd8-f225-41d6-9555-63655d052168" class="column-list"><div id="d6569ac4-0492-41cf-9593-5138b444b3d3" style="width:37.5%" class="column"><figure id="46db9954-70ed-4525-9b3a-110fbe153f28" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>p</mi><mtext>collision</mtext></msub><mo>≤</mo><mo stretchy="false">(</mo><msubsup><mi mathvariant="normal">Δ</mi><mtext>max</mtext><mi>π</mi></msubsup><msup><mo stretchy="false">)</mo><mrow><msub><mi>B</mi><mi>M</mi></msub><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">p_{\text{collision}} \leq (\Delta^\pi_{\text{max}})^{B_Mt}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8304100000000001em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">collision</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.1413309999999999em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord"><span class="mord">Δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7143919999999999em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913309999999999em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.3567071428571427em;margin-left:-0.05017em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.14329285714285717em;"><span></span></span></span></span></span></span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span></span></div></figure></div><div id="8b70f05b-513b-4791-bf72-91a6501f3309" style="width:62.5%" class="column"><p id="3ff6fc0d-2935-4131-a5c0-72bccd2abf46" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mtext>collision</mtext></msub></mrow><annotation encoding="application/x-tex">p_{\text{collision}} </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.19444em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.33610799999999996em;"><span style="top:-2.5500000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">collision</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> - Probability of Collision</p><p id="1c2b8991-554c-4222-9778-5e5ad490cbd3" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="normal">Δ</mi><mtext>max</mtext><mi>π</mi></msubsup><mo>=</mo><msup><mn>2</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Delta^\pi_{\text{max}} = 2^{-5}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.93033em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord">Δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span> - Maximal Non-Trivial Differential Probability</p><p id="28cb09cc-8339-4be5-9bed-41331e55b125" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>B</mi><mi>M</mi></msub><mo>=</mo><mn>9</mn></mrow><annotation encoding="application/x-tex">B_M =9</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.83333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.32833099999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.05017em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">9</span></span></span></span></span><span>﻿</span></span> - Branch Number of Kalyna <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn><mo>×</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">8\times 8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord">8</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span></span><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span></span></span></span></span><span>﻿</span></span> MDS Matrix </p><p id="2a980d80-19e3-4261-a738-e2e74c7c5bc0" class=""><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.61508em;vertical-align:0em;"></span><span class="mord mathnormal">t</span></span></span></span></span><span>﻿</span></span> - Number of Round Key States</p></div></div></li></ul><ul id="77a21070-9623-4fbe-8b81-632aa0662f52" class="bulleted-list"><li style="list-style-type:disc">Using the above equation and other cryptanalysis methods we can compute the following table<figure id="33185f3a-33e8-42f8-a55d-576926d8f77b" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><menclose notation="top bottom left right"><mtable rowspacing="0.1600em" columnalign="center center center" columnlines="solid solid" columnspacing="1em" rowlines="solid solid solid solid solid"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext mathvariant="monospace">Block</mtext><mtext> </mtext><mtext mathvariant="monospace">Size</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext mathvariant="monospace">Key</mtext><mtext> </mtext><mtext mathvariant="monospace">Size</mtext></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mtext mathvariant="monospace">Unique</mtext><mtext> </mtext><mtext mathvariant="monospace">Round</mtext><mtext> </mtext><mtext mathvariant="monospace">Key</mtext><mtext> </mtext><mtext mathvariant="monospace">Probability</mtext></mrow></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>128</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>128</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.997521</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>128</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>256</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.981684</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>256</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>256</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.999665</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>256</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>512</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.981684</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>512</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>512</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0.999978</mn></mstyle></mtd></mtr></mtable></menclose></mrow><annotation encoding="application/x-tex">\begin{array}{|c|c|c|}\hline \texttt{Block Size} &amp; \texttt{Key Size}&amp; \texttt{Unique Round Key Probability} \\ 
+\hline 128 &amp; 128 &amp; 0.997521\\ 
+\hline 128 &amp; 256 &amp; 0.981684 \\ 
+\hline 256 &amp; 256 &amp; 0.999665 \\ 
+\hline 256 &amp; 512 &amp; 0.981684 \\ 
+\hline 512 &amp; 512 &amp; 0.999978\\ 
+\hline
+\end{array}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:7.240000000000001em;vertical-align:-3.35em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.890000000000001em;"><span style="top:-5.850000000000001em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="mtable"><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord texttt">Block Size</span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">128</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">128</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">256</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">256</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">512</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord texttt">Key Size</span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">128</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">256</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">256</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">512</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">512</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord text"><span class="mord texttt">Unique Round Key Probability</span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.997521</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.981684</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.999665</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.981684</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0.999978</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span></span></span><span style="top:-2.5000000000000013em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.7000000000000015em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-4.900000000000002em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-6.100000000000002em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-7.3000000000000025em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-8.500000000000002em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-9.700000000000003em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span></span></span></span></span></div></figure></li></ul><hr id="a6c9ce8a-b386-424c-afff-8404920b9eca"/><h1 id="49c6c38e-4303-4c6f-9019-986a33bd4db7" class="">LAT and DDT</h1><ul id="9490965d-6244-488c-aac4-d11e1f291c58" class="bulleted-list"><li style="list-style-type:disc">It was concluded that the computational volume for constructing a linear table of approximations <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mtext>LAT</mtext><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(\text{LAT})</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord text"><span class="mord">LAT</span></span><span class="mclose">)</span></span></span></span></span><span>﻿</span></span> turns out to be substantially larger than when determining the maximum of the total differential (Differential Uniformity). </li></ul><ul id="de974104-15fc-419d-b76d-4f92b20a16b5" class="bulleted-list"><li style="list-style-type:disc">It is associated with the bit size of the input to the cipher <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathnormal">n</span></span></span></span></span><span>﻿</span></span> as <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mn>2</mn><mrow><mn>2</mn><mi>n</mi></mrow></msup></mrow><annotation encoding="application/x-tex">2^{2n} </annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span>and performing a full calculation for even a single key and for 16-bit data blocks is computationally difficult</li></ul><h2 id="ba3d53e9-bdf2-4deb-9a47-20b09c89a803" class="">DDT Analysis</h2><ul id="aa7dae01-643c-4a83-9185-b5343f64cf3e" class="bulleted-list"><li style="list-style-type:disc">The Differential Uniformity for all the Substitution Boxes used is <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>8</mn></mrow><annotation encoding="application/x-tex">8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">8</span></span></span></span></span><span>﻿</span></span><ul id="24cb3ce4-12da-4018-aefc-ce4b10953857" class="bulleted-list"><li style="list-style-type:circle">Hence the maximal non-trivial differential probability will be <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="normal">Δ</mi><mtext>max</mtext><mi>π</mi></msubsup><mo>=</mo><mfrac><mn>8</mn><msup><mn>2</mn><mn>8</mn></msup></mfrac><mo>=</mo><msup><mn>2</mn><mrow><mo>−</mo><mn>5</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Delta^\pi_{\text{max}} = \frac{8}{2^8} = 2^{-5}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.93033em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord">Δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.664392em;"><span style="top:-2.4530000000000003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">π</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:1.190108em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.845108em;"><span style="top:-2.6550000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mtight">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7463142857142857em;"><span style="top:-2.786em;margin-right:0.07142857142857144em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight">8</span></span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">8</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">2</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">5</span></span></span></span></span></span></span></span></span></span></span></span></span><span>﻿</span></span></li></ul></li></ul><figure id="cc091e67-3228-4bd9-810d-580e53f8eed6" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><menclose notation="top bottom left right"><mtable rowspacing="0.1600em" columnalign="center center center center center" columnlines="solid solid solid solid" columnspacing="1em" rowlines="solid solid solid solid solid"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi mathvariant="normal">Δ</mi></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>1</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>2</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>3</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>4</mn></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>36855</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>36580</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>36689</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>36687</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>24996</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>25479</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>25286</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>25296</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3423</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3276</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3333</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3321</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>246</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>191</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>220</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>222</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>15</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd></mtr></mtable></menclose></mrow><annotation encoding="application/x-tex">\begin{array}{|c|c|c|c|c|}\hline \Delta &amp; \pi_1 &amp; \pi_2 &amp; \pi_3 &amp; \pi_4 \\ \hline 0 &amp; 36855 &amp; 36580 &amp; 36689 &amp; 36687 \\ 
+\hline 2 &amp; 24996 &amp; 25479 &amp; 25286 &amp; 25296 \\ 
+\hline 4 &amp; 3423 &amp; 3276 &amp; 3333 &amp; 3321 \\ 
+\hline 6 &amp; 246 &amp; 191 &amp; 220 &amp; 222 \\ 
+\hline 8 &amp; 15 &amp; 9 &amp; 7 &amp; 9
+ \\ 
+\hline
+\end{array}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:7.240000000000001em;vertical-align:-3.35em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.890000000000001em;"><span style="top:-5.850000000000001em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="mtable"><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">Δ</span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">36855</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">24996</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3423</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">246</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">15</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">36580</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">25479</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3276</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">191</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">36689</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">25286</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3333</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">220</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">7</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:3.850000000000001em;"><span style="top:-6.010000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-4.810000000000001em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">36687</span></span></span><span style="top:-3.6100000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">25296</span></span></span><span style="top:-2.41em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3321</span></span></span><span style="top:-1.2100000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">222</span></span></span><span style="top:-0.009999999999999953em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">9</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:7.200000000000001em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-3.3500000000000005em;"></span></span></span><span style="top:-2.5000000000000013em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.7000000000000015em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-4.900000000000002em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-6.100000000000002em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-7.3000000000000025em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-8.500000000000002em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-9.700000000000003em;"><span class="pstrut" style="height:5.850000000000001em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:3.35em;"><span></span></span></span></span></span></span></span></span></span></div></figure><h2 id="7119f653-27e0-4ac7-927c-9f0ac228e766" class="">LAT Analysis</h2><ul id="ac5f3974-b796-43aa-ac25-40c6ef2c2d0c" class="bulleted-list"><li style="list-style-type:disc">Maximal Non-Trivial Linear Bias in the Substitution Boxes is <style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><span data-token-index="0" contenteditable="false" class="notion-text-equation-token" style="user-select:all;-webkit-user-select:all;-moz-user-select:all"><span></span><span><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>24</mn></mrow><annotation encoding="application/x-tex">24</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.64444em;vertical-align:0em;"></span><span class="mord">24</span></span></span></span></span><span>﻿</span></span></li></ul><figure id="bfcab2a5-ac33-42b4-8c2c-633d333dfb6d" class="equation"><style>@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.2/katex.min.css')</style><div class="equation-container"><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><menclose notation="top bottom left right"><mtable rowspacing="0.1600em" columnalign="center center center center center" columnlines="solid solid solid solid" columnspacing="1em" rowlines="solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid solid"><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mi>ϵ</mi></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>1</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>2</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>3</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>π</mi><mn>4</mn></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>24</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>23</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>19</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>22</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>71</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>63</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>55</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>56</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>20</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>177</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>177</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>186</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>201</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>18</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>467</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>456</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>446</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>453</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>16</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>929</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>913</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>968</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>953</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>14</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1669</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1648</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1654</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1667</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>12</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2429</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2551</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2479</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2437</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>10</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3386</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3476</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3486</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3478</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>8</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4272</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4227</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4217</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4206</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>6</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4929</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5067</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4880</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5001</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>4</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5494</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5352</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5432</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5429</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mrow><mo>−</mo><mn>2</mn></mrow></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5899</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5653</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5773</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5632</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>0</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6317</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6280</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6307</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6371</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5717</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5773</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5870</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5819</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5335</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5417</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5376</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5375</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4900</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4881</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4801</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4886</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4270</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4273</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4323</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4216</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>10</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3448</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3494</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3409</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3507</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>12</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2483</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2561</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2502</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2582</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1648</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1619</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1761</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1643</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>16</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>951</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>942</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>886</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>925</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>18</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>430</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>451</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>452</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>430</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>20</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>194</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>174</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>177</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>160</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>22</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>76</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>59</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>53</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>68</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>24</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>14</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>20</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>21</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>128</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd></mtr></mtable></menclose></mrow><annotation encoding="application/x-tex">\begin{array}{|c|c|c|c|c|}\hline \epsilon &amp; \pi_1 &amp; \pi_2 &amp; \pi_3 &amp; \pi_4 \\ \hline 
+-24 &amp; 23 &amp; 14 &amp; 22 &amp; 19
+\\ \hline
+-22 &amp; 71 &amp; 63 &amp; 55 &amp; 56
+\\ \hline
+-20 &amp; 177 &amp; 177 &amp; 186 &amp; 201
+\\ \hline
+-18 &amp; 467 &amp; 456 &amp; 446 &amp; 453
+\\ \hline
+-16 &amp; 929 &amp; 913 &amp; 968 &amp; 953
+\\ \hline
+-14 &amp; 1669 &amp; 1648 &amp; 1654 &amp; 1667
+\\ \hline
+-12 &amp; 2429 &amp; 2551 &amp; 2479 &amp; 2437
+\\ \hline
+-10 &amp; 3386 &amp; 3476 &amp; 3486 &amp; 3478
+\\ \hline
+-8 &amp; 4272 &amp; 4227 &amp; 4217 &amp; 4206
+\\ \hline
+-6 &amp; 4929 &amp; 5067 &amp; 4880 &amp; 5001
+\\ \hline
+-4 &amp; 5494 &amp; 5352 &amp; 5432 &amp; 5429
+\\ \hline
+-2 &amp; 5899 &amp; 5653 &amp; 5773 &amp; 5632
+\\ \hline
+0 &amp; 6317 &amp; 6280 &amp; 6307 &amp; 6371
+\\ \hline
+2 &amp; 5717 &amp; 5773 &amp; 5870 &amp; 5819
+\\ \hline
+4 &amp; 5335 &amp; 5417 &amp; 5376 &amp; 5375
+\\ \hline
+6 &amp; 4900 &amp; 4881 &amp; 4801 &amp; 4886
+\\ \hline
+8 &amp; 4270 &amp; 4273 &amp; 4323 &amp; 4216
+\\ \hline
+10 &amp; 3448 &amp; 3494 &amp; 3409 &amp; 3507
+\\ \hline
+12 &amp; 2483 &amp; 2561 &amp; 2502 &amp; 2582
+\\ \hline
+14 &amp; 1648 &amp; 1619 &amp; 1761 &amp; 1643
+\\ \hline
+16 &amp; 951 &amp; 942 &amp; 886 &amp; 925
+\\ \hline
+18 &amp; 430 &amp; 451 &amp; 452 &amp; 430
+\\ \hline
+20 &amp; 194 &amp; 174 &amp; 177 &amp; 160
+\\ \hline
+22 &amp; 76 &amp; 59 &amp; 53 &amp; 68
+\\ \hline
+24 &amp; 21 &amp; 14 &amp; 20 &amp; 21
+\\ \hline
+128 &amp; 1 &amp; 1 &amp; 1 &amp; 1
+\\ \hline
+
+\end{array}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:32.43999999999999em;vertical-align:-15.950000000000005em;"></span><span class="mord"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:16.489999999999988em;"><span style="top:-18.449999999999996em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="mtable"><span class="vertical-separator" style="height:32.39999999999999em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-15.949999999999996em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:16.449999999999996em;"><span style="top:-18.609999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal">ϵ</span></span></span><span style="top:-17.409999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">24</span></span></span><span style="top:-16.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">22</span></span></span><span style="top:-15.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">20</span></span></span><span style="top:-13.80999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">18</span></span></span><span style="top:-12.60999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">16</span></span></span><span style="top:-11.40999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">14</span></span></span><span style="top:-10.209999999999988em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">12</span></span></span><span style="top:-9.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">10</span></span></span><span style="top:-7.809999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">8</span></span></span><span style="top:-6.609999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">6</span></span></span><span style="top:-5.409999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">4</span></span></span><span style="top:-4.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">−</span><span class="mord">2</span></span></span><span style="top:-3.0099999999999922em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">0</span></span></span><span style="top:-1.8099999999999932em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-0.6099999999999939em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4</span></span></span><span style="top:0.5900000000000054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6</span></span></span><span style="top:1.7900000000000047em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">8</span></span></span><span style="top:2.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">10</span></span></span><span style="top:4.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">12</span></span></span><span style="top:5.390000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">14</span></span></span><span style="top:6.5900000000000025em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">16</span></span></span><span style="top:7.790000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">18</span></span></span><span style="top:8.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">20</span></span></span><span style="top:10.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">22</span></span></span><span style="top:11.390000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">24</span></span></span><span style="top:12.590000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">128</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:15.950000000000005em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:32.39999999999999em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-15.949999999999996em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:16.449999999999996em;"><span style="top:-18.609999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-17.409999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">23</span></span></span><span style="top:-16.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">71</span></span></span><span style="top:-15.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">177</span></span></span><span style="top:-13.80999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">467</span></span></span><span style="top:-12.60999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">929</span></span></span><span style="top:-11.40999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1669</span></span></span><span style="top:-10.209999999999988em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2429</span></span></span><span style="top:-9.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3386</span></span></span><span style="top:-7.809999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4272</span></span></span><span style="top:-6.609999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4929</span></span></span><span style="top:-5.409999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5494</span></span></span><span style="top:-4.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5899</span></span></span><span style="top:-3.0099999999999922em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6317</span></span></span><span style="top:-1.8099999999999932em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5717</span></span></span><span style="top:-0.6099999999999939em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5335</span></span></span><span style="top:0.5900000000000054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4900</span></span></span><span style="top:1.7900000000000047em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4270</span></span></span><span style="top:2.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3448</span></span></span><span style="top:4.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2483</span></span></span><span style="top:5.390000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1648</span></span></span><span style="top:6.5900000000000025em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">951</span></span></span><span style="top:7.790000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">430</span></span></span><span style="top:8.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">194</span></span></span><span style="top:10.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">76</span></span></span><span style="top:11.390000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">21</span></span></span><span style="top:12.590000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:15.950000000000005em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:32.39999999999999em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-15.949999999999996em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:16.449999999999996em;"><span style="top:-18.609999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-17.409999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">14</span></span></span><span style="top:-16.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">63</span></span></span><span style="top:-15.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">177</span></span></span><span style="top:-13.80999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">456</span></span></span><span style="top:-12.60999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">913</span></span></span><span style="top:-11.40999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1648</span></span></span><span style="top:-10.209999999999988em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2551</span></span></span><span style="top:-9.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3476</span></span></span><span style="top:-7.809999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4227</span></span></span><span style="top:-6.609999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5067</span></span></span><span style="top:-5.409999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5352</span></span></span><span style="top:-4.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5653</span></span></span><span style="top:-3.0099999999999922em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6280</span></span></span><span style="top:-1.8099999999999932em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5773</span></span></span><span style="top:-0.6099999999999939em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5417</span></span></span><span style="top:0.5900000000000054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4881</span></span></span><span style="top:1.7900000000000047em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4273</span></span></span><span style="top:2.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3494</span></span></span><span style="top:4.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2561</span></span></span><span style="top:5.390000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1619</span></span></span><span style="top:6.5900000000000025em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">942</span></span></span><span style="top:7.790000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">451</span></span></span><span style="top:8.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">174</span></span></span><span style="top:10.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">59</span></span></span><span style="top:11.390000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">14</span></span></span><span style="top:12.590000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:15.950000000000005em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:32.39999999999999em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-15.949999999999996em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:16.449999999999996em;"><span style="top:-18.609999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">3</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-17.409999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">22</span></span></span><span style="top:-16.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">55</span></span></span><span style="top:-15.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">186</span></span></span><span style="top:-13.80999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">446</span></span></span><span style="top:-12.60999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">968</span></span></span><span style="top:-11.40999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1654</span></span></span><span style="top:-10.209999999999988em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2479</span></span></span><span style="top:-9.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3486</span></span></span><span style="top:-7.809999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4217</span></span></span><span style="top:-6.609999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4880</span></span></span><span style="top:-5.409999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5432</span></span></span><span style="top:-4.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5773</span></span></span><span style="top:-3.0099999999999922em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6307</span></span></span><span style="top:-1.8099999999999932em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5870</span></span></span><span style="top:-0.6099999999999939em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5376</span></span></span><span style="top:0.5900000000000054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4801</span></span></span><span style="top:1.7900000000000047em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4323</span></span></span><span style="top:2.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3409</span></span></span><span style="top:4.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2502</span></span></span><span style="top:5.390000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1761</span></span></span><span style="top:6.5900000000000025em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">886</span></span></span><span style="top:7.790000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">452</span></span></span><span style="top:8.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">177</span></span></span><span style="top:10.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">53</span></span></span><span style="top:11.390000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">20</span></span></span><span style="top:12.590000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:15.950000000000005em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:32.39999999999999em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-15.949999999999996em;"></span><span class="arraycolsep" style="width:0.5em;"></span><span class="col-align-c"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:16.449999999999996em;"><span style="top:-18.609999999999996em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">π</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.30110799999999993em;"><span style="top:-2.5500000000000003em;margin-left:-0.03588em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">4</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-17.409999999999997em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">19</span></span></span><span style="top:-16.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">56</span></span></span><span style="top:-15.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">201</span></span></span><span style="top:-13.80999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">453</span></span></span><span style="top:-12.60999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">953</span></span></span><span style="top:-11.40999999999999em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1667</span></span></span><span style="top:-10.209999999999988em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2437</span></span></span><span style="top:-9.009999999999991em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3478</span></span></span><span style="top:-7.809999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4206</span></span></span><span style="top:-6.609999999999992em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5001</span></span></span><span style="top:-5.409999999999993em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5429</span></span></span><span style="top:-4.209999999999994em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5632</span></span></span><span style="top:-3.0099999999999922em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">6371</span></span></span><span style="top:-1.8099999999999932em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5819</span></span></span><span style="top:-0.6099999999999939em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">5375</span></span></span><span style="top:0.5900000000000054em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4886</span></span></span><span style="top:1.7900000000000047em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">4216</span></span></span><span style="top:2.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">3507</span></span></span><span style="top:4.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2582</span></span></span><span style="top:5.390000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1643</span></span></span><span style="top:6.5900000000000025em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">925</span></span></span><span style="top:7.790000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">430</span></span></span><span style="top:8.990000000000004em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">160</span></span></span><span style="top:10.190000000000003em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">68</span></span></span><span style="top:11.390000000000002em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">21</span></span></span><span style="top:12.590000000000005em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:15.950000000000005em;"><span></span></span></span></span></span><span class="arraycolsep" style="width:0.5em;"></span><span class="vertical-separator" style="height:32.39999999999999em;border-right-width:0.04em;border-right-style:solid;margin:0 -0.02em;vertical-align:-15.949999999999996em;"></span></span></span><span style="top:-2.5em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.700000000000003em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-4.900000000000002em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-6.100000000000001em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-7.300000000000001em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-8.5em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-9.7em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-10.899999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-12.099999999999998em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-13.299999999999997em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-14.499999999999996em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-15.699999999999996em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-16.899999999999995em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-18.099999999999994em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-19.299999999999994em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-20.499999999999993em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-21.699999999999992em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-22.89999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-24.09999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-25.29999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-26.49999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-27.69999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-28.899999999999988em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-30.099999999999987em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-31.299999999999986em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-32.499999999999986em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-33.69999999999999em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span><span style="top:-34.899999999999984em;"><span class="pstrut" style="height:18.449999999999996em;"></span><span class="hline" style="border-bottom-width:0.04em;"></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:15.950000000000005em;"><span></span></span></span></span></span></span></span></span></span></div></figure><hr id="7f50da66-fade-49f8-8302-f67d432f9ec5"/><p id="adbc4da7-d0e5-4cff-bd5a-fec4329d6cc0" class="">
+</p></div></article></body></html>
