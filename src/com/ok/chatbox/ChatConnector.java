@@ -1,9 +1,12 @@
 package com.ok.chatbox;
 
+import com.ok.kalyna.Kalyna;
+import com.ok.kalyna.KalynaCFB;
+import com.ok.kalyna.KalynaHash;
+
 import javax.crypto.KeyAgreement;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
@@ -12,22 +15,60 @@ public class ChatConnector {
 
 
 
-
-    private static String Username;
+    private static int mode = Kalyna.KALYNA_512KEY_512BLOCK;
+    private static String TheirUsername;
+    private static String PrefaceTheirUsername;
+    private static String PrefaceOurUsername;
     private static String Base64PublicKey;
     private static byte[] secret;
-    private static ChatConsole cc;
+    public static ChatConsole cc;
     private static Thread ccThread;
+
+
 
     public static void ChatWith(String username,String base64PublicKey) throws IOException, GeneralSecurityException {
         Base64PublicKey = base64PublicKey;
-        Username = username;
+        TheirUsername = username;
         cc = new ChatConsole();
         ccThread = new Thread(cc);
 
+        BuildPrefaces();
+
         DoExchange();
         ccThread.start();;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        while (ccThread.isAlive()){
+            ChatPacket cp = ChatClient.packetHandler.GetPacketFrom(Base64PublicKey);
+            if( cp != null) {
+                receivedMsg(cp);
+            }
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private static void BuildPrefaces() {
+        int len = Math.max(TheirUsername.length(),ChatClient.username.length()) + 2 ;
+        PrefaceTheirUsername = PadString(TheirUsername,len);
+        PrefaceOurUsername = PadString(ChatClient.username,len);
+    }
+
+    private static String PadString(String input, int target){
+        int pad = target - input.length();
+        int padLeft = pad/2;
+        int padRight = pad - padLeft;
+
+        return "[" + " ".repeat(Math.max(0, padLeft)) +
+                input +
+                " ".repeat(Math.max(0, padRight)) +
+                "]: ";
     }
 
     private static void DoExchange() throws GeneralSecurityException, IOException{
@@ -46,6 +87,7 @@ public class ChatConnector {
         ChatClient.packetHandler.SendPacketINIT(Base64PublicKey,pubByte,signature);
         System.out.println("Sent INIT");
         ChatPacket cp = null;
+        System.out.println("waiting for there init");
         while (cp == null){
             cp = ChatClient.packetHandler.GetINITPacketFrom(Base64PublicKey);
             try {
@@ -55,9 +97,10 @@ public class ChatConnector {
             }
         }
         System.out.println("GOT INIT");
-        ByteArrayInputStream is = new ByteArrayInputStream(cp.getData());
-        byte[] theirPub = readBlock(is);
-        byte[] theirSign = readBlock(is);
+        String master = new String (cp.getData(), StandardCharsets.UTF_8);
+        String[] d = master.split("\\r?\\n");
+        byte[] theirPub  = Base64.getDecoder().decode(d[0]);
+        byte[] theirSign  = Base64.getDecoder().decode(d[1]);
         Signature verifySgn = Signature.getInstance("SHA256withRSA");
 
         byte[] theirRSAPBKENC = Base64.getDecoder().decode(Base64PublicKey);
@@ -74,21 +117,37 @@ public class ChatConnector {
 
         KeyAgreement ka = KeyAgreement.getInstance("DH");
         ka.init(pem);
-        Key s = ka.doPhase(theirDH,true);
-        System.out.println( "got " + Base64.getEncoder().encodeToString( s.getEncoded() ) );
-        System.exit(0);
+        ka.doPhase(theirDH,true);
+        byte[] s = ka.generateSecret();
+        secret = KalynaHash.Hash(s,Kalyna.getKeySize(mode) );
     }
 
-    public static byte[] readBlock(ByteArrayInputStream is) throws IOException{
-        int len = ByteBuffer.wrap(is.readNBytes(4)).getInt();
-        if(len > is.available() || len < 0){
-            throw new IllegalArgumentException("bad Packet");
-        }
-        return is.readNBytes(len);
+    public static void receivedMsg(ChatPacket cp){
+        String[] pack = new String(cp.getData(),StandardCharsets.UTF_8).split("\\r?\\n");
+        byte[] data    = Base64.getDecoder().decode(pack[0]);
+        byte[] iv      = Base64.getDecoder().decode(pack[1]);
+        byte[] salt    = Base64.getDecoder().decode(pack[2]);
+        KalynaCFB k = new KalynaCFB( secret, mode, iv, salt);
+        data = k.Update(data);
+
+        String str = new String(data);
+
+        cc.AddMessage( PrefaceTheirUsername + str);
+
     }
-    public static void sendMsg(String toString) {
-        if(secret != null) {
-            cc.AddMessage(toString);
-        }
+    public static void sendMsg(String msg) throws IOException {
+        cc.AddMessage(  PrefaceOurUsername + msg);
+        byte[] data = msg.getBytes(StandardCharsets.UTF_8);
+        KalynaCFB k = new KalynaCFB(secret,mode);
+        data = k.Update(data);
+        byte[] IV = k.getIV();
+        byte[] SALT = k.getSALT();
+
+        String EncryptedPack = Base64.getEncoder().encodeToString(data) + "\n"
+                + Base64.getEncoder().encodeToString(IV) + "\n"
+                + Base64.getEncoder().encodeToString(SALT) + "\n";
+
+        ChatClient.packetHandler.SendMessagePacket(Base64PublicKey,EncryptedPack.getBytes(StandardCharsets.UTF_8));
+
     }
 }

@@ -41,6 +41,7 @@ public class ConsoleUtil {
     public static final String ANSI_CURS_UP = "\u001B[1F";
     public static final String ANSI_CURS_DOWN = "\u001B[1E";
     public static final String ANSI_CURS_ERASE = "\u001B[0J";
+    public static final String ANSI_CURS_BEGIN = "\u001B[0G";
     public static final boolean IsWindows = System.getProperty("os.name").contains("Windows");
 
     public static void CLS(){
