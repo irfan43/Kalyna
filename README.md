@@ -1,2 +1,0 @@
-# Kalyna
-hello ukraine 
