@@ -7,13 +7,12 @@ import com.ok.server.ChatServer;
 import net.sourceforge.argparse4j.*;
 import net.sourceforge.argparse4j.inf.*;
 
-import java.io.Console;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-import java.util.Scanner;
+import java.util.List;
 
 public class ChatClient {
 
@@ -29,6 +28,7 @@ public class ChatClient {
 
 
     public static void main(String[] args) {
+
 
         ArgumentParser parser = ArgumentParsers.newFor("Kalyna Chat Client").build()
                 .defaultHelp(true)
@@ -98,31 +98,27 @@ public class ChatClient {
                     break;
                 case "file":
                     String modeArg = res.get("mode").toString();
-                    int keySize = Integer.parseInt(modeArg.substring(0,3));
-                    int blockSize = Integer.parseInt(modeArg.substring(4,7));
+                    int keySize = Integer.parseInt(modeArg.substring(0,3))/8;
+                    int blockSize = Integer.parseInt(modeArg.substring(4,7))/8;
+                    int mode = Kalyna.getMode(blockSize,keySize);
 
                     int mode = Kalyna.getMode(blockSize,keySize);
 
-                    byte[] key = FileEncryption.getKey( getPassword(), Kalyna.getKeySize(mode));
-                    boolean encrypt = res.getAttrs().containsKey("encrypt");
-                    Path in;
-                    Path out;
-                    String[] t;
-                    if(encrypt){
-                        t = res.get("encrypt");
+                    List<String> files;
+                    if(res.get("encrypt") != null){
+                        files = res.get("encrypt");
                     }else {
-                        t = res.get("decrypt");
+                        files = res.get("decrypt");
+                        mode = -1;
                     }
-                    in = Path.of(t[0]);
-                    out = Path.of(t[1]);
 
 
                     FileEncryption.FileEncrypt(
-                            key,
-                            in,
-                            out,
+                            null,
+                            Path.of(files.get(0)),
+                            Path.of(files.get(1)),
                             4096,
-                            encrypt,
+                            res.get("encrypt") != null,
                             mode
                             );
                     break;
@@ -141,13 +137,4 @@ public class ChatClient {
 
     }
 
-    private static char[] getPassword() {
-        Console con = System.console();
-        if(con == null){
-            Scanner s = new Scanner(System.in);
-            String rtr = s.nextLine();
-            return rtr.toCharArray();
-        }
-        return con.readPassword();
-    }
 }

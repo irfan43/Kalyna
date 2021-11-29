@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,6 +22,7 @@ class KalynaMACTest {
         KalynaMAC kmacParts = new KalynaMAC(key);
 
         kmacAll.update(data);
+//        (new Random()).nextBytes(data);
 
         int pos = 0;
         while (pos < data.length){
@@ -29,12 +31,14 @@ class KalynaMACTest {
             byte[] part = Arrays.copyOfRange(data,pos , pos + len );
             pos += len;
 
-            //kmacParts.update(part);
+            kmacParts.update(part);
         }
 
         byte[] mac = kmacAll.getMac();
         byte[] macSmall = kmacParts.getMac();
 
+        System.out.println(Base64.getEncoder().encodeToString(mac));
+        System.out.println(Base64.getEncoder().encodeToString(macSmall));
         assertArrayEquals(mac,macSmall);
 
 
