@@ -16,64 +16,109 @@ import java.util.List;
 
 public class ChatClient {
 
-    public static String username;
-    public static ClientNetwork rest;
-    public static ClientNetwork packetReader;
-    public static PacketHandler packetHandler;
-    public static PublicKey publicKey;
-    private static PrivateKey privateKey;
-
-
-    public static ChatCipher chatCipher;
+    public static String            username;
+    public static ClientNetwork     rest;
+    public static ClientNetwork     packetReader;
+    public static PacketHandler     packetHandler;
+    public static ChatCipher        chatCipher;
 
 
     public static void main(String[] args) {
 
 
-        ArgumentParser parser = ArgumentParsers.newFor("Kalyna Chat Client").build()
+        ArgumentParser parser = ArgumentParsers
+                .newFor("Kalyna Chat Client")
+                .build()
                 .defaultHelp(true)
                 .description("Client side Kalyna Encrypted Chat Application");
-        Subparsers subparsers = parser.addSubparsers().dest("command");
-        ArgumentParser fileEncryption = subparsers.addParser("file").description("File Encryption/Decryption")
-                .defaultHelp(true).help("File Encryption/Decryption");
-        ArgumentParser login = subparsers.addParser("login").description("Account Login")
-                .defaultHelp(true).help("Account Login");
-        ArgumentParser generateKeys = subparsers.addParser("key").description("Key Generation")
-                .defaultHelp(true).help("Key Generation");
-        ArgumentParser server = subparsers.addParser("server").description("Server Mode")
-                .defaultHelp(true).help("Server Mode");
 
-        login.addArgument("-p","--port").metavar("PORT_NUMBER")
+        Subparsers subparsers = parser
+                .addSubparsers()
+                .dest("command");
+
+        ArgumentParser fileEncryption = subparsers
+                .addParser("file")
+                .description("File Encryption/Decryption")
+                .defaultHelp(true)
+                .help("File Encryption/Decryption");
+
+        ArgumentParser login = subparsers
+                .addParser("login")
+                .description("Account Login")
+                .defaultHelp(true)
+                .help("Account Login");
+
+        ArgumentParser generateKeys = subparsers
+                .addParser("key")
+                .description("Key Generation")
+                .defaultHelp(true)
+                .help("Key Generation");
+
+        ArgumentParser server = subparsers
+                .addParser("server")
+                .description("Server Mode")
+                .defaultHelp(true)
+                .help("Server Mode");
+
+        //login parser
+        login   .addArgument("-p","--port")
+                .metavar("PORT_NUMBER")
                 .type(Integer.class).help("Port Number of Server")
                 .setDefault(5555);
-        login.addArgument("-i","--ip").metavar("IP_ADDRESS")
-                .type(String.class).help("IP Address of the Server").required(true);
-        login.addArgument("-u","--username").metavar("USER_NAME")
-                .type(String.class).help("Unique Username of the Client").required(true);
-        login.addArgument("-k","--keys").metavar("FILE_PATH")
+
+        login   .addArgument("-i","--ip")
+                .metavar("IP_ADDRESS")
+                .type(String.class)
+                .help("IP Address of the Server")
+                .required(true);
+
+        login   .addArgument("-u","--username")
+                .metavar("USER_NAME")
+                .type(String.class)
+                .help("Unique Username of the Client")
+                .required(true);
+
+        login   .addArgument("-k","--keys")
+                .metavar("FILE_PATH")
                 .type(String.class)
                 .help("File Path to the keys file to use to authenticate with the server")
                 .setDefault("keys.key");
 
-        generateKeys.addArgument("-g","--generate_keys").metavar("FILE_PATH")
+        //Key Gen Parser
+        generateKeys.addArgument("-g","--generate_keys")
+                .metavar("FILE_PATH")
                 .type(String.class)
                 .help("Generate Public and Private Key and store in the Specified File")
                 .setDefault("keys.key");
+        //File Encryption Parsers
+
+        //This prevents the -e and -d to be used simultaneously
         MutuallyExclusiveGroup encDec = fileEncryption.addMutuallyExclusiveGroup()
                 .required(true);
-        encDec.addArgument("-e","--encrypt").nargs(2)
-                .type(String.class).help("Encrypt the given File into the Output file")
+
+        encDec.addArgument("-e","--encrypt")
+                .nargs(2)
+                .type(String.class)
+                .help("Encrypt the given File into the Output file")
                 .metavar("INPUT_PATH", "OUTPUT_PATH");
-        encDec.addArgument("-d","--decrypt").nargs(2)
-                .type(String.class).help("Decrypt the given File into the Output file")
+        encDec.addArgument("-d","--decrypt")
+                .nargs(2)
+                .type(String.class)
+                .help("Decrypt the given File into the Output file")
                 .metavar("INPUT_PATH", "OUTPUT_PATH");
-        fileEncryption.addArgument("-m","--mode").metavar("<KEY_SIZE>_<BLOCK_SIZE>")
-                .type(String.class).help("Mode to set Kalyna Key and block sizes")
+
+        fileEncryption.addArgument("-m","--mode")
+                .metavar("<KEY_SIZE>_<BLOCK_SIZE>")
+                .type(String.class)
+                .help("Mode to set Kalyna Key and block sizes")
                 .choices("128_128","256_128","256_256","512_256","512_512")
                 .setDefault("256_256");
 
-        server.addArgument("-p","--port").metavar("PORT_NUMBER")
-                .type(Integer.class).help("Port the server will listen on")
+        //Server Parser
+        server.addArgument("-p","--port")
+                .metavar("PORT_NUMBER")
+                .type(Integer.class)
+                .help("Port the server will listen on")
                 .setDefault(5555);
 
         try {
@@ -83,21 +128,25 @@ public class ChatClient {
                     ChatCipher.GeneratePublicKey(Path.of(res.get("generate_keys").toString()));
                     break;
                 case "login":
-                    username = res.get("username");
-                    int port = res.get("port");
-                    String ip = res.get("ip").toString();
-                    Path keyFile = Path.of(res.get("keys").toString());
-                    chatCipher = new ChatCipher(keyFile);
-                    packetHandler = new PacketHandler();
-                    packetReader = new ClientNetwork(ip, port);
-                    Thread pr = new Thread(packetReader);
+                    username        = res.get("username");
+                    int     port    = res.get("port");
+                    String  ip      = res.get("ip").toString();
+
+                    chatCipher      = new ChatCipher(Path.of(res.get("keys").toString()));
+                    packetHandler   = new PacketHandler();
+                    packetReader    = new ClientNetwork(ip, port);
+                    rest            = new ClientNetwork(ip, port);
+
+                    Thread pr       = new Thread(packetReader);
                     pr.start();
-                    rest = new ClientNetwork(ip, port);
 
                     UserList.showUserList();
                     break;
                 case "file":
+
+                    //decoding the mode of the Cipher
                     String modeArg = res.get("mode").toString();
+
                     int keySize = Integer.parseInt(modeArg.substring(0,3))/8;
                     int blockSize = Integer.parseInt(modeArg.substring(4,7))/8;
                     int mode = Kalyna.getMode(blockSize,keySize);
@@ -131,9 +180,6 @@ public class ChatClient {
         } catch (NoSuchAlgorithmException | IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
 }
