@@ -19,8 +19,8 @@ public class KalynaCFB {
     private final int           Mode;
     private final boolean       encryption;
     private final KalynaCipher  kalynaCipher;
+    private final KalynaMAC     kalynaMAC;
 
-    //TODO make a MAC implementation
     //Decryption
     public KalynaCFB(byte[] key,int mode,byte[] iv, byte[] salt){
         if(salt.length != Kalyna.getKeySize(mode))
@@ -28,22 +28,25 @@ public class KalynaCFB {
         if( iv.length != Kalyna.getBlockSize(mode))
             throw new IllegalArgumentException("Invalid size of iv given");
 
-        encryption  = false;
-        SALT        = Arrays.copyOf(salt,salt.length);
-        IV          = Arrays.copyOf(iv,iv.length);
-        Mode        = mode;
+        encryption      = false;
+        SALT            = Arrays.copyOf(salt,salt.length);
+        IV              = Arrays.copyOf(iv,iv.length);
+        Mode            = mode;
 
         setupConstants();
 
-        kalynaCipher = new KalynaCipher(generateSaltedKey(key),mode);
+        kalynaMAC       = new KalynaMAC(key);
+        kalynaCipher    = new KalynaCipher(generateSaltedKey(key),mode);
         getNextStreamBlock();
     }
     //Encryption
     public KalynaCFB(byte[] key,int mode){
-        encryption = true;
-        Mode = mode;
+        encryption      = true;
+        Mode            = mode;
+
         setupConstants();
-        kalynaCipher = new KalynaCipher(generateSaltedKey(key),mode);
+        kalynaMAC       = new KalynaMAC(key);
+        kalynaCipher    = new KalynaCipher(generateSaltedKey(key),mode);
         getNextStreamBlock();
     }
 
@@ -53,28 +56,27 @@ public class KalynaCFB {
     public byte[] getIV(){
         return IV;
     }
+    public byte[] getMAC(){
+        return kalynaMAC.getMac();
+    }
 
     public byte[] Update(byte[] data){
         int pos         = 0;
         byte[] output   = new byte[data.length];
-//        long StartOfUpdate;
-//        long StartOfArrayCopy;
-//        long End;
-
+        if(!encryption)
+            kalynaMAC.update(data);
         while (data.length > pos){
-//            StartOfUpdate = System.nanoTime();
             int len     = Math.min(
                     ( xorStream.length - StreamPos), //remaining bytes in XOR stream
                     ( data.length - pos )            //remaining bytes of plaintext to encrypt
             );
-            byte[] partial  = updateBlock( Arrays.copyOfRange(data,pos,pos + len) );
-//            StartOfArrayCopy = System.nanoTime();
+            byte[] partial = updateBlock( Arrays.copyOfRange(data,pos,pos + len) );
             System.arraycopy(partial,0,output,pos,len);
             pos += len;
-//            End = System.nanoTime();
-//            System.out.println(" update " +  (StartOfArrayCopy - StartOfUpdate) + "\n" +
-//                                " copy " + ( End  - StartOfArrayCopy ) );
+
         }
+        if (encryption)
+            kalynaMAC.update(output);
         return output;
     }
 
@@ -105,9 +107,9 @@ public class KalynaCFB {
         return output;
     }
     private void getNextStreamBlock(){
-        LastState = kalynaCipher.EncryptBlock(LastState);
-        xorStream = Arrays.copyOf(LastState,LastState.length);
-        StreamPos = 0;
+        LastState   = kalynaCipher.EncryptBlock(LastState);
+        xorStream   = Arrays.copyOf(LastState,LastState.length);
+        StreamPos   = 0;
     }
     private void setupConstants(){
         blockSize   = Kalyna.getBlockSize(Mode);

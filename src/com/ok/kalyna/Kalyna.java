@@ -27,16 +27,16 @@ public class Kalyna {
                     (BlockSize  != 64 && BlockSize  != 32 && BlockSize  != 16) &&
                     (KeySize    != 64 && KeySize    != 32 && KeySize    != 16)
             ) {
-                throw new IllegalArgumentException("Invalid Block Size and Key Size");
+                throw new IllegalArgumentException("Invalid Block Size and Key Size given " + BlockSize + "," + KeySize);
             }
             if (BlockSize != 64 && BlockSize != 32 && BlockSize != 16) {
-                throw new IllegalArgumentException("Invalid Block Size");
+                throw new IllegalArgumentException("Invalid Block Size " + BlockSize);
             }else{
-                throw new IllegalArgumentException("Invalid Key Size");
+                throw new IllegalArgumentException("Invalid Key Size " + KeySize);
             }
         }
         if( (KeySize != BlockSize) && (2 * BlockSize != KeySize) )
-            throw new IllegalArgumentException("Invalid Match of Key and Block Size");
+            throw new IllegalArgumentException("Invalid Match of Key and Block Size" + BlockSize + "," + KeySize);
 
         return KeySize*BlockSize;
     }
@@ -87,7 +87,7 @@ public class Kalyna {
                 ColumnsInPT = 8;
                 break;
             default:
-                throw new IllegalArgumentException("Invalid Mode for the Kalyna Cipher");
+                throw new IllegalArgumentException("Invalid Mode for the Kalyna Cipher " + mode);
         }
         return ColumnsInPT*8;
     }

@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 import java.util.Base64;
 
 public class ChatConnector {
@@ -127,25 +128,31 @@ public class ChatConnector {
         byte[] data    = Base64.getDecoder().decode(pack[0]);
         byte[] iv      = Base64.getDecoder().decode(pack[1]);
         byte[] salt    = Base64.getDecoder().decode(pack[2]);
+        byte[] mac     = Base64.getDecoder().decode(pack[3]);
         KalynaCFB k = new KalynaCFB( secret, mode, iv, salt);
         data = k.Update(data);
 
-        String str = new String(data);
-
-        cc.AddMessage( PrefaceTheirUsername + str);
-
+        //if the calculated mac is equal to given mac
+        //      we add the message to the console,
+        //      else we ignore it
+        if(Arrays.equals(mac,k.getMAC())) {
+            String str = new String(data);
+            cc.AddMessage(PrefaceTheirUsername + str);
+        }
     }
     public static void sendMsg(String msg) throws IOException {
         cc.AddMessage(  PrefaceOurUsername + msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
         KalynaCFB k = new KalynaCFB(secret,mode);
         data = k.Update(data);
-        byte[] IV = k.getIV();
+        byte[] IV   = k.getIV();
         byte[] SALT = k.getSALT();
+        byte[] MAC  = k.getMAC();
 
         String EncryptedPack = Base64.getEncoder().encodeToString(data) + "\n"
                 + Base64.getEncoder().encodeToString(IV) + "\n"
-                + Base64.getEncoder().encodeToString(SALT) + "\n";
+                + Base64.getEncoder().encodeToString(SALT) + "\n"
+                + Base64.getEncoder().encodeToString(MAC) + "\n";
 
         ChatClient.packetHandler.SendMessagePacket(Base64PublicKey,EncryptedPack.getBytes(StandardCharsets.UTF_8));
 

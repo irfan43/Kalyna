@@ -3,6 +3,7 @@ package com.ok.kalyna;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,7 @@ class KalynaCFBTest {
     @Test
     void CipherRandomLarge() {
         for (int mode = 256; mode <= Kalyna.KALYNA_512KEY_512BLOCK; mode = mode * 2){
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 100; i++) {
                 byte[] k = new byte[Kalyna.getKeySize(mode)];
                 int len = 200 + (new Random()).nextInt(5000);
                 byte[] PT = new byte[len];
@@ -30,13 +31,17 @@ class KalynaCFBTest {
 
                 byte[] output = kalynaDcr.Update(CT);
                 assertArrayEquals(output, PT);
+                assertArrayEquals(kalynaEnc.getMAC(),kalynaDcr.getMAC() );
+//
+//                System.out.println(Base64.getEncoder().encodeToString((kalynaEnc.getMAC())) );
+//                System.out.println(Base64.getEncoder().encodeToString(kalynaDcr.getMAC()));
             }
         }
     }
     @Test
     void CipherRandomMediumParts() {
         for (int mode = 256; mode <= Kalyna.KALYNA_512KEY_512BLOCK; mode = mode * 2){
-            for (int i = 0; i < 1000; i++) {
+            for (int i = 0; i < 100; i++) {
                 byte[] k = new byte[Kalyna.getKeySize(mode)];
                 int len = 200 + (new Random()).nextInt(5000);
                 byte[] PT = new byte[len];
@@ -73,7 +78,7 @@ class KalynaCFBTest {
 
                     pos += partLen;
                 }
-
+                assertArrayEquals(kalynaEnc.getMAC(),kalynaDcr.getMAC() );
                 assertArrayEquals(output, PT);
             }
         }
