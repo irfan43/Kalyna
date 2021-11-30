@@ -90,6 +90,7 @@ public class FileEncryption {
 
                 int len     = bis.read(buf);
 
+
                 byte[] data = Arrays.copyOf(buf, len);
 
                 pos -= len;

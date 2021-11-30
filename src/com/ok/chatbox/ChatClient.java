@@ -102,7 +102,6 @@ public class ChatClient {
                     int blockSize = Integer.parseInt(modeArg.substring(4,7))/8;
                     int mode = Kalyna.getMode(blockSize,keySize);
 
-                    int mode = Kalyna.getMode(blockSize,keySize);
 
                     List<String> files;
                     if(res.get("encrypt") != null){
