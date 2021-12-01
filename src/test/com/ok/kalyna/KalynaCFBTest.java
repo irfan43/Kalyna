@@ -32,9 +32,6 @@ class KalynaCFBTest {
                 byte[] output = kalynaDcr.Update(CT);
                 assertArrayEquals(output, PT);
                 assertArrayEquals(kalynaEnc.getMAC(),kalynaDcr.getMAC() );
-//
-//                System.out.println(Base64.getEncoder().encodeToString((kalynaEnc.getMAC())) );
-//                System.out.println(Base64.getEncoder().encodeToString(kalynaDcr.getMAC()));
             }
         }
     }

@@ -9,13 +9,13 @@ public class ChatConsole implements Runnable{
     private List<String> messages;
     private int messagesDrawn;
     private String Screen = "";
-//    private String message;
+    private ChatConnector cc;
     public StringBuilder msg;
     public boolean reDraw;
     private final Object lock = new Object();
 
-    public ChatConsole(){
-
+    public ChatConsole(ChatConnector connector){
+        cc = connector;
     }
 
     public void AddMessage(String message){
@@ -62,7 +62,7 @@ public class ChatConsole implements Runnable{
                         }
                     }else if( (keycode == 10 && !ConsoleUtil.IsWindows) || (keycode == 13 && ConsoleUtil.IsWindows) ) {
                         reDraw = true;
-                        ChatConnector.sendMsg(msg.toString());
+                        cc.sendMsg(msg.toString());
                         msg = new StringBuilder();
                     }
                 }

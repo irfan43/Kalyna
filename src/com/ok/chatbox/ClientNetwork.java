@@ -95,7 +95,7 @@ public class ClientNetwork implements Runnable {
                 String cmd = Reader.readLine();
                 if (cmd.equals("new")) {
                     byte[] packet = Base64.getDecoder().decode(Reader.readLine());
-                    ChatClient.packetHandler.newPacketReceived(packet);
+                    ChatClient.packetHandler.QueueNewPacket(packet);
                 }
             }
         } catch (IOException e) {
