@@ -28,7 +28,9 @@ public class ChatCipher {
      * @param PBKFile input path of the keypair file
      * @throws IOException if a IOException occurs while opening PBKFile
      */
-    public ChatCipher(Path PBKFile) throws IOException {
+    public ChatCipher(Path PBKFile) throws IOException, NoSuchAlgorithmException {
+        if(!Files.exists(PBKFile))
+            GeneratePublicKey(PBKFile);
         loadKeyPair(PBKFile);
     }
 
