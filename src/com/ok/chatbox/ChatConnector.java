@@ -8,6 +8,7 @@ import javax.crypto.KeyAgreement;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
+import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.Base64;
@@ -55,21 +56,21 @@ public class ChatConnector{
                 "]: ";
     }
 
-    private void DoExchange() throws GeneralSecurityException, IOException{
-        System.out.println("starting Exchange ");
+    private KeyPair GenerateDHKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("DH");
         kpg.initialize(512);
-        KeyPair kp = kpg.generateKeyPair();
-        PrivateKey pem = kp.getPrivate();
-        PublicKey pub  = kp.getPublic();
-        byte[] pubByte = pub.getEncoded();
-        Signature sgn = ChatClient.chatCipher.getSigning();
+        return kpg.generateKeyPair();
+    }
+    private void SendINITPacket(PublicKey DHPublicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
+        byte[] pubByte  = DHPublicKey.getEncoded();
+        Signature sgn   = ChatClient.chatCipher.getSigning();
         sgn.update(pubByte);
         byte[] signature = sgn.sign();
 
-        System.out.println("Sending INIT");
         ChatClient.packetHandler.SendPacketINIT(Base64PublicKey,pubByte,signature);
-        System.out.println("Sent INIT");
+    }
+
+    private ChatPacket GetTheirINIT(){
         ChatPacket cp;
         do{
             cp = ChatClient.packetHandler.GetINITPacketFrom(Base64PublicKey);
@@ -81,11 +82,15 @@ public class ChatConnector{
                 } catch (InterruptedException ignored) {}
             }
         }while (cp == null);
-        System.out.println("GOT INIT");
-        String theirINITBase64 = new String (cp.getData(), StandardCharsets.UTF_8);
+        return cp;
+    }
+    private PublicKey getTheirPublicKey(ChatPacket init) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, BadINITSignException {
+        String theirINITBase64 = new String (init.getData(), StandardCharsets.UTF_8);
+
         String[] d = theirINITBase64.split("\\r?\\n");
         byte[] theirPub  = Base64.getDecoder().decode(d[0]);
         byte[] theirSign  = Base64.getDecoder().decode(d[1]);
+
         Signature verifySgn = Signature.getInstance("SHA256withRSA");
 
         byte[] theirRSAPBKENC = Base64.getDecoder().decode(Base64PublicKey);
@@ -93,18 +98,26 @@ public class ChatConnector{
 
         verifySgn.initVerify(theirRSA);
         verifySgn.update(theirPub);
-        if(!verifySgn.verify(theirSign)){
-            System.out.println("BAD SIGN RECEIVED ");
-            System.exit(1);
-        }
+        if(!verifySgn.verify(theirSign))
+            throw new BadINITSignException();
 
-        PublicKey theirDH = KeyFactory.getInstance("DH").generatePublic(new X509EncodedKeySpec(theirPub));
-
+        return KeyFactory.getInstance("DH").generatePublic(new X509EncodedKeySpec(theirPub));
+    }
+    private byte[] GenerateSecret(PrivateKey ourPrivateKey,PublicKey theirPublicKey) throws InvalidKeyException, NoSuchAlgorithmException {
         KeyAgreement ka = KeyAgreement.getInstance("DH");
-        ka.init(pem);
-        ka.doPhase(theirDH,true);
+        ka.init(ourPrivateKey);
+        ka.doPhase(theirPublicKey,true);
         byte[] s = ka.generateSecret();
-        secret = KalynaHash.Hash(s,Kalyna.getKeySize(mode) );
+        return KalynaHash.Hash( s,Kalyna.getKeySize(mode) );
+    }
+    private void DoExchange() throws GeneralSecurityException, IOException{
+        System.out.println("starting Exchange ");
+        KeyPair DHKeyPair = GenerateDHKeyPair();
+        SendINITPacket(DHKeyPair.getPublic());
+        System.out.println("Sent Our Public Key\nWaiting For Their Public Key");
+        PublicKey theirPublicKey = getTheirPublicKey(GetTheirINIT());
+        System.out.println("GOT Their Public Key");
+        secret = GenerateSecret(DHKeyPair.getPrivate(),theirPublicKey);
     }
 
     public void receivedMsg(ChatPacket cp){
@@ -146,7 +159,10 @@ public class ChatConnector{
     public void Open() {
         try {
             DoExchange();
-        } catch (GeneralSecurityException | IOException e) {
+        }catch (BadINITSignException e){
+            System.out.println("Got BAD Sign");
+            return;
+        }catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();
             System.exit(1);
         }

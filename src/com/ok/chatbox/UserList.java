@@ -62,9 +62,6 @@ public class UserList {
                 if(scn.nextLine().toLowerCase().charAt(0) == 'y'){
                     connector = new ChatConnector(theirUsername,PBK);
                     connector.Open();
-//                    ConsoleConnectorThread = new Thread(connector);
-//                    ConsoleConnectorThread.start();
-//                    ConsoleConnectorThread.join();
                 }
             }else{
                 err_msg = " invalid Username \n";

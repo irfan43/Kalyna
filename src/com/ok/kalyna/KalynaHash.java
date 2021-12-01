@@ -34,8 +34,6 @@ public class KalynaHash {
     }
     public byte[] Digest(){
         compressState();
-//        byte[] digestible = new byte[Size*2];
-//        System.arraycopy(Output,0,digestible,0,Output.length);
         return Compress(Output,Mode);
     }
 
