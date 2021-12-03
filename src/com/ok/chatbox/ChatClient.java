@@ -3,6 +3,8 @@ package com.ok.chatbox;
 
 import com.ok.kalyna.FileEncryption;
 import com.ok.kalyna.Kalyna;
+import com.ok.kalyna.KalynaIntegral;
+import com.ok.kalyna.KalynaUtil;
 import com.ok.server.ChatServer;
 import net.sourceforge.argparse4j.*;
 import net.sourceforge.argparse4j.inf.*;
@@ -13,6 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.List;
+import java.util.Random;
 
 public class ChatClient {
 
@@ -59,6 +62,12 @@ public class ChatClient {
                 .description("Server Mode")
                 .defaultHelp(true)
                 .help("Server Mode");
+
+        ArgumentParser integral = subparsers
+                .addParser("integral")
+                .description("Integral Property with ALL property at Index 0")
+                .defaultHelp(true)
+                .help("Integral Property with ALL property at Index 0");
 
         //login parser
         login   .addArgument("-p","--port")
@@ -121,18 +130,25 @@ public class ChatClient {
                 .help("Port the server will listen on")
                 .setDefault(5555);
 
+        //Integral Parser
+        integral.addArgument("-b","--block_size")
+                .type(Integer.class)
+                .help("Block Size in Bits")
+                .setDefault(128)
+                .choices(128, 256 , 512);
+
         try {
             Namespace res = parser.parseArgs(args);
-            switch (res.get("command").toString()) {
+            switch (res.getString("command")) {
                 case "key":
-                    ChatCipher.GeneratePublicKey(Path.of(res.get("generate_keys").toString()));
+                    ChatCipher.GeneratePublicKey(Path.of(res.getString("generate_keys")));
                     break;
                 case "login":
                     username        = res.get("username");
                     int     port    = res.get("port");
-                    String  ip      = res.get("ip").toString();
+                    String  ip      = res.getString("ip");
 
-                    chatCipher      = new ChatCipher(Path.of(res.get("keys").toString()));
+                    chatCipher      = new ChatCipher(Path.of(res.getString("keys")));
                     packetHandler   = new PacketHandler();
                     packetReader    = new ClientNetwork(ip, port);
                     rest            = new ClientNetwork(ip, port);
@@ -145,7 +161,7 @@ public class ChatClient {
                 case "file":
 
                     //decoding the mode of the Cipher
-                    String modeArg = res.get("mode").toString();
+                    String modeArg = res.getString("mode");
 
                     int keySize = Integer.parseInt(modeArg.substring(0,3))/8;
                     int blockSize = Integer.parseInt(modeArg.substring(4,7))/8;
@@ -173,6 +189,13 @@ public class ChatClient {
                 case "server":
                     ChatServer.RunServer(res.get("port"));
                     break;
+                case "integral":
+                    byte[] constantV = new byte[res.getInt("block_size")/8];
+                    int seed = (new Random()).nextInt();
+                    Random r = new Random(seed);
+                    r.nextBytes(constantV);
+                    byte[][] constantValues = KalynaUtil.getState(constantV);
+                    KalynaIntegral.kalynaIntegralProperty(KalynaIntegral.generateDeltaSet(constantValues, 0));
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
