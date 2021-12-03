@@ -17,32 +17,47 @@ public class ChatConnector{
 
 
 
-    private int mode = Kalyna.KALYNA_512KEY_512BLOCK;
-    private String TheirUsername;
-    private String PrefaceTheirUsername;
-    private String PrefaceOurUsername;
-    private String Base64PublicKey;
-    private byte[] secret;
-    public  ChatConsole cc;
-    private Thread ccThread;
+    private final int           mode = Kalyna.KALYNA_512KEY_512BLOCK;
+    private final String        TheirUsername;
+    private       String        PrefaceTheirUsername;
+    private       String        PrefaceOurUsername;
+    private final String        Base64PublicKey;
+    private       byte[]        secret;
+    public        ChatConsole   console;
+    private final Thread        consoleThread;
 
-    public final Object lock = new Object();
+    public final  Object        lock = new Object();
 
 
+    /**
+     * Chat Connector Connects the <code>ChatConsole</code> and <code>PacketHandler</code>
+     * It initializes ChatConsole and performs a key exchange
+     * After which it sends encrypted text packets received from ChatConsole
+     * And
+     * displays received text packets from PacketHandler on ChatConsole
+     *
+     * @param username The username of the person you are wishing to chat with
+     * @param base64PublicKey The public Key of the person you are wishing to chat with encoded in Base64
+     */
     public ChatConnector(String username,String base64PublicKey) {
-        Base64PublicKey = base64PublicKey;
-        TheirUsername = username;
-        cc = new ChatConsole(this);
-        ccThread = new Thread(cc);
-
+        Base64PublicKey     = base64PublicKey;
+        TheirUsername       = username;
+        //initialize the console and console thread
+        console             = new ChatConsole(this);
+        consoleThread       = new Thread(console);
         BuildPrefaces();
 
     }
 
+    /**
+     * initialize Both Prefaces
+     * They are used when adding a message to the Chat Console
+     */
     private void BuildPrefaces() {
         int len = Math.max(TheirUsername.length(),ChatClient.username.length()) + 2 ;
-        PrefaceTheirUsername = PadString(TheirUsername,len);
-        PrefaceOurUsername = PadString(ChatClient.username,len);
+
+        PrefaceTheirUsername    = PadString(TheirUsername,len);
+        PrefaceOurUsername      = PadString(ChatClient.username,len);
     }
 
     private String PadString(String input, int target){
@@ -50,7 +65,8 @@ public class ChatConnector{
         int padLeft = pad/2;
         int padRight = pad - padLeft;
 
-        return "[" + " ".repeat(Math.max(0, padLeft)) +
+        return "[" +
+                " ".repeat(Math.max(0, padLeft)) +
                 input +
                 " ".repeat(Math.max(0, padRight)) +
                 "]: ";
@@ -99,7 +115,7 @@ public class ChatConnector{
         verifySgn.initVerify(theirRSA);
         verifySgn.update(theirPub);
         if(!verifySgn.verify(theirSign))
-            throw new BadINITSignException();
+            throw new BadINITSignException("Invalid Sign");
 
         return KeyFactory.getInstance("DH").generatePublic(new X509EncodedKeySpec(theirPub));
     }
@@ -134,11 +150,11 @@ public class ChatConnector{
         //      else we ignore it
         if(Arrays.equals(mac,k.getMAC())) {
             String str = new String(data);
-            cc.AddMessage(PrefaceTheirUsername + str);
+            console.AddMessage(PrefaceTheirUsername + str);
         }
     }
     public void sendMsg(String msg) throws IOException {
-        cc.AddMessage(  PrefaceOurUsername + msg);
+        console.AddMessage(  PrefaceOurUsername + msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
         KalynaCFB k = new KalynaCFB(secret,mode);
         data = k.Update(data);
@@ -167,7 +183,7 @@ public class ChatConnector{
             System.exit(1);
         }
 
-        ccThread.start();
+        consoleThread.start();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -175,7 +191,7 @@ public class ChatConnector{
         }
 
         ChatPacket cp;
-        while (ccThread.isAlive()){
+        while (consoleThread.isAlive()){
 
             do{
                 cp = ChatClient.packetHandler.GetPacketFrom(Base64PublicKey);

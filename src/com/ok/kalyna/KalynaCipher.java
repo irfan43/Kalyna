@@ -14,9 +14,10 @@ public class KalynaCipher{
 
     /**
      * Sets up a Kalyna Cipher object
+     * Used to encrypt and Decrypt Blocks using the Kalyna Cipher
      * @param key the master key to be used for encryption and decryption
      * @param mode defines the key size and block size
-     * @throws IllegalArgumentException when given invalid key size or mode
+     * @throws IllegalArgumentException when given invalid mode or given <code>key.length</code> does not match key size for the mode
      */
     public KalynaCipher(byte[] key, int mode) throws IllegalArgumentException{
         setupCipherState(mode);
