@@ -12,8 +12,6 @@ import net.sourceforge.argparse4j.inf.*;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.List;
 import java.util.Random;
 
@@ -65,9 +63,9 @@ public class ChatClient {
 
         ArgumentParser integral = subparsers
                 .addParser("integral")
-                .description("Integral Property with ALL property at Index 0")
+                .description("Integral Property")
                 .defaultHelp(true)
-                .help("Integral Property with ALL property at Index 0");
+                .help("Integral Property");
 
         //login parser
         login   .addArgument("-p","--port")
@@ -137,46 +135,41 @@ public class ChatClient {
                 .setDefault(128)
                 .choices(128, 256 , 512);
 
+        integral.addArgument("-a", "--all_index")
+                .type(Integer.class)
+                .help("ALL Property Index")
+                .setDefault(0);
+
         try {
             Namespace res = parser.parseArgs(args);
             switch (res.getString("command")) {
-                case "key":
-                    ChatCipher.GeneratePublicKey(Path.of(res.getString("generate_keys")));
-                    break;
-                case "login":
-                    username        = res.get("username");
-                    int     port    = res.get("port");
-                    String  ip      = res.getString("ip");
-
-                    chatCipher      = new ChatCipher(Path.of(res.getString("keys")));
-                    packetHandler   = new PacketHandler();
-                    packetReader    = new ClientNetwork(ip, port);
-                    rest            = new ClientNetwork(ip, port);
-
-                    Thread pr       = new Thread(packetReader);
+                case "key" -> ChatCipher.GeneratePublicKey(Path.of(res.getString("generate_keys")));
+                case "login" -> {
+                    username = res.get("username");
+                    int port = res.get("port");
+                    String ip = res.getString("ip");
+                    chatCipher = new ChatCipher(Path.of(res.getString("keys")));
+                    packetHandler = new PacketHandler();
+                    packetReader = new ClientNetwork(ip, port);
+                    rest = new ClientNetwork(ip, port);
+                    Thread pr = new Thread(packetReader);
                     pr.start();
-
                     UserList.showUserList();
-                    break;
-                case "file":
+                }
+                case "file" -> {
 
                     //decoding the mode of the Cipher
                     String modeArg = res.getString("mode");
-
-                    int keySize = Integer.parseInt(modeArg.substring(0,3))/8;
-                    int blockSize = Integer.parseInt(modeArg.substring(4,7))/8;
-                    int mode = Kalyna.getMode(blockSize,keySize);
-
-
+                    int keySize = Integer.parseInt(modeArg.substring(0, 3)) / 8;
+                    int blockSize = Integer.parseInt(modeArg.substring(4, 7)) / 8;
+                    int mode = Kalyna.getMode(blockSize, keySize);
                     List<String> files;
-                    if(res.get("encrypt") != null){
+                    if (res.get("encrypt") != null) {
                         files = res.get("encrypt");
-                    }else {
+                    } else {
                         files = res.get("decrypt");
                         mode = -1;
                     }
-
-
                     FileEncryption.FileEncrypt(
                             null,
                             Path.of(files.get(0)),
@@ -184,18 +177,20 @@ public class ChatClient {
                             4096,
                             res.get("encrypt") != null,
                             mode
-                            );
-                    break;
-                case "server":
-                    ChatServer.RunServer(res.get("port"));
-                    break;
-                case "integral":
-                    byte[] constantV = new byte[res.getInt("block_size")/8];
+                    );
+                }
+                case "server" -> ChatServer.RunServer(res.get("port"));
+                case "integral" -> {
+                    byte[] constantV = new byte[res.getInt("block_size") / 8];
+                    int allIndex = res.getInt("all_index");
+                    if (0 > allIndex || allIndex >= res.getInt("block_size") / 8)
+                        throw new IllegalArgumentException("Provided Illegal ALL Property Index " + allIndex);
                     int seed = (new Random()).nextInt();
                     Random r = new Random(seed);
                     r.nextBytes(constantV);
                     byte[][] constantValues = KalynaUtil.getState(constantV);
-                    KalynaIntegral.kalynaIntegralProperty(KalynaIntegral.generateDeltaSet(constantValues, 0));
+                    KalynaIntegral.kalynaIntegralProperty(KalynaIntegral.generateDeltaSet(constantValues, allIndex));
+                }
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
