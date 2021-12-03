@@ -27,10 +27,10 @@ public class ChatClient {
 
 
         ArgumentParser parser = ArgumentParsers
-                .newFor("Kalyna Chat Client")
+                .newFor("Kalyna Application")
                 .build()
                 .defaultHelp(true)
-                .description("Client side Kalyna Encrypted Chat Application");
+                .description("Kalyna based File Encryption and E2EE (Client-Server Architecture) Chat Application");
 
         Subparsers subparsers = parser
                 .addSubparsers()
