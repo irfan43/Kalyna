@@ -15,8 +15,7 @@ public class KalynaIntegral {
                     if(allIndex == col * 8 + row ){
                         deltaSet[plaintext][col][row] = (byte) (plaintext);
                         row++;
-                    }
-                    else
+                    }else
                         deltaSet[plaintext][col][row] = constValues[col][row];
                 }
             }
@@ -36,7 +35,7 @@ public class KalynaIntegral {
         for (int round = 0; round < 3; round++) {
             // Sub Bytes
             for (int plaintext = 0; plaintext < deltaSet.length; plaintext++) {
-                output[plaintext] = KalynaRoundFunction.SBox(deltaSet[plaintext]);
+                deltaSet[plaintext] = KalynaRoundFunction.SBox(deltaSet[plaintext]);
             }
             System.out.println("ROUND  " + round + 1 +" SUB BYTES");
             printIntegralProperty(output);
@@ -91,17 +90,27 @@ public class KalynaIntegral {
     */
     private static void printIntegralProperty(byte[][][] deltaSet){
         Byte[] cells = new Byte[deltaSet.length];
+        System.out.println("-".repeat(1 + 4 * deltaSet[0].length));
         for (int row = 0; row < deltaSet[0][0].length; row++) {
             for (int col = 0; col < deltaSet[0].length; col++) {
+                System.out.print("|");
+
                 for (int plaintext = 0; plaintext < deltaSet.length; plaintext++)
                     cells[plaintext] = deltaSet[plaintext][col][row];
-                if (checkAllProperty(cells)) System.out.print("A ");
-                else if (checkConstantProperty(cells)) System.out.print("C ");
-                else if (checkBalancedProperty(cells)) System.out.print("B ");
-                else System.out.print("X ");
+
+                if (checkAllProperty(cells)){
+                    System.out.print(" A ");
+                }else if (checkConstantProperty(cells)){
+                    System.out.print(" C ");
+                }else if (checkBalancedProperty(cells)){
+                    System.out.print(" B ");
+                }else{
+                    System.out.print(" X ");
+                }
             }
-            System.out.println();
+            System.out.println("|");
         }
+        System.out.println("-".repeat(1 + 4* deltaSet[0].length));
     }
 
 }
