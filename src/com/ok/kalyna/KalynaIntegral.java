@@ -1,8 +1,6 @@
 package com.ok.kalyna;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
+import java.util.*;
 
 public class KalynaIntegral {
 
@@ -31,39 +29,39 @@ public class KalynaIntegral {
 
         // Pre-Whitening Add Round Key
         if(doWhitening){
-            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++) {
+            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++)
                 deltaSet[plaintext] = KalynaRoundFunction.addRoundKey(deltaSet[plaintext],roundKeys[0]);
-            }
+
             System.out.println("PRE WHITENING - ADD ROUND KEY");
             printIntegralProperty(deltaSet);
         }
 
         for (int round = 0; round < 3; round++) {
             // Sub Bytes
-            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++) {
+            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++)
                 deltaSet[plaintext] = KalynaRoundFunction.SBox(deltaSet[plaintext]);
-            }
+
             System.out.println("ROUND " + (round + 1) +" SUB BYTES");
             printIntegralProperty(deltaSet);
 
             // Shift Rows
-            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++) {
+            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++)
                 deltaSet[plaintext] = KalynaRoundFunction.shiftRows(deltaSet[plaintext]);
-            }
+
             System.out.println("ROUND " + (round + 1) +" SHIFT ROWS");
             printIntegralProperty(deltaSet);
 
             // Mix Columns
-            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++) {
+            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++)
                 deltaSet[plaintext] = KalynaRoundFunction.mixColumns(deltaSet[plaintext]);
-            }
+
             System.out.println("ROUND " + (round + 1) +" MIX COLUMNS");
             printIntegralProperty(deltaSet);
 
             // XOR Round Key
-            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++) {
+            for (int plaintext = 0; plaintext < deltaSet.length; plaintext++)
                 deltaSet[plaintext] = KalynaRoundFunction.xorRoundKey(deltaSet[plaintext], roundKeys[round + 1]);
-            }
+
             System.out.println("ROUND " + (round + 1) +" XOR ROUND KEY");
             printIntegralProperty(deltaSet);
         }
@@ -116,7 +114,7 @@ public class KalynaIntegral {
             }
             System.out.println("|");
         }
-        System.out.println("-".repeat(1 + 4* deltaSet[0].length));
+        System.out.println("-".repeat(1 + 4 * deltaSet[0].length));
     }
 
 }

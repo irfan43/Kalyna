@@ -6,3 +6,4 @@ Kalyna is Rijndael based algorithm that supports block sizes and key lengths up 
 ### Cryptanalysis
 - [Security Margin](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Security%20Margin.html)
 - [Differential Cryptanalysis](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Differential%20Cryptanalysis.html)
+- [Integral Cryptanalysis](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Integral%20Cryptanalysis.html)
