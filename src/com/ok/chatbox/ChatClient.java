@@ -7,6 +7,7 @@ import com.ok.kalyna.KalynaIntegral;
 import com.ok.kalyna.KalynaUtil;
 import com.ok.server.ChatServer;
 import net.sourceforge.argparse4j.*;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 
 import java.io.IOException;
@@ -140,6 +141,12 @@ public class ChatClient {
                 .help("ALL Property Index")
                 .setDefault(0);
 
+        integral.addArgument("-w","--whitening")
+                .type(Boolean.class)
+                .help("Include Pre Whitening Addition Modulus")
+                .setDefault(false)
+                .action(Arguments.storeTrue());
+
         try {
             Namespace res = parser.parseArgs(args);
             switch (res.getString("command")) {
@@ -183,13 +190,17 @@ public class ChatClient {
                 case "integral" -> {
                     byte[] constantV = new byte[res.getInt("block_size") / 8];
                     int allIndex = res.getInt("all_index");
+                    boolean doWhitening = res.getBoolean("whitening");
                     if (0 > allIndex || allIndex >= res.getInt("block_size") / 8)
                         throw new IllegalArgumentException("Provided Illegal ALL Property Index " + allIndex);
                     int seed = (new Random()).nextInt();
                     Random r = new Random(seed);
                     r.nextBytes(constantV);
                     byte[][] constantValues = KalynaUtil.getState(constantV);
-                    KalynaIntegral.kalynaIntegralProperty(KalynaIntegral.generateDeltaSet(constantValues, allIndex));
+                    KalynaIntegral.kalynaIntegralProperty(
+                            KalynaIntegral.generateDeltaSet(constantValues, allIndex),
+                            doWhitening
+                    );
                 }
             }
         } catch (ArgumentParserException e) {
