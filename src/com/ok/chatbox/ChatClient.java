@@ -191,8 +191,10 @@ public class ChatClient {
                     byte[] constantV = new byte[res.getInt("block_size") / 8];
                     int allIndex = res.getInt("all_index");
                     boolean doWhitening = res.getBoolean("whitening");
-                    if (0 > allIndex || allIndex >= res.getInt("block_size") / 8)
-                        throw new IllegalArgumentException("Provided Illegal ALL Property Index " + allIndex);
+                    if (0 > allIndex || allIndex >= res.getInt("block_size") / 8) {
+                        System.out.println("Provided Illegal ALL Property Index " + allIndex);
+                        System.exit(0);
+                    }
                     int seed = (new Random()).nextInt();
                     Random r = new Random(seed);
                     r.nextBytes(constantV);
