@@ -3,6 +3,7 @@ Kalyna is Rijndael based algorithm that supports block sizes and key lengths up 
 ### Design
 - [Round Functions](https://irfan43.github.io/Kalyna/docs/Design/Round%20Functions.html)
 - [Key Expansion](https://irfan43.github.io/Kalyna/docs/Design/Key%20Expansion.html)
+- [Encryption and Decryption](https://irfan43.github.io/Kalyna/docs/Design/Encryption%20and%20Decryption.html)
 
 ### Cryptanalysis
 - [Security Margin](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Security%20Margin.html)
