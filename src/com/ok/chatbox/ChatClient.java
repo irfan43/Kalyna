@@ -3,16 +3,18 @@ package com.ok.chatbox;
 
 import com.ok.kalyna.FileEncryption;
 import com.ok.kalyna.Kalyna;
+import com.ok.kalyna.KalynaIntegral;
+import com.ok.kalyna.KalynaUtil;
 import com.ok.server.ChatServer;
 import net.sourceforge.argparse4j.*;
+import net.sourceforge.argparse4j.impl.Arguments;
 import net.sourceforge.argparse4j.inf.*;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.util.List;
+import java.util.Random;
 
 public class ChatClient {
 
@@ -27,10 +29,10 @@ public class ChatClient {
 
 
         ArgumentParser parser = ArgumentParsers
-                .newFor("Kalyna Chat Client")
+                .newFor("Kalyna Application")
                 .build()
                 .defaultHelp(true)
-                .description("Client side Kalyna Encrypted Chat Application");
+                .description("Kalyna based File Encryption and E2EE (Client-Server Architecture) Chat Application");
 
         Subparsers subparsers = parser
                 .addSubparsers()
@@ -59,6 +61,12 @@ public class ChatClient {
                 .description("Server Mode")
                 .defaultHelp(true)
                 .help("Server Mode");
+
+        ArgumentParser integral = subparsers
+                .addParser("integral")
+                .description("Integral Property")
+                .defaultHelp(true)
+                .help("Integral Property");
 
         //login parser
         login   .addArgument("-p","--port")
@@ -121,46 +129,54 @@ public class ChatClient {
                 .help("Port the server will listen on")
                 .setDefault(5555);
 
+        //Integral Parser
+        integral.addArgument("-b","--block_size")
+                .type(Integer.class)
+                .help("Block Size in Bits")
+                .setDefault(128)
+                .choices(128, 256 , 512);
+
+        integral.addArgument("-a", "--all_index")
+                .type(Integer.class)
+                .help("ALL Property Index")
+                .setDefault(0);
+
+        integral.addArgument("-w","--whitening")
+                .type(Boolean.class)
+                .help("Include Pre Whitening Addition Modulus")
+                .setDefault(false)
+                .action(Arguments.storeTrue());
+
         try {
             Namespace res = parser.parseArgs(args);
-            switch (res.get("command").toString()) {
-                case "key":
-                    ChatCipher.GeneratePublicKey(Path.of(res.get("generate_keys").toString()));
-                    break;
-                case "login":
-                    username        = res.get("username");
-                    int     port    = res.get("port");
-                    String  ip      = res.get("ip").toString();
-
-                    chatCipher      = new ChatCipher(Path.of(res.get("keys").toString()));
-                    packetHandler   = new PacketHandler();
-                    packetReader    = new ClientNetwork(ip, port);
-                    rest            = new ClientNetwork(ip, port);
-
-                    Thread pr       = new Thread(packetReader);
+            switch (res.getString("command")) {
+                case "key" -> ChatCipher.GeneratePublicKey(Path.of(res.getString("generate_keys")));
+                case "login" -> {
+                    username = res.get("username");
+                    int port = res.get("port");
+                    String ip = res.getString("ip");
+                    chatCipher = new ChatCipher(Path.of(res.getString("keys")));
+                    packetHandler = new PacketHandler();
+                    packetReader = new ClientNetwork(ip, port);
+                    rest = new ClientNetwork(ip, port);
+                    Thread pr = new Thread(packetReader);
                     pr.start();
-
                     UserList.showUserList();
-                    break;
-                case "file":
+                }
+                case "file" -> {
 
                     //decoding the mode of the Cipher
-                    String modeArg = res.get("mode").toString();
-
-                    int keySize = Integer.parseInt(modeArg.substring(0,3))/8;
-                    int blockSize = Integer.parseInt(modeArg.substring(4,7))/8;
-                    int mode = Kalyna.getMode(blockSize,keySize);
-
-
+                    String modeArg = res.getString("mode");
+                    int keySize = Integer.parseInt(modeArg.substring(0, 3)) / 8;
+                    int blockSize = Integer.parseInt(modeArg.substring(4, 7)) / 8;
+                    int mode = Kalyna.getMode(blockSize, keySize);
                     List<String> files;
-                    if(res.get("encrypt") != null){
+                    if (res.get("encrypt") != null) {
                         files = res.get("encrypt");
-                    }else {
+                    } else {
                         files = res.get("decrypt");
                         mode = -1;
                     }
-
-
                     FileEncryption.FileEncrypt(
                             null,
                             Path.of(files.get(0)),
@@ -168,11 +184,26 @@ public class ChatClient {
                             4096,
                             res.get("encrypt") != null,
                             mode
-                            );
-                    break;
-                case "server":
-                    ChatServer.RunServer(res.get("port"));
-                    break;
+                    );
+                }
+                case "server" -> ChatServer.RunServer(res.get("port"));
+                case "integral" -> {
+                    byte[] constantV = new byte[res.getInt("block_size") / 8];
+                    int allIndex = res.getInt("all_index");
+                    boolean doWhitening = res.getBoolean("whitening");
+                    if (0 > allIndex || allIndex >= res.getInt("block_size") / 8) {
+                        System.out.println("Provided Illegal ALL Property Index " + allIndex);
+                        System.exit(0);
+                    }
+                    int seed = (new Random()).nextInt();
+                    Random r = new Random(seed);
+                    r.nextBytes(constantV);
+                    byte[][] constantValues = KalynaUtil.getState(constantV);
+                    KalynaIntegral.kalynaIntegralProperty(
+                            KalynaIntegral.generateDeltaSet(constantValues, allIndex),
+                            doWhitening
+                    );
+                }
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);
