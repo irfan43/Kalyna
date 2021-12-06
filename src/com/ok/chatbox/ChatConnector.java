@@ -60,6 +60,14 @@ public class ChatConnector{
         PrefaceOurUsername      = PadString(ChatClient.username,len);
     }
 
+    /**
+     * Adds spacing to the string so it meets the <code>target</code> length
+     * along with the "[" and "]" to the begin and back
+     *
+     * @param input input String
+     * @param target length of the string after padding excluding the brackets
+     * @return the padded String
+     */
     private String PadString(String input, int target){
         int pad = target - input.length();
         int padLeft = pad/2;
@@ -72,11 +80,26 @@ public class ChatConnector{
                 "]: ";
     }
 
+    /**
+     * Generate a Diffie Hellman  Key Pair
+     * @return The Diffie Hellman Key Pair
+     * @throws NoSuchAlgorithmException if the JVM does not support DH
+     */
     private KeyPair GenerateDHKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("DH");
         kpg.initialize(512);
         return kpg.generateKeyPair();
     }
+
+    /**
+     * Sends a INIT Packet to the other Client
+     * This contains our DH Public Key that is signed using RSA
+     * @param DHPublicKey The Diffie Hellman Public key to send
+     * @throws NoSuchAlgorithmException if SHA256withRSA is not supported by this JVM
+     * @throws InvalidKeyException if Private Key in the <code>chatCipher</code> is invalid
+     * @throws SignatureException if a SignatureException occurs
+     * @throws IOException if a IOException occurs
+     */
     private void SendINITPacket(PublicKey DHPublicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         byte[] pubByte  = DHPublicKey.getEncoded();
         Signature sgn   = ChatClient.chatCipher.getSigning();
@@ -86,6 +109,11 @@ public class ChatConnector{
         ChatClient.packetHandler.SendPacketINIT(Base64PublicKey,pubByte,signature);
     }
 
+    /**
+     * Returns their INIT Packet
+     * @apiNote This function is blocking and will block till the INIT packet is received
+     * @return Their INIT Packet
+     */
     private ChatPacket GetTheirINIT(){
         ChatPacket cp;
         do{
@@ -100,6 +128,17 @@ public class ChatConnector{
         }while (cp == null);
         return cp;
     }
+
+    /**
+     *
+     * @param init
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     * @throws BadINITSignException
+     */
     private PublicKey getTheirPublicKey(ChatPacket init) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, BadINITSignException {
         String theirINITBase64 = new String (init.getData(), StandardCharsets.UTF_8);
 
@@ -119,6 +158,15 @@ public class ChatConnector{
 
         return KeyFactory.getInstance("DH").generatePublic(new X509EncodedKeySpec(theirPub));
     }
+
+    /**
+     * Generates the Common Secret Using the Diffie Hellman Key Agreement
+     * @param ourPrivateKey Our Diffie Hellman Private Key
+     * @param theirPublicKey Their Diffie Hellman Public Key
+     * @return The Common Secret
+     * @throws InvalidKeyException if either of the given keys are invalid
+     * @throws NoSuchAlgorithmException if the JVM does not support Diffie Hellman Key Agreement
+     */
     private byte[] GenerateSecret(PrivateKey ourPrivateKey,PublicKey theirPublicKey) throws InvalidKeyException, NoSuchAlgorithmException {
         KeyAgreement ka = KeyAgreement.getInstance("DH");
         ka.init(ourPrivateKey);
@@ -126,6 +174,13 @@ public class ChatConnector{
         byte[] s = ka.generateSecret();
         return KalynaHash.Hash( s,Kalyna.getKeySize(mode) );
     }
+
+    /**
+     * Generates and Exchanges Diffie Hellman Keys
+     * and Generates the common Secret
+     * @throws GeneralSecurityException if a security Exception occurs
+     * @throws IOException if an IOException occurs
+     */
     private void DoExchange() throws GeneralSecurityException, IOException{
         System.out.println("starting Exchange ");
         KeyPair DHKeyPair = GenerateDHKeyPair();

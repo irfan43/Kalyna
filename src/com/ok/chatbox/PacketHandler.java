@@ -75,6 +75,11 @@ public class PacketHandler {
         ChatClient.rest.SendPacket( cp.getBytes() , base64PublicKey );
     }
 
+    /**
+     * This Queue new packets that have been sent to the Client from the server
+     * @param packet The received packet
+     * @throws IOException if an IOException occurs
+     */
     public void QueueNewPacket(byte[] packet) throws IOException {
         ChatPacket cp = new ChatPacket(packet);
         if(cp.getType().equals(ChatPacket.TYPE_INITIATOR) ){
@@ -88,7 +93,7 @@ public class PacketHandler {
         }
 
         //we notify to Connector thread who is waiting for new Packets
-        //This will make it check the current packet and see if it's needed
+        //This will make it check the current packet queue and see if it's this added packet is needed
         if(UserList.connector != null) {
             synchronized (UserList.connector.lock) {
                 UserList.connector.lock.notify();
