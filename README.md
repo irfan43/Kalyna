@@ -19,7 +19,7 @@ Kalyna is Rijndael based algorithm that supports block sizes and key lengths up 
 ---
 
 ## Python Notebook
-The Python Notebook inside `notebook/Kalyna.ipynb` folder is used to generate the following things
+The Python Notebook inside `Notebook/Kalyna.ipynb` folder is used to generate the following things
 - DDT and LAT analysis
 - Mix Columns Look Up table using the Irreducible Polynomial
 ---

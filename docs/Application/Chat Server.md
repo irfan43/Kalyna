@@ -2,7 +2,7 @@
 
 # Server Mode
 
-- The `**Kalyna.jar`** application is also designed to run in the server mode
+- The **`Kalyna.jar`** application is also designed to run in the server mode
 - One can intialize the server using the following command
 
 ```bash
