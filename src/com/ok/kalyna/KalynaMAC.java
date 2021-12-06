@@ -5,10 +5,10 @@ import java.util.Arrays;
 public class KalynaMAC {
 
     private int             statePos;
-    private byte[]          state;
+    private final byte[]          state;
     private byte[]          previousState;
-    private KalynaCipher    cipher;
-    private int             mode;
+    private final KalynaCipher    cipher;
+    private final int             mode;
 
     public KalynaMAC(byte[] key){
 

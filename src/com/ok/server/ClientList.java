@@ -7,11 +7,11 @@ import java.util.HashMap;
 public class ClientList {
 
     //          Base64 PBK to Objects
-    private HashMap<String,ConnectedClient> ConnectedList;
+    private final HashMap<String,ConnectedClient> ConnectedList;
     //          Usernames to Base 64 PBK
-    private HashMap<String,String> usernameMap;
+    private final HashMap<String,String> usernameMap;
     //          Base64 PBK to Username
-    private HashMap<String,String> PBKMap;
+    private final HashMap<String,String> PBKMap;
 
     public ClientList(){
         ConnectedList = new HashMap<>();

@@ -9,24 +9,7 @@ public class ChatPacket {
     public static final String TYPE_MESSAGE = "MSG";
     public static final String TYPE_TEST = "ALL OK";
 
-    /*
-     * any packet
-     *   packet type
-     *   packet from PBK
-     *   packet Raw Data
-     *
-     *
-     * packet init
-     *   "INIT"
-     *   "senders PBK base 64"
-     *   [DH PBK]
-     *   [RSA sign of the DH PBK]
-     *
-     * package MSG
-     *
-     *
-     *
-     * */
+
 
     private String Type;
     private String From;

@@ -1,8 +1,5 @@
 package com.ok.kalyna;
 
-import java.math.BigInteger;
-import java.util.Arrays;
-
 public class KalynaRoundFunction {
 
     public static final boolean ENCRYPTION_MODE = true;

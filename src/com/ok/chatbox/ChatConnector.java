@@ -23,7 +23,7 @@ public class ChatConnector{
     private       String        PrefaceOurUsername;
     private final String        Base64PublicKey;
     private       byte[]        secret;
-    public        ChatConsole   console;
+    public final ChatConsole   console;
     private final Thread        consoleThread;
 
     public final  Object        lock = new Object();
@@ -130,14 +130,15 @@ public class ChatConnector{
     }
 
     /**
-     *
-     * @param init
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     * @throws InvalidKeyException
-     * @throws SignatureException
-     * @throws BadINITSignException
+     * Returns the Diffie Hellman Public Key present in the given INIT Packet
+     * after Verifying the signature present in the given INIT Packet
+     * @param init Their init packet to check and decode
+     * @return Their Diffie Hellman Public Key present in the given INIT Packet
+     * @throws NoSuchAlgorithmException if the JVM does not support SHA256withRSA
+     * @throws InvalidKeySpecException if we have received invalid key
+     * @throws InvalidKeyException if we have received invalid key
+     * @throws SignatureException if a Signature Exception Occurs
+     * @throws BadINITSignException if their Signature is invalid
      */
     private PublicKey getTheirPublicKey(ChatPacket init) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, BadINITSignException {
         String theirINITBase64 = new String (init.getData(), StandardCharsets.UTF_8);
@@ -191,6 +192,11 @@ public class ChatConnector{
         secret = GenerateSecret(DHKeyPair.getPrivate(),theirPublicKey);
     }
 
+    /**
+     * Takes incoming Packet decodes then decrypts the message
+     * after verifying the MAC it will add the message to the screen
+     * @param cp the incoming packet to decode
+     */
     public void receivedMsg(ChatPacket cp){
         String[] pack = new String(cp.getData(),StandardCharsets.UTF_8).split("\\r?\\n");
         byte[] data    = Base64.getDecoder().decode(pack[0]);
@@ -208,6 +214,12 @@ public class ChatConnector{
             console.AddMessage(PrefaceTheirUsername + str);
         }
     }
+
+    /**
+     * Encrypts and encodes a message after which it is sent to the server
+     * @param msg the message
+     * @throws IOException if an IOException occurs
+     */
     public void sendMsg(String msg) throws IOException {
         console.AddMessage(  PrefaceOurUsername + msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
@@ -226,7 +238,9 @@ public class ChatConnector{
 
     }
 
-
+    /**
+     * opens a Chat Window and Connection
+     */
     public void Open() {
         try {
             DoExchange();
