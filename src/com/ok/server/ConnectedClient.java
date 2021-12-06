@@ -11,7 +11,7 @@ public class ConnectedClient {
     private BufferedReader Reader;
     private BufferedInputStream bufferedInputStream;
     private BufferedOutputStream bufferedOutputStream;
-    private Socket Sock;
+    private final Socket Sock;
 
     public ConnectedClient(Socket sock) throws IOException {
         Sock = sock;

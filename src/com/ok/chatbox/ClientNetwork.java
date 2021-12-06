@@ -7,8 +7,8 @@ import java.util.Base64;
 public class ClientNetwork implements Runnable {
 
     private Socket Sock;
-    private String IP;
-    private int Port;
+    private final String IP;
+    private final int Port;
 
     private InputStream inputStream;
     private OutputStream outputStream;

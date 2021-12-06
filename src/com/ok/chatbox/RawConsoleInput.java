@@ -18,8 +18,10 @@ import com.sun.jna.Structure;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
 
-/*This code was sourced from github and not made by OK team
+/*
+ * This code was sourced from GitHub and not made by OK team
 * it is used to interface with the JNA to allow us Raw mode in the Console
+*
 * */
 
 /**

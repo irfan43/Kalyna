@@ -12,14 +12,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class KalynaRoundFunctionTest {
 
 
-    @BeforeEach
-    void setUp() {
-    }
-
-    @AfterEach
-    void tearDown() {
-    }
-
     @Test
     void sBox(){
         String[] input = TestVectors.SBoxTestCaseInput;

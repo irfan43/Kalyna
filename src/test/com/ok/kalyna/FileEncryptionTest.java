@@ -2,8 +2,6 @@ package com.ok.kalyna;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class FileEncryptionTest {
 
     @Test

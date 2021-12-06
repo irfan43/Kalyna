@@ -8,8 +8,8 @@ public class ChatConsole implements Runnable{
 
     private List<String> messages;
     private int messagesDrawn;
-    private String Screen = "";
-    private ChatConnector cc;
+    private final String Screen = "";
+    private final ChatConnector cc;
     public StringBuilder msg;
     public boolean reDraw;
     private final Object lock = new Object();
@@ -30,7 +30,6 @@ public class ChatConsole implements Runnable{
         msg = new StringBuilder();
         messages = new ArrayList<>();
         messagesDrawn = 0;
-//        message = "";
         reDraw = true;
         ConsoleUtil.CLS();
         while (true){
@@ -53,7 +52,6 @@ public class ChatConsole implements Runnable{
                     }else if((keycode == 127 && !ConsoleUtil.IsWindows) ||
                             (keycode == 8 && ConsoleUtil.IsWindows)){
                         if(msg.length() > 0) {
-//                            reDraw = true;
                             System.out.print(ConsoleUtil.ANSI_CURS_LEFT);
                             System.out.print(" ");
                             System.out.print(ConsoleUtil.ANSI_CURS_LEFT);
@@ -77,7 +75,6 @@ public class ChatConsole implements Runnable{
 
     private void Draw(){
         synchronized (lock) {
-//            CLS();
             System.out.print(ConsoleUtil.ANSI_CURS_BEGIN);
             System.out.print(ConsoleUtil.ANSI_CURS_ERASE);
             System.out.print(ConsoleUtil.ANSI_CURS_BEGIN);

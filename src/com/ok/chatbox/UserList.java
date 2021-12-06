@@ -1,11 +1,8 @@
 package com.ok.chatbox;
 
-import com.ok.kalyna.Kalyna;
 import com.ok.kalyna.KalynaHash;
 
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.Scanner;
 
