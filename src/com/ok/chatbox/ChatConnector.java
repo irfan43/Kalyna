@@ -17,50 +17,89 @@ public class ChatConnector{
 
 
 
-    private int mode = Kalyna.KALYNA_512KEY_512BLOCK;
-    private String TheirUsername;
-    private String PrefaceTheirUsername;
-    private String PrefaceOurUsername;
-    private String Base64PublicKey;
-    private byte[] secret;
-    public  ChatConsole cc;
-    private Thread ccThread;
+    private final int           mode = Kalyna.KALYNA_512KEY_512BLOCK;
+    private final String        TheirUsername;
+    private       String        PrefaceTheirUsername;
+    private       String        PrefaceOurUsername;
+    private final String        Base64PublicKey;
+    private       byte[]        secret;
+    public        ChatConsole   console;
+    private final Thread        consoleThread;
 
-    public final Object lock = new Object();
+    public final  Object        lock = new Object();
 
 
+    /**
+     * Chat Connector Connects the <code>ChatConsole</code> and <code>PacketHandler</code>
+     * It initializes ChatConsole and performs a key exchange
+     * After which it sends encrypted text packets received from ChatConsole
+     * And
+     * displays received text packets from PacketHandler on ChatConsole
+     *
+     * @param username The username of the person you are wishing to chat with
+     * @param base64PublicKey The public Key of the person you are wishing to chat with encoded in Base64
+     */
     public ChatConnector(String username,String base64PublicKey) {
-        Base64PublicKey = base64PublicKey;
-        TheirUsername = username;
-        cc = new ChatConsole(this);
-        ccThread = new Thread(cc);
-
+        Base64PublicKey     = base64PublicKey;
+        TheirUsername       = username;
+        //initialize the console and console thread
+        console             = new ChatConsole(this);
+        consoleThread       = new Thread(console);
         BuildPrefaces();
 
     }
 
+    /**
+     * initialize Both Prefaces
+     * They are used when adding a message to the Chat Console
+     */
     private void BuildPrefaces() {
         int len = Math.max(TheirUsername.length(),ChatClient.username.length()) + 2 ;
-        PrefaceTheirUsername = PadString(TheirUsername,len);
-        PrefaceOurUsername = PadString(ChatClient.username,len);
+
+        PrefaceTheirUsername    = PadString(TheirUsername,len);
+        PrefaceOurUsername      = PadString(ChatClient.username,len);
     }
 
+    /**
+     * Adds spacing to the string so it meets the <code>target</code> length
+     * along with the "[" and "]" to the begin and back
+     *
+     * @param input input String
+     * @param target length of the string after padding excluding the brackets
+     * @return the padded String
+     */
     private String PadString(String input, int target){
         int pad = target - input.length();
         int padLeft = pad/2;
         int padRight = pad - padLeft;
 
-        return "[" + " ".repeat(Math.max(0, padLeft)) +
+        return "[" +
+                " ".repeat(Math.max(0, padLeft)) +
                 input +
                 " ".repeat(Math.max(0, padRight)) +
                 "]: ";
     }
 
+    /**
+     * Generate a Diffie Hellman  Key Pair
+     * @return The Diffie Hellman Key Pair
+     * @throws NoSuchAlgorithmException if the JVM does not support DH
+     */
     private KeyPair GenerateDHKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("DH");
         kpg.initialize(512);
         return kpg.generateKeyPair();
     }
+
+    /**
+     * Sends a INIT Packet to the other Client
+     * This contains our DH Public Key that is signed using RSA
+     * @param DHPublicKey The Diffie Hellman Public key to send
+     * @throws NoSuchAlgorithmException if SHA256withRSA is not supported by this JVM
+     * @throws InvalidKeyException if Private Key in the <code>chatCipher</code> is invalid
+     * @throws SignatureException if a SignatureException occurs
+     * @throws IOException if a IOException occurs
+     */
     private void SendINITPacket(PublicKey DHPublicKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, IOException {
         byte[] pubByte  = DHPublicKey.getEncoded();
         Signature sgn   = ChatClient.chatCipher.getSigning();
@@ -70,6 +109,11 @@ public class ChatConnector{
         ChatClient.packetHandler.SendPacketINIT(Base64PublicKey,pubByte,signature);
     }
 
+    /**
+     * Returns their INIT Packet
+     * @apiNote This function is blocking and will block till the INIT packet is received
+     * @return Their INIT Packet
+     */
     private ChatPacket GetTheirINIT(){
         ChatPacket cp;
         do{
@@ -84,6 +128,17 @@ public class ChatConnector{
         }while (cp == null);
         return cp;
     }
+
+    /**
+     *
+     * @param init
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     * @throws InvalidKeyException
+     * @throws SignatureException
+     * @throws BadINITSignException
+     */
     private PublicKey getTheirPublicKey(ChatPacket init) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, BadINITSignException {
         String theirINITBase64 = new String (init.getData(), StandardCharsets.UTF_8);
 
@@ -99,10 +154,19 @@ public class ChatConnector{
         verifySgn.initVerify(theirRSA);
         verifySgn.update(theirPub);
         if(!verifySgn.verify(theirSign))
-            throw new BadINITSignException();
+            throw new BadINITSignException("Invalid Sign");
 
         return KeyFactory.getInstance("DH").generatePublic(new X509EncodedKeySpec(theirPub));
     }
+
+    /**
+     * Generates the Common Secret Using the Diffie Hellman Key Agreement
+     * @param ourPrivateKey Our Diffie Hellman Private Key
+     * @param theirPublicKey Their Diffie Hellman Public Key
+     * @return The Common Secret
+     * @throws InvalidKeyException if either of the given keys are invalid
+     * @throws NoSuchAlgorithmException if the JVM does not support Diffie Hellman Key Agreement
+     */
     private byte[] GenerateSecret(PrivateKey ourPrivateKey,PublicKey theirPublicKey) throws InvalidKeyException, NoSuchAlgorithmException {
         KeyAgreement ka = KeyAgreement.getInstance("DH");
         ka.init(ourPrivateKey);
@@ -110,6 +174,13 @@ public class ChatConnector{
         byte[] s = ka.generateSecret();
         return KalynaHash.Hash( s,Kalyna.getKeySize(mode) );
     }
+
+    /**
+     * Generates and Exchanges Diffie Hellman Keys
+     * and Generates the common Secret
+     * @throws GeneralSecurityException if a security Exception occurs
+     * @throws IOException if an IOException occurs
+     */
     private void DoExchange() throws GeneralSecurityException, IOException{
         System.out.println("starting Exchange ");
         KeyPair DHKeyPair = GenerateDHKeyPair();
@@ -134,11 +205,11 @@ public class ChatConnector{
         //      else we ignore it
         if(Arrays.equals(mac,k.getMAC())) {
             String str = new String(data);
-            cc.AddMessage(PrefaceTheirUsername + str);
+            console.AddMessage(PrefaceTheirUsername + str);
         }
     }
     public void sendMsg(String msg) throws IOException {
-        cc.AddMessage(  PrefaceOurUsername + msg);
+        console.AddMessage(  PrefaceOurUsername + msg);
         byte[] data = msg.getBytes(StandardCharsets.UTF_8);
         KalynaCFB k = new KalynaCFB(secret,mode);
         data = k.Update(data);
@@ -167,7 +238,7 @@ public class ChatConnector{
             System.exit(1);
         }
 
-        ccThread.start();
+        consoleThread.start();
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
@@ -175,7 +246,7 @@ public class ChatConnector{
         }
 
         ChatPacket cp;
-        while (ccThread.isAlive()){
+        while (consoleThread.isAlive()){
 
             do{
                 cp = ChatClient.packetHandler.GetPacketFrom(Base64PublicKey);

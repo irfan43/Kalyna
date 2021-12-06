@@ -150,8 +150,10 @@ public class ChatClient {
         try {
             Namespace res = parser.parseArgs(args);
             switch (res.getString("command")) {
-                case "key" -> ChatCipher.GeneratePublicKey(Path.of(res.getString("generate_keys")));
-                case "login" -> {
+                case "key":
+                    ChatCipher.GeneratePublicKey(Path.of(res.getString("generate_keys")));
+                    break;
+                case "login":
                     username = res.get("username");
                     int port = res.get("port");
                     String ip = res.getString("ip");
@@ -162,8 +164,8 @@ public class ChatClient {
                     Thread pr = new Thread(packetReader);
                     pr.start();
                     UserList.showUserList();
-                }
-                case "file" -> {
+                    break;
+                case "file":
 
                     //decoding the mode of the Cipher
                     String modeArg = res.getString("mode");
@@ -185,9 +187,11 @@ public class ChatClient {
                             res.get("encrypt") != null,
                             mode
                     );
-                }
-                case "server" -> ChatServer.RunServer(res.get("port"));
-                case "integral" -> {
+                    break;
+                case "server":
+                    ChatServer.RunServer(res.get("port"));
+                    break;
+                case "integral":
                     byte[] constantV = new byte[res.getInt("block_size") / 8];
                     int allIndex = res.getInt("all_index");
                     boolean doWhitening = res.getBoolean("whitening");
@@ -203,7 +207,7 @@ public class ChatClient {
                             KalynaIntegral.generateDeltaSet(constantValues, allIndex),
                             doWhitening
                     );
-                }
+                    break;
             }
         } catch (ArgumentParserException e) {
             parser.handleError(e);

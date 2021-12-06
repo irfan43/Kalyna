@@ -6,22 +6,20 @@ import java.util.Base64;
 
 public class ClientHandler implements Runnable{
 
-    private Socket Sock;
+    private final Socket Sock;
+    private BufferedReader br;
+    private BufferedWriter bw;
+
     public ClientHandler(Socket sock ){
         Sock = sock;
     }
-
-    private BufferedReader br;
-    private BufferedWriter bw;
-    private InputStream is;
-    private OutputStream os;
 
     @Override
     public void run() {
         try {
 
-            is = Sock.getInputStream();
-            os = Sock.getOutputStream();
+            InputStream is = Sock.getInputStream();
+            OutputStream os = Sock.getOutputStream();
             br = new BufferedReader(new InputStreamReader(is));
             bw = new BufferedWriter(new OutputStreamWriter(os));
 
@@ -56,9 +54,14 @@ public class ClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Gets the Username of a Connected Client given the Public Key
+     * @throws IOException if a IOException Occurs
+     */
     private void getUsername() throws IOException{
-        String Base64PublicKey = br.readLine();
-        String username = ChatServer.clientList.getUsername(Base64PublicKey);
+        String Base64PublicKey  = br.readLine();
+        String username         = ChatServer.clientList.getUsername(Base64PublicKey);
+
         if(username == null){
             bw.write("INVALID\n");
         }else {
@@ -69,9 +72,14 @@ public class ClientHandler implements Runnable{
         Sock.close();
     }
 
+    /**
+     * Gets the public Key of a Connected Client given the username
+     * @throws IOException if a IOException Occurs
+     */
     private void getPBK() throws IOException{
-        String username = br.readLine();
-        String pub = ChatServer.clientList.getPBK(username);
+        String username     = br.readLine();
+        String pub          = ChatServer.clientList.getPBK(username);
+
         if(pub == null){
             bw.write("DNE\n");
         }else {
@@ -82,23 +90,31 @@ public class ClientHandler implements Runnable{
         Sock.close();
     }
 
+    /**
+     * Informs the connected Client that the command received was not recognized
+     * @throws IOException if an IOException occurs
+     */
     private void invalidCommand() throws IOException {
         bw.write("INVALID\n");
         bw.flush();
         Sock.close();
     }
 
+    /**
+     * Sends a Packet in to a connected user
+     * @throws IOException if an IOException occurs
+     */
     private void sendPacket() throws IOException {
-        String Base64PublicKey = br.readLine();
-        byte[] publicKey;
         try {
-            publicKey = Base64.getDecoder().decode(Base64PublicKey);
-            byte[] packetData =  Base64.getDecoder().decode(br.readLine());
+            String Base64PublicKey = br.readLine();
+            Base64.getDecoder().decode(Base64PublicKey);
+
+            byte[] packetData = Base64.getDecoder().decode(br.readLine());
             boolean successes = ChatServer.clientList.SendPacket(packetData,Base64PublicKey);
+
             if(successes) {
                 bw.write("ok\n");
-            }
-            else {
+            }   else {
                 bw.write("FAIL\n");
             }
             bw.flush();
@@ -107,11 +123,16 @@ public class ClientHandler implements Runnable{
         }
     }
 
+    /**
+     * Grabs the Username and Public Key from the Socket
+     * This is stored in the <code>clientList</code> along with the socket
+     * @throws IOException if an IOException occurs
+     */
     private void login() throws IOException{
         String username = br.readLine();
         String Base64PublicKey = br.readLine();
 
-        System.out.println(" new User login " + username + " pbk = " + Base64PublicKey.substring(0,10));
+        System.out.println(" new User login " + username);
         ChatServer.clientList.LoginClient(Sock,Base64PublicKey,username);
 
     }

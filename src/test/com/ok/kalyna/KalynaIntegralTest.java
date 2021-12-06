@@ -13,7 +13,7 @@ public class KalynaIntegralTest {
         int numCols = numColBlock[r.nextInt(numColBlock.length)];
         byte[] constantV = new byte[numCols * 8];
         r.nextBytes(constantV);
-        int allIndex = r.nextInt(0,constantV.length);
+        int allIndex = r.nextInt(constantV.length ) ;
         boolean doWhitening = r.nextBoolean();
         byte[][] constantValues = KalynaUtil.getState(constantV);
         System.out.println("Number of Columns : " + numCols);

@@ -125,7 +125,7 @@ public class ChatCipher {
      * @throws IOException if a IOException occurs while writing to the file
      */
     public static void GeneratePublicKey(Path PBKFile) throws NoSuchAlgorithmException, IOException {
-        //we use the JCA (Java Cryptography Architecture) to generate a RSA key pair
+        //we use the JCA (Java Cryptography Architecture) to generate an RSA key pair
 
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
         //we are using 4096bit RSA private keys

@@ -9,3 +9,20 @@ Kalyna is Rijndael based algorithm that supports block sizes and key lengths up 
 - [Security Margin](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Security%20Margin.html)
 - [Differential Cryptanalysis](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Differential%20Cryptanalysis.html)
 - [Integral Cryptanalysis](https://irfan43.github.io/Kalyna/docs/Cryptanalysis/Integral%20Cryptanalysis.html)
+
+To run the code please verify you have Java version 11 installed in your system
+
+
+
+you can then execute the code using
+java -jar Kalyna.jar
+
+for a help use 
+
+java -jar Kalyna.jar --help
+
+or
+
+java -jar Kalyna.jar <command> --help
+
+replacing <command> with the command you would like help on
